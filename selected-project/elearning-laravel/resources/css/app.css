@@ -102,3 +102,67 @@ body {
     color: #b42318;
     margin: -0.5rem 0 0;
 }
+
+.page-heading {
+    margin-bottom: 1.5rem;
+}
+
+.filter-bar {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    margin-bottom: 2rem;
+}
+
+.filter-bar input,
+.filter-bar select,
+.filter-bar button {
+    border: 1px solid #c8cfdd;
+    border-radius: 0.375rem;
+    font: inherit;
+    padding: 0.7rem 0.8rem;
+}
+
+.filter-bar button {
+    background: #172033;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.course-grid,
+.category-list {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.course-card,
+.empty-state {
+    background: #ffffff;
+    border: 1px solid #d9deea;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.course-card h2,
+.course-card p {
+    margin-top: 0;
+}
+
+.course-card dl,
+.course-detail dl {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.course-card dl div,
+.course-detail dl div {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.course-card dt,
+.course-detail dt {
+    font-weight: 700;
+}

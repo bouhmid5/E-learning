@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 
 class Cours extends Model
 {
@@ -73,5 +74,10 @@ class Cours extends Model
     public function evaluations(): HasMany
     {
         return $this->hasMany(Evaluation::class);
+    }
+
+    public function scopePublie(Builder $query): Builder
+    {
+        return $query->where('statut', StatutCours::PUBLIE->value);
     }
 }
