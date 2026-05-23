@@ -27,7 +27,7 @@ The application will remain a Laravel modular monolith. Future implementation sh
 
 ## Local Setup
 
-Install PHP 8.2 or newer, Composer, Node.js, and a MySQL/MariaDB server, then run:
+Install PHP, Composer, Node.js, and a MySQL/MariaDB server, then run:
 
 ```bash
 composer install
