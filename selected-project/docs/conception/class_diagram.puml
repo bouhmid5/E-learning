@@ -1,0 +1,112 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class User {
+  +id: uuid
+  +name: string
+  +email: string
+  +password: string
+  +status: UserStatus
+}
+
+class Role {
+  +id: uuid
+  +name: string
+}
+
+class Course {
+  +id: uuid
+  +title: string
+  +slug: string
+  +description: text
+  +status: CourseStatus
+  +price: decimal
+}
+
+class Module {
+  +id: uuid
+  +title: string
+  +position: int
+}
+
+class Lesson {
+  +id: uuid
+  +title: string
+  +type: LessonType
+  +durationMinutes: int
+  +position: int
+}
+
+class Enrollment {
+  +id: uuid
+  +status: EnrollmentStatus
+  +progressPercent: int
+  +enrolledAt: datetime
+  +completedAt: datetime?
+}
+
+class LessonProgress {
+  +id: uuid
+  +completed: bool
+  +completedAt: datetime?
+}
+
+class Quiz {
+  +id: uuid
+  +title: string
+  +passScore: int
+}
+
+class Question {
+  +id: uuid
+  +body: text
+  +type: QuestionType
+  +points: int
+}
+
+class Answer {
+  +id: uuid
+  +body: text
+  +isCorrect: bool
+}
+
+class QuizAttempt {
+  +id: uuid
+  +score: int
+  +passed: bool
+  +startedAt: datetime
+  +submittedAt: datetime?
+}
+
+class Certificate {
+  +id: uuid
+  +serialNumber: string
+  +issuedAt: datetime
+}
+
+class Payment {
+  +id: uuid
+  +amount: decimal
+  +currency: string
+  +status: PaymentStatus
+  +providerReference: string
+}
+
+User "*" -- "*" Role
+User "1" -- "*" Course : teaches
+Course "1" -- "*" Module
+Module "1" -- "*" Lesson
+Course "1" -- "*" Enrollment
+User "1" -- "*" Enrollment
+Enrollment "1" -- "*" LessonProgress
+Lesson "1" -- "*" LessonProgress
+Lesson "0..1" -- "1" Quiz
+Quiz "1" -- "*" Question
+Question "1" -- "*" Answer
+Quiz "1" -- "*" QuizAttempt
+User "1" -- "*" QuizAttempt
+Enrollment "0..1" -- "1" Certificate
+Enrollment "0..1" -- "1" Payment
+
+@enduml
+

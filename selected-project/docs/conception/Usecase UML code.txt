@@ -1,0 +1,257 @@
+Usecase UML code:
+
+@startuml
+' =====================================================
+' LANDSCAPE / WIDE PRINT SETTINGS
+' =====================================================
+
+left to right direction
+
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam handwritten false
+skinparam linetype ortho
+skinparam actorStyle awesome
+skinparam nodesep 95
+skinparam ranksep 80
+scale max 4200 width
+
+skinparam actor {
+    BackgroundColor #F8F9F9
+    BorderColor #2C3E50
+    FontStyle bold
+}
+
+skinparam usecase {
+    BorderColor #34495E
+    ArrowColor #5D6D7E
+    FontColor black
+    BackgroundColor #FFFFFF
+}
+
+title Diagramme de cas d'utilisation - Plateforme E-learning
+
+' =====================================================
+' ACTEURS
+' =====================================================
+
+actor "Utilisateur\n<<abstract>>" as User
+actor "Candidat" as Candidate
+actor "Formateur" as Trainer
+actor "Administrateur" as Admin
+
+Candidate --|> User
+Trainer --|> User
+
+' =====================================================
+' SYSTEME
+' =====================================================
+
+rectangle "Plateforme E-learning" {
+
+    package "Compte utilisateur" {
+        usecase "S'authentifier" as UC_Login
+        usecase "Gérer profil" as UC_Profile
+        usecase "Réinitialiser\nmot de passe" as UC_ResetPassword
+    }
+
+    package "Inscription" {
+        usecase "S'inscrire comme\ncandidat" as UC_RegisterCandidate
+        usecase "Demander inscription\ncomme formateur" as UC_RegisterTrainer
+        usecase "Uploader justificatifs\nDiplômes / certificats" as UC_UploadDocs
+    }
+
+    package "Catalogue des cours" {
+        usecase "Consulter catalogue" as UC_Catalog
+        usecase "Rechercher cours" as UC_SearchCourse
+        usecase "Filtrer cours" as UC_FilterCourse
+        usecase "Filtrer cours\nsimple" as UC_FilterSimple
+        usecase "Filtrer cours\navancé" as UC_FilterAdvanced
+        usecase "Consulter détails\ncours" as UC_ViewCourseDetails
+    }
+
+    package "Espace candidat" {
+        usecase "S'inscrire à un cours" as UC_EnrollCourse
+        usecase "Voir cours actuels" as UC_CurrentCourses
+        usecase "Télécharger supports" as UC_DownloadMaterial
+        usecase "Suivre progression" as UC_TrackProgress
+        usecase "Passer quiz /\nexamen" as UC_TakeQuiz
+        usecase "Soumettre devoir" as UC_SubmitAssignment
+        usecase "Consulter résultats" as UC_ViewResults
+        usecase "Télécharger certificat" as UC_DownloadCertificate
+        usecase "Contacter support /\nformateur" as UC_Contact
+    }
+
+    package "Espace formateur" {
+        usecase "Créer cours" as UC_CreateCourse
+        usecase "Gérer contenu cours" as UC_ManageContent
+        usecase "Soumettre cours\npour validation" as UC_SubmitCourse
+        usecase "Gérer quiz /\nexamens" as UC_ManageQuiz
+        usecase "Configurer seuils\nde réussite" as UC_DefineThreshold
+        usecase "Gérer devoirs" as UC_ManageAssignments
+        usecase "Configurer critères\nde correction" as UC_CorrectionCriteria
+        usecase "Suivre performance\ndes candidats" as UC_FollowPerformance
+        usecase "Répondre aux messages" as UC_ReplyMessages
+    }
+
+    package "Administration" {
+        usecase "S'authentifier\ncomme administrateur" as UC_AdminLogin
+        usecase "Gérer utilisateurs" as UC_ManageUsers
+        usecase "Consulter utilisateurs" as UC_ViewUsers
+        usecase "Activer / désactiver\nutilisateur" as UC_ActivateDeactivateUser
+        usecase "Valider / rejeter\ncompte formateur" as UC_ValidateTrainer
+        usecase "Valider / rejeter\ncours" as UC_ValidateCourse
+        usecase "Gérer catégories\net sous-catégories" as UC_ManageCategories
+        usecase "Consulter statistiques" as UC_ViewStats
+        usecase "Envoyer notifications" as UC_SendNotifications
+        usecase "Gérer support /\nréclamations" as UC_ManageSupport
+    }
+
+    package "Traitement automatique" {
+        usecase "Corriger automatiquement\nquiz / devoir" as UC_AutoCorrection
+        usecase "Vérifier conditions\nde certification" as UC_CheckCertificateEligibility
+        usecase "Générer certificat" as UC_GenerateCertificate
+    }
+}
+
+' =====================================================
+' RELATIONS - COMPTE
+' =====================================================
+
+User --> UC_Login
+User --> UC_Profile
+User --> UC_ResetPassword
+
+Admin --> UC_AdminLogin
+
+' =====================================================
+' RELATIONS - INSCRIPTION
+' =====================================================
+
+Candidate --> UC_RegisterCandidate
+Trainer --> UC_RegisterTrainer
+
+UC_RegisterTrainer ..> UC_UploadDocs : <<include>>
+
+' =====================================================
+' RELATIONS - CANDIDAT / CATALOGUE
+' =====================================================
+
+Candidate --> UC_Catalog
+Candidate --> UC_FilterCourse
+Candidate --> UC_ViewCourseDetails
+
+UC_SearchCourse ..> UC_Catalog : <<include>>
+UC_ViewCourseDetails ..> UC_SearchCourse : <<include>>
+
+UC_FilterCourse ..> UC_SearchCourse : <<extend>>
+UC_FilterSimple --|> UC_FilterCourse
+UC_FilterAdvanced --|> UC_FilterCourse
+
+' Enrollment is available only after viewing course details
+UC_EnrollCourse ..> UC_ViewCourseDetails : <<extend>>
+UC_EnrollCourse ..> UC_Login : <<include>>
+
+' =====================================================
+' RELATIONS - CANDIDAT / ESPACE CANDIDAT
+' =====================================================
+
+Candidate --> UC_CurrentCourses
+Candidate --> UC_DownloadMaterial
+Candidate --> UC_TrackProgress
+Candidate --> UC_TakeQuiz
+Candidate --> UC_SubmitAssignment
+Candidate --> UC_ViewResults
+Candidate --> UC_DownloadCertificate
+Candidate --> UC_Contact
+
+UC_TakeQuiz ..> UC_AutoCorrection : <<include>>
+UC_SubmitAssignment ..> UC_AutoCorrection : <<include>>
+
+UC_DownloadCertificate ..> UC_CheckCertificateEligibility : <<include>>
+UC_CheckCertificateEligibility ..> UC_GenerateCertificate : <<include>>
+
+' =====================================================
+' RELATIONS - FORMATEUR
+' =====================================================
+
+Trainer --> UC_CreateCourse
+Trainer --> UC_ManageContent
+Trainer --> UC_SubmitCourse
+Trainer --> UC_ManageQuiz
+Trainer --> UC_ManageAssignments
+Trainer --> UC_FollowPerformance
+Trainer --> UC_ReplyMessages
+
+UC_SubmitCourse ..> UC_CreateCourse : <<include>>
+UC_ManageQuiz ..> UC_DefineThreshold : <<include>>
+UC_ManageAssignments ..> UC_CorrectionCriteria : <<include>>
+
+' =====================================================
+' RELATIONS - ADMINISTRATEUR
+' =====================================================
+
+Admin --> UC_ManageUsers
+Admin --> UC_ValidateTrainer
+Admin --> UC_ValidateCourse
+Admin --> UC_ManageCategories
+Admin --> UC_ViewStats
+Admin --> UC_SendNotifications
+Admin --> UC_ManageSupport
+
+UC_ManageUsers ..> UC_ViewUsers : <<include>>
+UC_ManageUsers ..> UC_ActivateDeactivateUser : <<include>>
+
+' =====================================================
+' NOTES
+' =====================================================
+
+note bottom of UC_Catalog
+Parcours catalogue :
+Consulter catalogue
+-> Rechercher cours
+-> Consulter détails
+-> S'inscrire au cours
+end note
+
+note bottom of UC_EnrollCourse
+L'inscription à un cours est possible
+uniquement après consultation
+des détails du cours.
+
+Elle nécessite l'authentification.
+end note
+
+note bottom of UC_FilterCourse
+Le filtrage est optionnel.
+Il peut être simple ou avancé.
+end note
+
+note bottom of UC_CurrentCourses
+Les actions de l'espace candidat
+nécessitent une authentification.
+end note
+
+note bottom of UC_CreateCourse
+Les actions de l'espace formateur
+nécessitent une authentification.
+end note
+
+note bottom of UC_ManageUsers
+Les actions d'administration
+nécessitent une authentification
+administrateur.
+end note
+
+note bottom of UC_DownloadCertificate
+Le certificat est disponible si :
+- cours terminé
+- évaluations réussies
+- conditions de certification validées
+end note
+
+note right of Admin
+L'administrateur est séparé
+de la hiérarchie Utilisateur.
+end note
+@enduml

@@ -1,0 +1,50 @@
+@startuml
+left to right direction
+
+actor Learner
+actor Instructor
+actor Admin
+actor "Payment Provider" as PaymentProvider
+
+rectangle "E-learning Platform" {
+  usecase "Register and log in" as UCAuth
+  usecase "Browse courses" as UCBrowse
+  usecase "Enroll in course" as UCEnroll
+  usecase "Pay for course" as UCPay
+  usecase "Watch lessons" as UCWatch
+  usecase "Track progress" as UCProgress
+  usecase "Take quiz" as UCQuiz
+  usecase "Download certificate" as UCCert
+
+  usecase "Create course" as UCCreate
+  usecase "Manage modules and lessons" as UCContent
+  usecase "Publish course" as UCPublish
+  usecase "Review learner results" as UCResults
+
+  usecase "Manage users" as UCUsers
+  usecase "Moderate courses" as UCModerate
+  usecase "View reports" as UCReports
+}
+
+Learner --> UCAuth
+Learner --> UCBrowse
+Learner --> UCEnroll
+Learner --> UCWatch
+Learner --> UCProgress
+Learner --> UCQuiz
+Learner --> UCCert
+
+UCEnroll --> UCPay : includes
+UCPay --> PaymentProvider
+
+Instructor --> UCCreate
+Instructor --> UCContent
+Instructor --> UCPublish
+Instructor --> UCResults
+
+Admin --> UCUsers
+Admin --> UCModerate
+Admin --> UCReports
+
+@enduml
+

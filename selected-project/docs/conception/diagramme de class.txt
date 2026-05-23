@@ -1,0 +1,306 @@
+diagramme de class:
+@startuml
+title Diagramme de classes - Plateforme E-learning
+
+left to right direction
+
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam nodesep 75
+skinparam ranksep 65
+scale max 4200 width
+
+hide circle
+hide methods
+
+' =====================================================
+' 1. UTILISATEURS
+' =====================================================
+
+package "1. Utilisateurs" {
+
+  abstract class Utilisateur {
+    id: UUID
+    nom: String
+    prenom: String
+    email: String
+    motDePasseHash: String
+    telephone: String
+    statut: StatutCompte
+    dateCreation: DateTime
+    derniereConnexion: DateTime
+  }
+
+  class Candidat {
+    niveau: String
+    objectifApprentissage: String
+  }
+
+  class Formateur {
+    specialite: String
+    biographie: String
+    statutValidation: StatutCompte
+  }
+
+  class Administrateur {
+    id: UUID
+    nom: String
+    prenom: String
+    email: String
+    motDePasseHash: String
+    niveauAcces: String
+    statut: StatutCompte
+    dateCreation: DateTime
+  }
+
+  class JustificatifFormateur {
+    id: UUID
+    type: String
+    fichierUrl: String
+    statut: StatutJustificatif
+    dateDepot: DateTime
+    dateValidation: DateTime
+    commentaireValidation: String
+  }
+
+  Utilisateur <|-- Candidat
+  Utilisateur <|-- Formateur
+  Administrateur "1" --> "0..*" Utilisateur : gère
+
+  Formateur "1" *-- "0..*" JustificatifFormateur : fournit
+  Administrateur "0..1" --> "0..*" JustificatifFormateur : valide/rejette
+  Administrateur "0..1" --> "0..*" Formateur : valide/rejette
+}
+
+' =====================================================
+' 2. CATALOGUE ET COURS
+' =====================================================
+
+package "2. Catalogue et cours" {
+
+  class Categorie {
+    id: UUID
+    nom: String
+    description: String
+  }
+
+  class Cours {
+    id: UUID
+    titre: String
+    description: String
+    niveau: String
+    langue: String
+    prix: Decimal
+    dureeEstimee: Integer
+    imageUrl: String
+    statut: StatutCours
+    dateCreation: DateTime
+    datePublication: DateTime
+    motifRejet: String
+  }
+
+  class Lecon {
+    id: UUID
+    titre: String
+    description: String
+    ordre: Integer
+    dureeEstimee: Integer
+  }
+
+  class Ressource {
+    id: UUID
+    titre: String
+    type: TypeRessource
+    url: String
+    ordre: Integer
+    telechargeable: Boolean
+    taille: Integer
+  }
+
+  Categorie "0..1" *-- "0..*" Categorie : sous-catégories
+  Categorie "1" o-- "0..*" Cours : regroupe
+
+  Formateur "1" -- "0..*" Cours : crée
+  Administrateur "0..1" --> "0..*" Cours : valide/rejette
+
+  Cours "1" *-- "1..*" Lecon : contient
+  Lecon "1" *-- "0..*" Ressource : contient
+}
+
+' =====================================================
+' 3. INSCRIPTION ET PROGRESSION
+' =====================================================
+
+package "3. Inscription et progression" {
+
+  class Inscription {
+    id: UUID
+    dateInscription: DateTime
+    progression: Float
+    statut: StatutInscription
+    dateFin: DateTime
+    certificatEligible: Boolean
+  }
+
+  class ProgressionLecon {
+    id: UUID
+    terminee: Boolean
+    dateCompletion: DateTime
+  }
+
+  Candidat "0..*" -- "0..*" Cours : s'inscrit à
+  (Candidat, Cours) .. Inscription
+
+  Inscription "1" *-- "0..*" ProgressionLecon : contient
+  Lecon "1" -- "0..*" ProgressionLecon : concerne
+}
+
+' =====================================================
+' 4. EVALUATION AUTOMATIQUE
+' =====================================================
+
+package "4. Evaluation automatique" {
+
+  class Evaluation {
+    id: UUID
+    titre: String
+    description: String
+    typeEvaluation: TypeEvaluation
+    scoreMax: Float
+    seuilReussite: Float
+    ordre: Integer
+    actif: Boolean
+    dateCreation: DateTime
+  }
+
+  class Question {
+    id: UUID
+    enonce: String
+    type: TypeQuestion
+    points: Float
+  }
+
+  class OptionReponse {
+    id: UUID
+    texte: String
+    estCorrecte: Boolean
+  }
+
+  class CritereCorrection {
+    id: UUID
+    description: String
+    poids: Float
+    valeurAttendue: String
+    tolerance: Float
+  }
+
+  class SoumissionEvaluation {
+    id: UUID
+    dateDebut: DateTime
+    dateSoumission: DateTime
+    numeroTentative: Integer
+    scoreObtenu: Float
+    reussi: Boolean
+    statut: StatutSoumission
+    feedbackAutomatique: String
+  }
+
+  class ReponseCandidat {
+    id: UUID
+    valeur: String
+    estCorrecte: Boolean
+    pointsObtenus: Float
+  }
+
+  Cours "1" *-- "0..*" Evaluation : contient
+
+  Evaluation "1" *-- "1..*" Question : contient
+  Question "1" *-- "0..*" OptionReponse : propose
+  Evaluation "1" *-- "0..*" CritereCorrection : utilise
+
+  Candidat "1" -- "0..*" SoumissionEvaluation : effectue
+  Evaluation "1" -- "0..*" SoumissionEvaluation : reçoit
+
+  SoumissionEvaluation "1" *-- "0..*" ReponseCandidat : contient
+  Question "1" -- "0..*" ReponseCandidat : concerne
+}
+
+' =====================================================
+' 5. CERTIFICATION
+' =====================================================
+
+package "5. Certification" {
+
+  class Certificat {
+    id: UUID
+    codeVerification: String
+    dateGeneration: DateTime
+    fichierUrl: String
+    actif: Boolean
+  }
+
+  Inscription "1" o-- "0..1" Certificat : génère
+}
+
+' =====================================================
+' 6. TYPES / VARIABLES
+' =====================================================
+
+package "6. Types / Variables" {
+
+  enum StatutCompte {
+    EN_ATTENTE
+    ACTIF
+    DESACTIVE
+    REJETE
+  }
+
+  enum StatutCours {
+    BROUILLON
+    EN_ATTENTE_VALIDATION
+    PUBLIE
+    REJETE
+    ARCHIVE
+  }
+
+  enum StatutInscription {
+    EN_COURS
+    TERMINEE
+    ABANDONNEE
+  }
+
+  enum StatutSoumission {
+    SOUMISE
+    CORRIGEE
+    REUSSIE
+    ECHOUEE
+  }
+
+  enum StatutJustificatif {
+    EN_ATTENTE
+    VALIDE
+    REJETE
+  }
+
+  enum TypeEvaluation {
+    QUIZ
+    EXAMEN
+    DEVOIR
+  }
+
+  enum TypeRessource {
+    VIDEO
+    DOCUMENT
+    LIEN
+  }
+
+  enum TypeQuestion {
+    QCM
+    VRAI_FAUX
+    REPONSE_COURTE
+    NUMERIQUE
+  }
+}
+@enduml
