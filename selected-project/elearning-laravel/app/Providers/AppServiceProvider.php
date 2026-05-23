@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\Administrateur;
 use App\Models\Cours;
+use App\Models\Inscription;
 use App\Models\Utilisateur;
 use App\Policies\CoursePolicy;
+use App\Policies\InscriptionPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(Cours::class, CoursePolicy::class);
+        Gate::policy(Inscription::class, InscriptionPolicy::class);
 
         Gate::define('access-role', function (Administrateur|Utilisateur $user, string $role): bool {
             return match ($role) {

@@ -15,6 +15,19 @@
             <div><dt>Durée estimée</dt><dd>{{ $cours->duree_estimee }} min</dd></div>
         </dl>
 
+        @if ($errors->has('enrollment'))
+            <p>{{ $errors->first('enrollment') }}</p>
+        @endif
+
+        @auth
+            @if (auth()->user()?->candidat)
+                <form method="POST" action="{{ route('courses.enroll', $cours) }}">
+                    @csrf
+                    <button type="submit">S'inscrire</button>
+                </form>
+            @endif
+        @endauth
+
         <section>
             <h2>Leçons</h2>
             @forelse ($cours->lecons as $lecon)

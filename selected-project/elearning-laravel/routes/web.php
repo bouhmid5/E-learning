@@ -1,6 +1,12 @@
 <?php
 
 use App\Http\Controllers\Auth\SessionAuthController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\CourseValidationController;
+use App\Http\Controllers\Admin\TrainerValidationController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Candidate\EnrollmentController;
+use App\Http\Controllers\Candidate\ProgressionController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Public\CategoryController;
 use App\Http\Controllers\Public\CourseCatalogueController;
@@ -60,6 +66,41 @@ Route::middleware(['auth', 'role:formateur'])->prefix('trainer')->name('trainer.
     Route::delete('/resources/{ressource}', [TrainerResourceController::class, 'destroy'])->name('resources.destroy');
 });
 
+Route::post('/courses/{cours}/enroll', [EnrollmentController::class, 'enroll'])
+    ->middleware(['auth', 'role:candidat'])
+    ->name('courses.enroll');
+
+Route::middleware(['auth', 'role:candidat'])->prefix('candidate')->name('candidate.')->group(function (): void {
+    Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');
+    Route::get('/enrollments/{inscription}', [EnrollmentController::class, 'show'])->name('enrollments.show');
+    Route::get('/enrollments/{inscription}/lessons', [EnrollmentController::class, 'lessons'])->name('enrollments.lessons');
+    Route::post('/enrollments/{inscription}/lessons/{lecon}/complete', [ProgressionController::class, 'complete'])->name('enrollments.lessons.complete');
+    Route::get('/enrollments/{inscription}/progress', [ProgressionController::class, 'progress'])->name('enrollments.progress');
+    Route::get('/enrollments/{inscription}/resources/{ressource}/download', [EnrollmentController::class, 'download'])->name('enrollments.resources.download');
+});
+
 Route::get('/admin/dashboard', [DashboardController::class, 'admin'])
     ->middleware(['auth:admin', 'role:admin'])
     ->name('admin.dashboard');
+
+Route::middleware(['auth:admin', 'role:admin'])->prefix('admin')->name('admin.')->group(function (): void {
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}/status', [AdminUserController::class, 'updateStatus'])->name('users.status');
+
+    Route::get('/trainers/pending', [TrainerValidationController::class, 'pending'])->name('trainers.pending');
+    Route::post('/trainers/{formateur}/validate', [TrainerValidationController::class, 'validateTrainer'])->name('trainers.validate');
+    Route::post('/trainers/{formateur}/reject', [TrainerValidationController::class, 'rejectTrainer'])->name('trainers.reject');
+    Route::post('/justificatifs/{justificatif}/validate', [TrainerValidationController::class, 'validateJustificatif'])->name('justificatifs.validate');
+    Route::post('/justificatifs/{justificatif}/reject', [TrainerValidationController::class, 'rejectJustificatif'])->name('justificatifs.reject');
+
+    Route::get('/courses/pending', [CourseValidationController::class, 'pending'])->name('courses.pending');
+    Route::post('/courses/{cours}/validate', [CourseValidationController::class, 'validateCourse'])->name('courses.validate');
+    Route::post('/courses/{cours}/reject', [CourseValidationController::class, 'rejectCourse'])->name('courses.reject');
+
+    Route::get('/categories', [AdminCategoryController::class, 'index'])->name('categories.index');
+    Route::get('/categories/create', [AdminCategoryController::class, 'create'])->name('categories.create');
+    Route::post('/categories', [AdminCategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{categorie}/edit', [AdminCategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('/categories/{categorie}', [AdminCategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{categorie}', [AdminCategoryController::class, 'destroy'])->name('categories.destroy');
+});

@@ -20,6 +20,7 @@ selected-project/elearning-laravel/storage/logs/*
 
 # Frontend build output
 selected-project/elearning-laravel/public/build/
+selected-project/elearning-laravel/.phpunit.result.cache
 
 # Local editor/system files
 .DS_Store
