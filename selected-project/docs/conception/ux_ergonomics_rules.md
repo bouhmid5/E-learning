@@ -1,35 +1,86 @@
 # UX and Ergonomics Rules
 
-## General
+The platform must apply IHM and web ergonomics principles.
 
-- Primary workflows must be reachable in three actions or fewer from the dashboard.
-- Navigation labels must use learner-friendly language.
-- Destructive actions require confirmation and clear consequences.
-- Every loading, empty, error, and success state must be designed.
+## General principles
 
-## Learner Experience
+- Interfaces must be simple, readable, and predictable.
+- Do not overload screens.
+- Use clear labels.
+- Use consistent navigation.
+- Use consistent buttons and form behavior.
+- Give visible feedback after user actions.
+- Prevent user errors before they happen.
+- Show clear error messages when errors happen.
+- Confirm destructive actions.
 
-- The learner dashboard must highlight the next best lesson.
-- Course progress must be visible at course, module, and lesson levels.
-- Video, text, quiz, and downloadable resources must share a consistent lesson shell.
-- Learners must be able to resume from the last incomplete lesson.
+## Candidate UX
 
-## Instructor Experience
+Candidate pages must make the learning path clear:
 
-- Course creation should behave like a structured editor, not a generic form dump.
-- Module and lesson ordering must support simple drag or explicit position controls.
-- Publishing blockers must be displayed as actionable checklist items.
+1. Browse catalogue
+2. Search/filter courses
+3. Open course details
+4. Enroll
+5. Access lessons/resources
+6. Track progression
+7. Pass evaluations
+8. View results
+9. Download certificate
 
-## Admin Experience
+## Trainer UX
 
-- Admin screens should prioritize scanning, filtering, and bulk review.
-- Moderation decisions must show current status, actor, timestamp, and reason.
-- Reports should separate operational metrics from financial metrics.
+Trainer pages must support progressive course creation:
 
-## Accessibility
+1. Create draft course
+2. Add lessons
+3. Add resources
+4. Add evaluations
+5. Configure success thresholds
+6. Submit for validation
+7. View course status and rejection reason
 
-- All interactive elements must be keyboard reachable.
-- Form controls must have labels and validation messages tied to the fields.
-- Text contrast must meet WCAG AA.
-- Media lessons must support captions or transcript fields.
+## Admin UX
 
+Admin pages must prioritize decision-making:
+
+1. Pending trainers
+2. Pending courses
+3. User management
+4. Categories
+5. Statistics
+6. Support/reclamations
+
+Admin validation screens must show enough context before approve/reject actions.
+
+## Forms
+
+Every form must include:
+
+- required field indicators
+- validation messages
+- disabled submit state during loading
+- success message
+- error message
+- cancellation path
+
+## Tables and lists
+
+Tables must include:
+
+- search if useful
+- pagination
+- empty state
+- status badge
+- clear action buttons
+
+## Status visibility
+
+Statuses must be visible where relevant:
+
+- account status
+- trainer validation status
+- course status
+- enrollment status
+- evaluation result
+- certificate availability

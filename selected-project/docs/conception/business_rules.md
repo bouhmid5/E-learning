@@ -1,42 +1,97 @@
-# Business Rules
+# Business Rules — E-learning Platform
 
-## Identity and Roles
+## Accounts
 
-- A user must have one or more roles: learner, instructor, or admin.
-- Only verified users can enroll, publish courses, or receive certificates.
-- Admins can suspend users and unpublish courses.
+- A candidate can register directly.
+- A trainer can request registration but starts with EN_ATTENTE status.
+- A trainer must upload justificatifs such as diplomas or certificates.
+- An admin validates or rejects trainer accounts.
+- Disabled, rejected, or inactive accounts cannot log in.
+
+## Roles
+
+- Candidate actions require candidate authentication.
+- Trainer actions require trainer authentication.
+- Admin actions require admin authentication.
+- Admin is separated from the Utilisateur inheritance hierarchy, but login/security must stay centralized.
 
 ## Courses
 
-- A course must contain at least one module before it can be published.
-- A module must contain at least one lesson before publication.
-- Published course slugs must be unique.
-- Draft courses are visible only to their instructors and admins.
-- Archived courses cannot accept new enrollments.
+- A trainer creates courses.
+- A course starts as BROUILLON.
+- A trainer can submit a course for validation.
+- A course submitted for validation becomes EN_ATTENTE_VALIDATION.
+- An admin validates or rejects submitted courses.
+- A rejected course must store motifRejet.
+- Only PUBLIE courses are visible in the public/candidate catalogue.
+- A course must contain at least one lesson before submission.
 
-## Enrollment and Access
+## Categories
 
-- A learner can enroll only once in the same course.
-- Paid courses require a confirmed payment before lesson access is granted.
-- Free courses grant access immediately after enrollment.
-- Suspended learners keep historical records but cannot continue lessons.
+- A category may have subcategories.
+- A category groups courses.
+- Admin manages categories and subcategories.
 
-## Progress
+## Lessons and resources
 
-- Course progress is calculated from completed lessons.
-- A course is complete when all required lessons are completed and required quizzes are passed.
-- Completion timestamps must not be overwritten once set, except by admin correction.
+- A course contains one or more lessons.
+- A lesson may contain zero or more resources.
+- Resources can be VIDEO, DOCUMENT, or LIEN.
+- Access to lesson resources requires enrollment, except public preview if explicitly implemented later.
 
-## Quizzes and Certificates
+## Enrollment
 
-- Quiz pass score is defined per quiz.
-- A quiz attempt is immutable after submission.
-- Certificates are issued only after full course completion.
-- Certificate serial numbers must be unique and verifiable.
+- Enrollment is represented by the Inscription entity.
+- Inscription is the association entity between Candidat and Cours.
+- A candidate cannot enroll twice in the same course.
+- A candidate can enroll only in PUBLIE courses.
+- Enrollment requires authentication.
+- Enrollment happens after viewing course details.
 
-## Payments
+## Progression
 
-- Payment webhook processing must be idempotent.
-- Refunds revoke future access unless a business exception is recorded.
-- Payment provider references must be stored for reconciliation.
+- Progression is tracked per Inscription.
+- Lesson completion is tracked using ProgressionLecon.
+- Progression percentage = completed lessons / total lessons.
+- When progression reaches 100%, the inscription can become TERMINEE.
+- Certification still depends on evaluation success.
 
+## Evaluations
+
+- A course may contain evaluations.
+- An evaluation contains one or more questions.
+- Question types:
+  - QCM
+  - VRAI_FAUX
+  - REPONSE_COURTE
+  - NUMERIQUE
+
+## Automatic correction
+
+- QCM correction uses correct options.
+- VRAI_FAUX correction uses the expected boolean answer.
+- NUMERIQUE correction uses valeurAttendue and tolerance.
+- REPONSE_COURTE correction uses normalized exact matching.
+- DEVOIR can use correction criteria.
+- Do not invent advanced AI correction.
+
+## Submissions
+
+- A candidate can submit evaluations only for courses where they are enrolled.
+- Each submission stores scoreObtenu, reussi, statut, and feedbackAutomatique.
+- A submission is successful if scoreObtenu >= seuilReussite.
+
+## Certification
+
+A certificate can be generated only if:
+
+1. The course is completed.
+2. Required evaluations are passed.
+3. Certification conditions are validated.
+4. The inscription is not abandoned.
+
+Certificate generation must be idempotent.
+
+- Do not create duplicate certificates for the same inscription.
+- codeVerification must be unique.
+- A certificate can be verified by codeVerification.
