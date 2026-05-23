@@ -48,7 +48,7 @@ class CourseCatalogueController extends Controller
                 });
             })
             ->orderBy($sort, $direction)
-            ->paginate(12)
+            ->paginate(4)
             ->withQueryString();
 
         return view('courses.index', [
