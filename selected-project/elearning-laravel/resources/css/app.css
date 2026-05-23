@@ -48,3 +48,57 @@ body {
     line-height: 1.6;
 }
 
+.auth-panel {
+    max-width: 32rem;
+}
+
+.auth-panel h1 {
+    margin: 0 0 1.5rem;
+}
+
+.auth-panel form {
+    display: grid;
+    gap: 1rem;
+}
+
+.auth-panel label {
+    display: grid;
+    gap: 0.35rem;
+    font-weight: 600;
+}
+
+.auth-panel input,
+.auth-panel select,
+.auth-panel textarea {
+    border: 1px solid #c8cfdd;
+    border-radius: 0.375rem;
+    font: inherit;
+    padding: 0.7rem 0.8rem;
+}
+
+.auth-panel textarea {
+    min-height: 7rem;
+    resize: vertical;
+}
+
+.checkbox-line {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.auth-panel button {
+    background: #172033;
+    border: 0;
+    border-radius: 0.375rem;
+    color: #ffffff;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+    padding: 0.8rem 1rem;
+}
+
+.field-error {
+    color: #b42318;
+    margin: -0.5rem 0 0;
+}
