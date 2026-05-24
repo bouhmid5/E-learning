@@ -11,6 +11,7 @@ selected-project/elearning-laravel/.env.*
 selected-project/elearning-laravel/bootstrap/cache/*.php
 selected-project/elearning-laravel/storage/framework/cache/*
 selected-project/elearning-laravel/storage/framework/sessions/*
+selected-project/elearning-laravel/storage/framework/testing/*
 selected-project/elearning-laravel/storage/framework/views/*
 selected-project/elearning-laravel/storage/logs/*
 

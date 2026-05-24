@@ -11,7 +11,7 @@
             @include('layouts.partials.navigation')
         </header>
 
-        <main class="page-shell">
+        <main class="page-shell @yield('page_class')">
             @include('layouts.partials.feedback')
             @yield('content')
         </main>

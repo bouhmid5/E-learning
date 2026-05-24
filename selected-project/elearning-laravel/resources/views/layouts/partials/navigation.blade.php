@@ -7,6 +7,13 @@
     <a href="{{ route('home') }}" class="brand">{{ config('app.name', 'E-learning Platform') }}</a>
 
     <div class="nav-links">
+        @guest
+            @if (! $adminUser)
+                <a href="{{ route('home') }}#formations">Formations</a>
+                <a href="{{ route('home') }}#experience">Experience</a>
+                <a href="{{ route('home') }}#communaute">Communaute</a>
+            @endif
+        @endguest
         <a href="{{ route('courses.index') }}" @class(['active' => request()->routeIs('courses.*')])>Catalogue</a>
         <a href="{{ route('categories.index') }}" @class(['active' => request()->routeIs('categories.*')])>Categories</a>
 

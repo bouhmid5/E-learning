@@ -378,6 +378,200 @@ dd {
     font-size: 1.15rem;
 }
 
+.landing-page {
+    max-width: none;
+    padding: 0 0 4rem;
+}
+
+.landing-page .notice {
+    margin: 1rem auto;
+    max-width: 76rem;
+}
+
+.landing-hero {
+    align-items: center;
+    background:
+        linear-gradient(90deg, rgba(9, 24, 44, 0.84), rgba(9, 24, 44, 0.54) 52%, rgba(9, 24, 44, 0.16)),
+        url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1800&q=85") center / cover;
+    color: #ffffff;
+    display: flex;
+    min-height: min(44rem, 76vh);
+    padding: 4rem max(1.5rem, calc((100vw - 76rem) / 2)) 5rem;
+}
+
+.landing-hero__content {
+    max-width: 42rem;
+}
+
+.landing-hero .eyebrow,
+.landing-hero p {
+    color: #f4f7fb;
+}
+
+.landing-hero h1 {
+    font-size: clamp(2.6rem, 7vw, 5.75rem);
+    line-height: 0.96;
+    margin: 0 0 1.15rem;
+    max-width: 12ch;
+}
+
+.landing-hero p:not(.eyebrow) {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    line-height: 1.7;
+    max-width: 38rem;
+}
+
+.button-link-accent {
+    background: #f26a4f;
+    color: #ffffff;
+}
+
+.button-link-accent:hover {
+    background: #d94f37;
+}
+
+.button-link-soft {
+    background: #ffffff;
+    color: #172033;
+}
+
+.button-link-soft:hover {
+    background: #e8f3f0;
+    color: #172033;
+}
+
+.hero-text-link {
+    color: #ffffff;
+    font-weight: 800;
+    padding: 0.7rem 0;
+}
+
+.landing-section,
+.landing-band {
+    margin: 0 auto;
+    max-width: 76rem;
+    padding: 4.5rem 1.5rem 0;
+}
+
+.section-kicker {
+    color: #0f7f78;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    margin: 0 0 0.75rem;
+    text-transform: uppercase;
+}
+
+.landing-section__head,
+.landing-section-split {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 0.7fr);
+}
+
+.landing-section h2,
+.landing-band h2 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1;
+    margin: 0;
+}
+
+.landing-section p,
+.landing-band p {
+    color: #52637a;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.landing-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 1.75rem;
+}
+
+.landing-card {
+    background: #ffffff;
+    border: 1px solid #d9deea;
+    border-radius: 0.5rem;
+    min-height: 15rem;
+    padding: 1.35rem;
+}
+
+.landing-card span {
+    color: #f26a4f;
+    display: block;
+    font-weight: 900;
+    margin-bottom: 2.25rem;
+}
+
+.landing-card h3 {
+    font-size: 1.25rem;
+    margin: 0 0 0.75rem;
+}
+
+.landing-band {
+    align-items: center;
+    background: #0f2f3a;
+    color: #ffffff;
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: minmax(0, 0.9fr) minmax(20rem, 1fr);
+    margin-top: 4.5rem;
+    max-width: none;
+    padding: 4rem max(1.5rem, calc((100vw - 76rem) / 2));
+}
+
+.landing-band .section-kicker,
+.landing-band p {
+    color: #d8f0eb;
+}
+
+.landing-stats {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.landing-stats div {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    min-height: 8rem;
+    padding: 1rem;
+}
+
+.landing-stats strong {
+    color: #ffc857;
+    display: block;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1;
+}
+
+.landing-stats span {
+    color: #eef8f6;
+    display: block;
+    font-weight: 800;
+    margin-top: 0.75rem;
+}
+
+.landing-checklist {
+    background: #f7faf8;
+    border-left: 0.35rem solid #0f7f78;
+    padding: 1.25rem;
+}
+
+.landing-checklist p {
+    border-bottom: 1px solid #d9e7e3;
+    color: #172033;
+    font-weight: 800;
+    padding: 0.9rem 0;
+}
+
+.landing-checklist p:last-child {
+    border-bottom: 0;
+}
+
 @media (max-width: 760px) {
     .main-nav,
     .split-heading,
@@ -399,5 +593,24 @@ dd {
     .auth-shell,
     .page-heading {
         padding: 1rem;
+    }
+
+    .landing-hero {
+        min-height: 36rem;
+        padding: 3rem 1rem;
+    }
+
+    .landing-section,
+    .landing-band {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .landing-section__head,
+    .landing-section-split,
+    .landing-band,
+    .landing-grid,
+    .landing-stats {
+        grid-template-columns: 1fr;
     }
 }
