@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lesson: What is Machine Learning? — EduNova</title>
+  <link rel="stylesheet" href="../../styles/main.css"/>
+  <style>
+    .lesson-layout { display: grid; grid-template-columns: 1fr 340px; min-height: 100vh; padding-top: 60px; }
+    .lesson-topbar { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: rgba(8,12,20,.95); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 16px; padding: 0 20px; z-index: 100; backdrop-filter: blur(16px); }
+    .lesson-topbar-title { font-weight: 600; font-size: .9rem; color: var(--text-primary); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lesson-topbar-progress { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .lesson-main { display: flex; flex-direction: column; overflow-y: auto; }
+    .video-wrap { background: #000; aspect-ratio: 16/9; width: 100%; position: relative; }
+    .video-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg,#0d1220,#1a0a2e); color: white; cursor: pointer; }
+    .big-play { width: 80px; height: 80px; border-radius: 50%; background: rgba(124,58,237,.8); border: 3px solid rgba(124,58,237,.4); display: flex; align-items: center; justify-content: center; font-size: 2rem; transition: .3s; }
+    .big-play:hover { background: var(--accent-violet); transform: scale(1.08); box-shadow: 0 0 40px rgba(124,58,237,.5); }
+    .video-controls { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px 16px 12px; background: linear-gradient(to top,rgba(0,0,0,.8),transparent); display: flex; flex-direction: column; gap: 10px; }
+    .progress-track { width: 100%; height: 4px; background: rgba(255,255,255,.2); border-radius: 99px; cursor: pointer; position: relative; }
+    .progress-filled { width: 32%; height: 100%; background: var(--accent-violet); border-radius: 99px; pointer-events: none; }
+    .progress-thumb { width: 12px; height: 12px; border-radius: 50%; background: white; position: absolute; top: 50%; left: 32%; transform: translate(-50%,-50%); box-shadow: 0 0 8px rgba(0,0,0,.5); }
+    .controls-row { display: flex; align-items: center; gap: 12px; }
+    .ctrl-btn { background: none; border: none; color: white; cursor: pointer; font-size: 1.25rem; padding: 4px 8px; border-radius: 6px; transition: .2s; }
+    .ctrl-btn:hover { background: rgba(255,255,255,.1); }
+    .time-display { font-size: .8rem; color: rgba(255,255,255,.8); font-family: monospace; }
+    .lesson-info { padding: 28px 32px; border-bottom: 1px solid var(--border-subtle); }
+    .lesson-actions { display: flex; gap: 10px; }
+    .lesson-body { padding: 28px 32px; }
+    .lesson-sidebar { background: rgba(13,18,32,.95); border-left: 1px solid var(--border-subtle); overflow-y: auto; }
+    .lesson-sidebar-header { padding: 16px 20px; border-bottom: 1px solid var(--border-subtle); font-weight: 700; font-size: .875rem; color: var(--text-primary); }
+    .lesson-list-section { padding: 10px 0; border-bottom: 1px solid var(--border-subtle); }
+    .lesson-list-section-title { padding: 8px 20px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); }
+    .lesson-list-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; cursor: pointer; transition: .2s; }
+    .lesson-list-item:hover { background: var(--bg-glass); }
+    .lesson-list-item.active { background: rgba(124,58,237,.08); border-left: 3px solid var(--accent-violet); padding-left: 17px; }
+    .lesson-list-item.done .item-check { color: var(--accent-emerald); }
+    .item-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border-subtle); display: flex; align-items: center; justify-content: center; font-size: .7rem; flex-shrink: 0; }
+    .lesson-list-item.active .item-check { border-color: var(--accent-violet); background: var(--accent-violet); color: white; }
+    .lesson-list-item.done .item-check { border-color: var(--accent-emerald); background: rgba(16,185,129,.15); }
+    .item-title { font-size: .8125rem; color: var(--text-secondary); flex: 1; }
+    .lesson-list-item.active .item-title { color: var(--text-primary); font-weight: 600; }
+    .item-duration { font-size: .7rem; color: var(--text-muted); }
+    .notes-area { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; font-family: var(--font-body); font-size: .875rem; color: var(--text-primary); width: 100%; resize: vertical; min-height: 120px; outline: none; }
+    .notes-area:focus { border-color: var(--accent-cyan); }
+    .quiz-teaser { padding: 20px; background: linear-gradient(135deg,rgba(124,58,237,.1),rgba(0,229,255,.05)); border: 1px solid rgba(124,58,237,.2); border-radius: var(--radius-lg); margin: 24px 32px; }
+    @media (max-width: 900px) { .lesson-layout { grid-template-columns: 1fr; } .lesson-sidebar { display: none; } }
+  </style>
+</head>
+<body style="background:var(--bg-void)">
+  <div class="bg-mesh" style="opacity:.4"></div>
+
+  <!-- Top bar -->
+  <div class="lesson-topbar">
+    <a href="dashboard.html" class="btn btn-ghost btn-sm btn-icon" title="Back to dashboard">←</a>
+    <div style="height:28px;width:1px;background:var(--border-subtle)"></div>
+    <div class="lesson-topbar-title">Machine Learning A-Z · Section 1: Welcome</div>
+    <div class="lesson-topbar-progress">
+      <span style="font-size:.75rem;color:var(--text-muted)">8% complete</span>
+      <div style="width:120px;height:5px;background:var(--bg-elevated);border-radius:99px;overflow:hidden">
+        <div style="width:8%;height:100%;background:linear-gradient(90deg,#7c3aed,#00e5ff);border-radius:99px"></div>
+      </div>
+    </div>
+    <div class="avatar avatar-sm avatar-gradient" data-user-avatar style="cursor:pointer">SA</div>
+  </div>
+
+  <div class="lesson-layout">
+
+    <!-- Main content -->
+    <div class="lesson-main">
+
+      <!-- Video Player -->
+      <div class="video-wrap">
+        <div class="video-placeholder" id="video-player">
+          <div style="font-size:1rem;color:rgba(255,255,255,.4);margin-bottom:24px;text-align:center">LESSON 2 — What is Machine Learning?</div>
+          <div class="big-play" onclick="startVideo()" title="Play video">▶</div>
+          <div style="font-size:.8125rem;color:rgba(255,255,255,.3);margin-top:16px">Click to play · 8:45</div>
+        </div>
+        <div class="video-controls" id="video-controls" style="display:none">
+          <div class="progress-track" onclick="seekVideo(event,this)">
+            <div class="progress-filled" id="prog-filled"></div>
+            <div class="progress-thumb" id="prog-thumb"></div>
+          </div>
+          <div class="controls-row">
+            <button class="ctrl-btn" id="play-btn" onclick="togglePlay()">⏸</button>
+            <button class="ctrl-btn" onclick="Toast.info('Rewind','Rewinding 10s')">⏪</button>
+            <button class="ctrl-btn" onclick="Toast.info('Forward','Forwarding 10s')">⏩</button>
+            <div class="time-display"><span id="cur-time">02:48</span> / 8:45</div>
+            <div style="flex:1"></div>
+            <button class="ctrl-btn" onclick="changeSpeed(this)">1×</button>
+            <button class="ctrl-btn" title="Captions" onclick="Toast.info('Captions','Captions toggled')">CC</button>
+            <button class="ctrl-btn" title="Fullscreen" onclick="Toast.info('Fullscreen','Fullscreen toggled')">⛶</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lesson info -->
+      <div class="lesson-info">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+              <span class="badge badge-violet">Lesson 2</span>
+              <span class="badge badge-cyan">FREE Preview</span>
+              <span style="font-size:.75rem;color:var(--text-muted)">⏱ 8 min 45 sec</span>
+            </div>
+            <h1 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--text-primary);margin-bottom:8px">What is Machine Learning?</h1>
+            <div style="font-size:.875rem;color:var(--text-secondary)">Section 1 · Machine Learning A-Z</div>
+          </div>
+          <div class="lesson-actions">
+            <button class="btn btn-ghost btn-sm" onclick="Toast.success('Saved','Lesson bookmarked!')">🔖 Bookmark</button>
+            <button class="btn btn-ghost btn-sm" onclick="Toast.info('Download','Downloading resources…')">⬇ Resources</button>
+            <button class="btn btn-primary btn-sm" onclick="markComplete()">✓ Mark complete</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div style="border-bottom:1px solid var(--border-subtle)">
+        <div style="display:flex;padding:0 32px">
+          <div class="tab-link active" style="padding:14px 20px;font-size:.875rem;font-weight:600;color:var(--accent-cyan);cursor:pointer;border-bottom:2px solid var(--accent-cyan)" onclick="switchLessonTab('overview',this)">Overview</div>
+          <div class="tab-link" style="padding:14px 20px;font-size:.875rem;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:.2s" onclick="switchLessonTab('notes',this)">My Notes</div>
+          <div class="tab-link" style="padding:14px 20px;font-size:.875rem;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:.2s" onclick="switchLessonTab('resources',this)">Resources</div>
+          <div class="tab-link" style="padding:14px 20px;font-size:.875rem;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:.2s" onclick="switchLessonTab('discuss',this)">Discussion</div>
+        </div>
+      </div>
+
+      <!-- Tab panes -->
+      <div class="lesson-body">
+        <div id="lt-overview">
+          <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:14px">Lesson overview</h3>
+          <p style="font-size:.9375rem;color:var(--text-secondary);line-height:1.8;margin-bottom:16px">In this lesson, we'll explore the fundamental concept of Machine Learning — what it is, how it differs from traditional programming, and why it's revolutionizing industries worldwide.</p>
+          <p style="font-size:.9375rem;color:var(--text-secondary);line-height:1.8;margin-bottom:24px">We'll cover the three main types of ML (supervised, unsupervised, and reinforcement learning) with real-world examples that make these abstract concepts tangible.</p>
+          <h4 style="font-weight:700;margin-bottom:12px;font-size:1rem">Key takeaways</h4>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:.875rem;color:var(--text-secondary)">
+            <li style="display:flex;gap:10px"><span style="color:#10b981">✓</span> Understand the difference between traditional programming and ML</li>
+            <li style="display:flex;gap:10px"><span style="color:#10b981">✓</span> Identify the three main types of machine learning</li>
+            <li style="display:flex;gap:10px"><span style="color:#10b981">✓</span> Recognize ML applications in everyday life</li>
+            <li style="display:flex;gap:10px"><span style="color:#10b981">✓</span> Understand the ML workflow: data → model → prediction</li>
+          </ul>
+        </div>
+        <div id="lt-notes" class="hidden">
+          <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:14px">My notes</h3>
+          <p style="font-size:.8125rem;color:var(--text-muted);margin-bottom:12px">Notes are auto-saved as you type.</p>
+          <textarea class="notes-area" placeholder="Write your notes for this lesson…">ML = systems that learn from data without being explicitly programmed.
+
+3 types:
+- Supervised: labeled data (regression, classification)
+- Unsupervised: find patterns (clustering, dimensionality reduction)
+- Reinforcement: reward-based learning (games, robots)</textarea>
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <button class="btn btn-primary btn-sm" onclick="Toast.success('Saved','Notes saved!')">💾 Save notes</button>
+            <button class="btn btn-ghost btn-sm" onclick="Toast.info('Export','Exporting notes as PDF…')">📄 Export PDF</button>
+          </div>
+        </div>
+        <div id="lt-resources" class="hidden">
+          <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:16px">Downloadable resources</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--bg-glass);border:1px solid var(--border-subtle);border-radius:var(--radius-md)">
+              <span style="font-size:1.5rem">📄</span>
+              <div style="flex:1">
+                <div style="font-weight:600;font-size:.875rem;color:var(--text-primary)">ML Cheat Sheet.pdf</div>
+                <div style="font-size:.75rem;color:var(--text-muted)">2.4 MB · PDF</div>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="Toast.success('Download','Downloading ML Cheat Sheet…')">⬇ Download</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--bg-glass);border:1px solid var(--border-subtle);border-radius:var(--radius-md)">
+              <span style="font-size:1.5rem">📊</span>
+              <div style="flex:1">
+                <div style="font-weight:600;font-size:.875rem;color:var(--text-primary)">Section 1 Slides.pptx</div>
+                <div style="font-size:.75rem;color:var(--text-muted)">8.1 MB · PowerPoint</div>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="Toast.success('Download','Downloading slides…')">⬇ Download</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--bg-glass);border:1px solid var(--border-subtle);border-radius:var(--radius-md)">
+              <span style="font-size:1.5rem">💻</span>
+              <div style="flex:1">
+                <div style="font-weight:600;font-size:.875rem;color:var(--text-primary)">Starter Code.zip</div>
+                <div style="font-size:.75rem;color:var(--text-muted)">124 KB · ZIP</div>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="Toast.success('Download','Downloading code…')">⬇ Download</button>
+            </div>
+          </div>
+        </div>
+        <div id="lt-discuss" class="hidden">
+          <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:16px">Discussion (24 comments)</h3>
+          <div style="margin-bottom:20px">
+            <textarea class="notes-area" placeholder="Ask a question or share a thought…" style="min-height:80px"></textarea>
+            <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="Toast.success('Posted','Comment submitted!')">Post comment</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;gap:12px">
+              <div class="avatar avatar-sm avatar-gradient" style="flex-shrink:0">YB</div>
+              <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                  <span style="font-weight:600;font-size:.8125rem;color:var(--text-primary)">Youssef Belhaj</span>
+                  <span style="font-size:.7rem;color:var(--text-muted)">3h ago</span>
+                </div>
+                <div style="font-size:.875rem;color:var(--text-secondary);line-height:1.6">Great explanation! The analogy between traditional programming and ML really clicked for me. Can't wait for the regression section.</div>
+                <button style="background:none;border:none;color:var(--text-muted);font-size:.75rem;cursor:pointer;margin-top:6px">👍 12  ·  Reply</button>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px">
+              <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#15803d,#4ade80);color:#fff;width:36px;height:36px;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0">KM</div>
+              <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                  <span style="font-weight:600;font-size:.8125rem;color:var(--text-primary)">Karim Mansouri</span>
+                  <span class="badge badge-violet" style="font-size:.65rem;padding:2px 7px">Instructor</span>
+                  <span style="font-size:.7rem;color:var(--text-muted)">2h ago</span>
+                </div>
+                <div style="font-size:.875rem;color:var(--text-secondary);line-height:1.6">Great question, Youssef! You'll love the regression section — we build a real salary predictor from scratch. Keep going! 🚀</div>
+                <button style="background:none;border:none;color:var(--text-muted);font-size:.75rem;cursor:pointer;margin-top:6px">👍 8  ·  Reply</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz teaser -->
+      <div class="quiz-teaser">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:4px">📝 Section Quiz available</div>
+            <div style="font-size:.8125rem;color:var(--text-muted)">Complete all lessons in Section 1 to unlock the quiz and earn XP</div>
+          </div>
+          <a href="quiz.html" class="btn btn-primary">Take quiz →</a>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
+          <div style="flex:1;height:4px;background:var(--bg-elevated);border-radius:99px;overflow:hidden">
+            <div style="width:50%;height:100%;background:linear-gradient(90deg,#7c3aed,#00e5ff);border-radius:99px"></div>
+          </div>
+          <span style="font-size:.75rem;color:var(--text-muted)">2 of 4 lessons complete</span>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div style="display:flex;gap:12px;padding:24px 32px;border-top:1px solid var(--border-subtle)">
+        <button class="btn btn-ghost" style="flex:1" onclick="Toast.info('Previous','Going to previous lesson')">← Previous lesson</button>
+        <button class="btn btn-primary" style="flex:1" onclick="Toast.success('Next','Moving to next lesson')">Next lesson →</button>
+      </div>
+
+    </div>
+
+    <!-- Sidebar lesson list -->
+    <div class="lesson-sidebar">
+      <div class="lesson-sidebar-header">
+        📚 Course contents · <span style="color:var(--text-muted);font-weight:400">186 lessons</span>
+      </div>
+      <div style="padding:10px 20px">
+        <div style="height:5px;background:var(--bg-elevated);border-radius:99px;overflow:hidden">
+          <div style="width:8%;height:100%;background:linear-gradient(90deg,#7c3aed,#00e5ff);border-radius:99px"></div>
+        </div>
+        <div style="font-size:.75rem;color:var(--text-muted);margin-top:6px">8% complete · 14 of 186 lessons</div>
+      </div>
+
+      <div class="lesson-list-section">
+        <div class="lesson-list-section-title">Section 1 · Welcome (4 lessons)</div>
+        <div class="lesson-list-item done" onclick="selectLesson(this,'Welcome to the course')">
+          <div class="item-check">✓</div>
+          <div class="item-title">1. Welcome to the course</div>
+          <div class="item-duration">5:30</div>
+        </div>
+        <div class="lesson-list-item active" onclick="selectLesson(this,'What is Machine Learning?')">
+          <div class="item-check">▶</div>
+          <div class="item-title">2. What is Machine Learning?</div>
+          <div class="item-duration">8:45</div>
+        </div>
+        <div class="lesson-list-item" onclick="selectLesson(this,'Setting up your environment')">
+          <div class="item-check"></div>
+          <div class="item-title">3. Setting up your environment</div>
+          <div class="item-duration">12:20</div>
+        </div>
+        <div class="lesson-list-item" onclick="selectLesson(this,'Course resources')">
+          <div class="item-check">📄</div>
+          <div class="item-title">4. Course resources & cheat sheets</div>
+          <div class="item-duration">Resource</div>
+        </div>
+      </div>
+
+      <div class="lesson-list-section">
+        <div class="lesson-list-section-title">Section 2 · Data Preprocessing (12 lessons)</div>
+        <div class="lesson-list-item" onclick="Toast.info('Locked','Complete Section 1 first.')">
+          <div class="item-check" style="opacity:.4">🔒</div>
+          <div class="item-title" style="opacity:.4">5. Importing libraries</div>
+          <div class="item-duration">10:15</div>
+        </div>
+        <div class="lesson-list-item" onclick="Toast.info('Locked','Complete Section 1 first.')">
+          <div class="item-check" style="opacity:.4">🔒</div>
+          <div class="item-title" style="opacity:.4">6. Handling missing data</div>
+          <div class="item-duration">14:30</div>
+        </div>
+        <div class="lesson-list-item" onclick="Toast.info('Locked','Complete Section 1 first.')">
+          <div class="item-check" style="opacity:.4">🔒</div>
+          <div class="item-title" style="opacity:.4">7. Encoding categorical data</div>
+          <div class="item-duration">18:00</div>
+        </div>
+        <div class="lesson-list-item" onclick="Toast.info('Locked','Complete Section 1 first.')">
+          <div class="item-check" style="opacity:.4">📝</div>
+          <div class="item-title" style="opacity:.4">Quiz: Data Preprocessing</div>
+          <div class="item-duration">Quiz</div>
+        </div>
+      </div>
+
+      <div class="lesson-list-section">
+        <div class="lesson-list-section-title">Section 3 · Regression (28 lessons)</div>
+        <div class="lesson-list-item" onclick="Toast.info('Locked','Complete Section 2 first.')">
+          <div class="item-check" style="opacity:.4">🔒</div>
+          <div class="item-title" style="opacity:.4">8. Simple Linear Regression</div>
+          <div class="item-duration">22:10</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/main.js"></script>
+  <script>
+    let isPlaying = false;
+    let progress = 32;
+    let interval;
+    const speeds = [0.75, 1, 1.25, 1.5, 2];
+    let speedIdx = 1;
+
+    function startVideo() {
+      document.getElementById('video-player').style.background = '#000';
+      document.getElementById('video-player').innerHTML = `<div style="font-size:2rem;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);animation:pulse 1s ease-in-out infinite">⏳</div>`;
+      setTimeout(() => {
+        document.getElementById('video-player').innerHTML = `<div style="color:rgba(255,255,255,.3);font-size:.9rem;text-align:center;padding:20px">🎬 Video streaming from your CDN<br><small style="color:rgba(255,255,255,.2)">[In production this would be your actual video]</small></div>`;
+        document.getElementById('video-controls').style.display = 'flex';
+        isPlaying = true;
+        startProgress();
+      }, 800);
+    }
+
+    function togglePlay() {
+      isPlaying = !isPlaying;
+      document.getElementById('play-btn').textContent = isPlaying ? '⏸' : '▶';
+      if (isPlaying) startProgress(); else clearInterval(interval);
+    }
+
+    function startProgress() {
+      clearInterval(interval);
+      interval = setInterval(() => {
+        progress = Math.min(progress + 0.5, 100);
+        document.getElementById('prog-filled').style.width = progress + '%';
+        document.getElementById('prog-thumb').style.left = progress + '%';
+        const totalSec = 525;
+        const cur = Math.round(totalSec * progress / 100);
+        const m = Math.floor(cur / 60), s = cur % 60;
+        document.getElementById('cur-time').textContent = `0${m}:${s.toString().padStart(2,'0')}`;
+        if (progress >= 100) { clearInterval(interval); isPlaying = false; document.getElementById('play-btn').textContent = '▶'; Toast.success('Lesson complete!','Moving to the next lesson.'); }
+      }, 200);
+    }
+
+    function seekVideo(e, track) {
+      const rect = track.getBoundingClientRect();
+      progress = ((e.clientX - rect.left) / rect.width) * 100;
+      document.getElementById('prog-filled').style.width = progress + '%';
+      document.getElementById('prog-thumb').style.left = progress + '%';
+    }
+
+    function changeSpeed(btn) {
+      speedIdx = (speedIdx + 1) % speeds.length;
+      btn.textContent = speeds[speedIdx] + '×';
+    }
+
+    function markComplete() {
+      Toast.success('✅ Lesson complete!', '+50 XP earned! Moving to next lesson…');
+      setTimeout(() => {
+        document.querySelectorAll('.lesson-list-item.active')[0]?.classList.add('done');
+      }, 500);
+    }
+
+    function selectLesson(el, title) {
+      document.querySelectorAll('.lesson-list-item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+      const titleEl = document.querySelector('h1');
+      if (titleEl && !el.querySelector('.item-check')?.textContent.includes('🔒')) {
+        titleEl.textContent = title;
+        Toast.info('Lesson', 'Loading: ' + title);
+      }
+    }
+
+    function switchLessonTab(id, el) {
+      ['overview','notes','resources','discuss'].forEach(t => document.getElementById('lt-'+t)?.classList.add('hidden'));
+      document.getElementById('lt-'+id)?.classList.remove('hidden');
+      document.querySelectorAll('.tab-link').forEach(l => { l.style.color='var(--text-muted)'; l.style.borderBottomColor='transparent'; });
+      el.style.color = 'var(--accent-cyan)';
+      el.style.borderBottomColor = 'var(--accent-cyan)';
+    }
+  
+    // Logout helper
+    function logout() {
+      Auth.clear();
+      const depth = window.location.pathname.split('/').length - 1;
+      const prefix = depth >= 4 ? '../../' : '../';
+      window.location.href = prefix + 'login.html';
+    }
+
+  </script>
+</body>
+</html>

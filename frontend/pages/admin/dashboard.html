@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard — EduNova</title>
+  <link rel="stylesheet" href="../../styles/main.css"/>
+  <style>
+    .admin-kpi { padding: 20px 24px; border-radius: var(--radius-lg); position: relative; overflow: hidden; }
+    .admin-kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--kpi-color, linear-gradient(90deg, #7c3aed, #00e5ff)); }
+    .approval-card { padding: 16px; background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); display: flex; align-items: center; gap: 14px; transition: .2s; }
+    .approval-card:hover { border-color: rgba(255,255,255,.1); }
+    .approval-actions { display: flex; gap: 8px; margin-left: auto; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="navbar-logo-icon" style="width:28px;height:28px;font-size:.875rem">🎓</div>EduNova Admin</div>
+    <p class="sidebar-section-label">Overview</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="dashboard.html" class="active"><span class="sidebar-nav-icon">🏠</span> Dashboard</a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">📊</span> Analytics</a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">📈</span> Reports</a></li>
+    </ul>
+    <p class="sidebar-section-label">Management</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">👥</span> Users <span class="sidebar-badge">3</span></a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">👩‍🏫</span> Trainers <span class="sidebar-badge">2</span></a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">📚</span> Courses <span class="sidebar-badge">5</span></a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">🏷️</span> Categories</a></li>
+    </ul>
+    <p class="sidebar-section-label">Platform</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">🔔</span> Notifications</a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">💬</span> Support</a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">⚙️</span> Settings</a></li>
+    </ul>
+    <div style="flex:1"></div>
+    <div class="sidebar-user">
+      <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#f43f5e,#7c3aed);color:#fff;width:36px;height:36px;font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0">AD</div>
+      <div class="sidebar-user-info"><div class="sidebar-user-name">Admin</div><div class="sidebar-user-role">🔒 Super Admin</div></div>
+    </div>
+  </aside>
+
+  <div id="sidebar-overlay" class="hidden" style="position:fixed;inset:0;z-index:49;background:rgba(0,0,0,.6)"></div>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <button class="hamburger"><span></span><span></span><span></span></button>
+      <div style="flex:1"></div>
+      <span class="badge badge-rose" style="padding:6px 12px">🔒 Admin Mode</span>
+      <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#f43f5e,#7c3aed);color:#fff;width:36px;height:36px;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%;margin-left:12px;cursor:pointer">AD</div>
+    </div>
+  </nav>
+
+  <div class="dashboard-layout">
+    <div class="dashboard-content">
+
+      <div class="dashboard-header">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px">
+          <div>
+            <div class="dashboard-title">Platform Overview 🔭</div>
+            <div class="dashboard-subtitle">
+              <span class="badge badge-rose" style="margin-right:8px">⚠ 5 pending approvals</span>
+              <span class="badge badge-amber">📝 12 support tickets</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-ghost btn-sm" onclick="Toast.info('Export','Generating platform report…')">📊 Export report</button>
+            <button class="btn btn-primary btn-sm" onclick="Toast.info('Notification','Broadcasting notification…')">📣 Broadcast</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI Grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:32px">
+        <div class="admin-kpi glass-card-elevated" style="--kpi-color:linear-gradient(90deg,#00e5ff,#0891b2)" data-animate>
+          <div style="font-size:1.75rem;margin-bottom:8px">👥</div>
+          <div class="stat-value" data-count="24840">0</div>
+          <div class="stat-label">Total users</div>
+          <div class="stat-change up mt-8">↑ +842 this week</div>
+        </div>
+        <div class="admin-kpi glass-card-elevated" style="--kpi-color:linear-gradient(90deg,#7c3aed,#5b21b6)" data-animate data-delay="80">
+          <div style="font-size:1.75rem;margin-bottom:8px">👩‍🏫</div>
+          <div class="stat-value" data-count="324">0</div>
+          <div class="stat-label">Active trainers</div>
+          <div class="stat-change up mt-8">↑ +12 this month</div>
+        </div>
+        <div class="admin-kpi glass-card-elevated" style="--kpi-color:linear-gradient(90deg,#10b981,#059669)" data-animate data-delay="160">
+          <div style="font-size:1.75rem;margin-bottom:8px">📚</div>
+          <div class="stat-value" data-count="840">0</div>
+          <div class="stat-label">Published courses</div>
+          <div class="stat-change up mt-8">↑ +18 this month</div>
+        </div>
+        <div class="admin-kpi glass-card-elevated" style="--kpi-color:linear-gradient(90deg,#f59e0b,#d97706)" data-animate data-delay="240">
+          <div style="font-size:1.75rem;margin-bottom:8px">💰</div>
+          <div class="stat-value" data-count="124750" data-prefix="$">0</div>
+          <div class="stat-label">Monthly revenue</div>
+          <div class="stat-change up mt-8">↑ +$18,200 vs last month</div>
+        </div>
+        <div class="admin-kpi glass-card-elevated" style="--kpi-color:linear-gradient(90deg,#f43f5e,#be123c)" data-animate data-delay="320">
+          <div style="font-size:1.75rem;margin-bottom:8px">📜</div>
+          <div class="stat-value" data-count="48240">0</div>
+          <div class="stat-label">Certificates issued</div>
+          <div class="stat-change up mt-8">↑ +1,840 this month</div>
+        </div>
+        <div class="admin-kpi glass-card-elevated" style="--kpi-color:linear-gradient(90deg,#0891b2,#0284c7)" data-animate data-delay="400">
+          <div style="font-size:1.75rem;margin-bottom:8px">⭐</div>
+          <div class="stat-value" data-count="4.8">0</div>
+          <div class="stat-label">Platform rating</div>
+          <div class="stat-change up mt-8">↑ +0.1 this quarter</div>
+        </div>
+      </div>
+
+      <!-- Main Grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px">
+
+        <!-- Pending Approvals -->
+        <div class="glass-card-elevated" style="padding:24px" data-animate>
+          <div class="section-header">
+            <div class="section-title">⏳ Pending approvals</div>
+            <span class="badge badge-rose">5 waiting</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+
+            <!-- Trainer 1 -->
+            <div class="approval-card">
+              <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;width:36px;height:36px;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0">AH</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:.8125rem;font-weight:600;color:var(--text-primary)">Ahmed Hamdi</div>
+                <div style="font-size:.7rem;color:var(--text-muted)">Trainer application · Cybersecurity Expert</div>
+              </div>
+              <div class="approval-actions">
+                <button class="btn btn-sm" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#34d399;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:.75rem" onclick="approveItem(this,'Ahmed Hamdi','trainer')">✓ Approve</button>
+                <button class="btn btn-sm" style="background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);color:#fb7185;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:.75rem" onclick="rejectItem(this)">✗ Reject</button>
+              </div>
+            </div>
+
+            <!-- Course 1 -->
+            <div class="approval-card">
+              <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1e1b4b,#312e81);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">🧠</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:.8125rem;font-weight:600;color:var(--text-primary)">Advanced NLP with Transformers</div>
+                <div style="font-size:.7rem;color:var(--text-muted)">New course by Karim Mansouri · AI & ML</div>
+              </div>
+              <div class="approval-actions">
+                <button class="btn btn-sm" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#34d399;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:.75rem" onclick="approveItem(this,'NLP Course','course')">✓ Approve</button>
+                <button class="btn btn-sm" style="background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);color:#fb7185;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:.75rem" onclick="rejectItem(this)">✗ Reject</button>
+              </div>
+            </div>
+
+            <!-- Trainer 2 -->
+            <div class="approval-card">
+              <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#15803d,#4ade80);color:#fff;width:36px;height:36px;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0">LB</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:.8125rem;font-weight:600;color:var(--text-primary)">Lina Bouzid</div>
+                <div style="font-size:.7rem;color:var(--text-muted)">Trainer application · UX Research</div>
+              </div>
+              <div class="approval-actions">
+                <button class="btn btn-sm" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#34d399;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:.75rem" onclick="approveItem(this,'Lina Bouzid','trainer')">✓ Approve</button>
+                <button class="btn btn-sm" style="background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);color:#fb7185;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:.75rem" onclick="rejectItem(this)">✗ Reject</button>
+              </div>
+            </div>
+
+            <!-- Course 2 -->
+            <div class="approval-card">
+              <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#7c2d12,#c2410c);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">🔐</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:.8125rem;font-weight:600;color:var(--text-primary)">Zero Day Exploits 2026</div>
+                <div style="font-size:.7rem;color:var(--text-muted)">New course by Sami Khalil · Cybersecurity</div>
+              </div>
+              <div class="approval-actions">
+                <button class="btn btn-sm" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#34d399;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:.75rem" onclick="approveItem(this,'Zero Day Course','course')">✓ Approve</button>
+                <button class="btn btn-sm" style="background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);color:#fb7185;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:.75rem" onclick="rejectItem(this)">✗ Reject</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Users -->
+        <div class="glass-card-elevated" style="padding:24px" data-animate>
+          <div class="section-header">
+            <div class="section-title">👥 Recent registrations</div>
+            <button class="btn btn-ghost btn-sm" onclick="Toast.info('Users','Opening user management…')">View all</button>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>User</th><th>Role</th><th>Joined</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar avatar-sm avatar-gradient" style="font-size:.65rem">SA</div>Sara Aissaoui</div></td>
+                <td>Candidate</td>
+                <td style="color:var(--text-muted)">2h ago</td>
+                <td><span class="badge badge-emerald">Active</span></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;width:28px;height:28px;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%">AH</div>Ahmed Hamdi</div></td>
+                <td>Trainer</td>
+                <td style="color:var(--text-muted)">4h ago</td>
+                <td><span class="badge badge-amber">Pending</span></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#0891b2,#00e5ff);color:#fff;width:28px;height:28px;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%">YB</div>Youssef Belhaj</div></td>
+                <td>Candidate</td>
+                <td style="color:var(--text-muted)">1d ago</td>
+                <td><span class="badge badge-emerald">Active</span></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#15803d,#4ade80);color:#fff;width:28px;height:28px;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%">LB</div>Lina Bouzid</div></td>
+                <td>Trainer</td>
+                <td style="color:var(--text-muted)">2d ago</td>
+                <td><span class="badge badge-amber">Pending</span></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#c2410c,#f97316);color:#fff;width:28px;height:28px;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%">MO</div>Mohamed Ouali</div></td>
+                <td>Candidate</td>
+                <td style="color:var(--text-muted)">2d ago</td>
+                <td><span class="badge badge-emerald">Active</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bottom Row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px">
+
+        <!-- Platform health -->
+        <div class="glass-card-elevated" style="padding:24px" data-animate>
+          <div class="section-title" style="margin-bottom:16px">🖥 Platform health</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px"><span style="color:var(--text-secondary)">Server uptime</span><span style="color:#34d399;font-weight:700">99.98%</span></div>
+              <div style="height:4px;background:var(--bg-elevated);border-radius:99px;overflow:hidden"><div style="width:99.98%;height:100%;background:#10b981;border-radius:99px"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px"><span style="color:var(--text-secondary)">API response</span><span style="color:#34d399;font-weight:700">142ms avg</span></div>
+              <div style="height:4px;background:var(--bg-elevated);border-radius:99px;overflow:hidden"><div style="width:85%;height:100%;background:#10b981;border-radius:99px"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px"><span style="color:var(--text-secondary)">Storage used</span><span style="color:#fbbf24;font-weight:700">68%</span></div>
+              <div style="height:4px;background:var(--bg-elevated);border-radius:99px;overflow:hidden"><div style="width:68%;height:100%;background:#f59e0b;border-radius:99px"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px"><span style="color:var(--text-secondary)">CDN bandwidth</span><span style="color:#34d399;font-weight:700">Normal</span></div>
+              <div style="height:4px;background:var(--bg-elevated);border-radius:99px;overflow:hidden"><div style="width:42%;height:100%;background:#10b981;border-radius:99px"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Support tickets -->
+        <div class="glass-card-elevated" style="padding:24px" data-animate>
+          <div class="section-header">
+            <div class="section-title">💬 Support tickets</div>
+            <span class="badge badge-amber">12 open</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="padding:10px 12px;border-radius:8px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15)">
+              <div style="font-size:.8rem;font-weight:600;color:var(--text-primary)">Certificate not generated</div>
+              <div style="font-size:.7rem;color:var(--text-muted)">Sara A. · 1h ago · <span style="color:#fb7185">High priority</span></div>
+            </div>
+            <div style="padding:10px 12px;border-radius:8px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15)">
+              <div style="font-size:.8rem;font-weight:600;color:var(--text-primary)">Video won't load on mobile</div>
+              <div style="font-size:.7rem;color:var(--text-muted)">Youssef B. · 3h ago · <span style="color:#fbbf24">Medium</span></div>
+            </div>
+            <div style="padding:10px 12px;border-radius:8px;background:var(--bg-glass);border:1px solid var(--border-subtle)">
+              <div style="font-size:.8rem;font-weight:600;color:var(--text-primary)">Payment receipt request</div>
+              <div style="font-size:.7rem;color:var(--text-muted)">Nadia B. · 5h ago · <span style="color:#4b5563">Low</span></div>
+            </div>
+          </div>
+          <button class="btn btn-ghost w-full" style="margin-top:14px" onclick="Toast.info('Support','Opening support center…')">View all tickets →</button>
+        </div>
+
+        <!-- Category breakdown -->
+        <div class="glass-card-elevated" style="padding:24px" data-animate>
+          <div class="section-title" style="margin-bottom:16px">📂 Category breakdown</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:10px;font-size:.8125rem">
+              <span style="width:12px;height:12px;border-radius:3px;background:#7c3aed;flex-shrink:0"></span>
+              <span style="flex:1;color:var(--text-secondary)">Development</span>
+              <span style="font-weight:700;color:var(--text-primary)">248</span>
+              <span style="font-size:.7rem;color:var(--text-muted)">29%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:.8125rem">
+              <span style="width:12px;height:12px;border-radius:3px;background:#00e5ff;flex-shrink:0"></span>
+              <span style="flex:1;color:var(--text-secondary)">AI & ML</span>
+              <span style="font-weight:700;color:var(--text-primary)">88</span>
+              <span style="font-size:.7rem;color:var(--text-muted)">10%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:.8125rem">
+              <span style="width:12px;height:12px;border-radius:3px;background:#10b981;flex-shrink:0"></span>
+              <span style="flex:1;color:var(--text-secondary)">Data Science</span>
+              <span style="font-weight:700;color:var(--text-primary)">98</span>
+              <span style="font-size:.7rem;color:var(--text-muted)">12%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:.8125rem">
+              <span style="width:12px;height:12px;border-radius:3px;background:#f59e0b;flex-shrink:0"></span>
+              <span style="flex:1;color:var(--text-secondary)">Design</span>
+              <span style="font-weight:700;color:var(--text-primary)">112</span>
+              <span style="font-size:.7rem;color:var(--text-muted)">13%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:.8125rem">
+              <span style="width:12px;height:12px;border-radius:3px;background:#f43f5e;flex-shrink:0"></span>
+              <span style="flex:1;color:var(--text-secondary)">Cybersecurity</span>
+              <span style="font-weight:700;color:var(--text-primary)">54</span>
+              <span style="font-size:.7rem;color:var(--text-muted)">6%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:.8125rem">
+              <span style="width:12px;height:12px;border-radius:3px;background:#8892a4;flex-shrink:0"></span>
+              <span style="flex:1;color:var(--text-secondary)">Other</span>
+              <span style="font-weight:700;color:var(--text-primary)">240</span>
+              <span style="font-size:.7rem;color:var(--text-muted)">28%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/main.js"></script>
+  <script>
+    function approveItem(btn, name, type) {
+      const card = btn.closest('.approval-card');
+      card.style.opacity = '.5';
+      card.style.transition = '.3s';
+      setTimeout(() => card.remove(), 400);
+      Toast.success(`${type === 'trainer' ? 'Trainer' : 'Course'} approved ✅`, `${name} has been approved and notified.`);
+    }
+    function rejectItem(btn) {
+      const card = btn.closest('.approval-card');
+      card.style.opacity = '.5';
+      card.style.transition = '.3s';
+      setTimeout(() => card.remove(), 400);
+      Toast.warning('Item rejected', 'The applicant has been notified.');
+    }
+  </script>
+</body>
+</html>

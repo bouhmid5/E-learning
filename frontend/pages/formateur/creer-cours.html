@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Course — EduNova</title>
+  <link rel="stylesheet" href="../../styles/main.css"/>
+  <style>
+    .wizard-steps { display: flex; gap: 0; margin-bottom: 40px; }
+    .wizard-step { display: flex; align-items: center; gap: 12px; flex: 1; }
+    .wizard-step-num { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border-subtle); display: flex; align-items: center; justify-content: center; font-size: .875rem; font-weight: 700; color: var(--text-muted); flex-shrink: 0; transition: .3s; }
+    .wizard-step.active .wizard-step-num { border-color: var(--accent-violet); background: var(--accent-violet); color: white; box-shadow: 0 0 20px rgba(124,58,237,.4); }
+    .wizard-step.done .wizard-step-num { border-color: var(--accent-emerald); background: var(--accent-emerald); color: white; }
+    .wizard-step-label { font-size: .8125rem; font-weight: 600; color: var(--text-muted); }
+    .wizard-step.active .wizard-step-label { color: var(--text-primary); }
+    .wizard-step.done .wizard-step-label { color: var(--accent-emerald); }
+    .wizard-connector { flex: 1; height: 2px; background: var(--border-subtle); margin: 0 8px; }
+    .wizard-connector.done { background: var(--accent-emerald); }
+    .form-section { background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 32px; margin-bottom: 20px; }
+    .form-section-title { font-family:'Syne',sans-serif; font-size: 1.125rem; font-weight: 700; color: var(--text-primary); margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+    .objective-item { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+    .objective-item input { flex: 1; }
+    .remove-btn { background: rgba(244,63,94,.1); border: 1px solid rgba(244,63,94,.2); color: #fb7185; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; font-size: 1rem; transition: .2s; }
+    .remove-btn:hover { background: rgba(244,63,94,.2); }
+    .upload-zone { border: 2px dashed var(--border-subtle); border-radius: var(--radius-lg); padding: 40px; text-align: center; cursor: pointer; transition: .3s; }
+    .upload-zone:hover, .upload-zone.drag { border-color: var(--accent-violet); background: rgba(124,58,237,.04); }
+    .lesson-builder-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); margin-bottom: 8px; cursor: grab; transition: .2s; }
+    .lesson-builder-item:hover { border-color: rgba(255,255,255,.1); }
+    .drag-handle { color: var(--text-muted); cursor: grab; font-size: 1.1rem; }
+    .lesson-type-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: .875rem; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="navbar-logo-icon" style="width:28px;height:28px;font-size:.875rem">🎓</div>EduNova</div>
+    <p class="sidebar-section-label">Teaching</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="dashboard.html"><span class="sidebar-nav-icon">🏠</span> Dashboard</a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">📚</span> My courses</a></li>
+      <li class="sidebar-nav-item"><a href="creer-cours.html" class="active"><span class="sidebar-nav-icon">➕</span> Create course</a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">👥</span> Students</a></li>
+    </ul>
+    <div style="flex:1"></div>
+    <div class="sidebar-user">
+      <div class="avatar avatar-sm" data-user-avatar style="background:linear-gradient(135deg,#0891b2,#00e5ff);color:#fff;width:36px;height:36px;font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0">KM</div>
+      <div class="sidebar-user-info"><div class="sidebar-user-name" data-user-name>Karim Mansouri</div><div class="sidebar-user-role" data-user-role>👩‍🏫 Trainer · Verified</div></div>
+    </div>
+  </aside>
+
+  <div id="sidebar-overlay" class="hidden" style="position:fixed;inset:0;z-index:49;background:rgba(0,0,0,.6)"></div>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <button class="hamburger"><span></span><span></span><span></span></button>
+      <div style="flex:1"></div>
+      <button class="btn btn-ghost btn-sm" onclick="saveDraft()">💾 Save draft</button>
+      <button class="btn btn-primary btn-sm" id="submit-btn" onclick="submitCourse()">🚀 Submit for review</button>
+    </div>
+  </nav>
+
+  <div class="dashboard-layout">
+    <div class="dashboard-content">
+
+      <div class="dashboard-header">
+        <div class="dashboard-title">Create New Course ✨</div>
+        <div class="dashboard-subtitle">Fill in all sections and submit for admin review</div>
+      </div>
+
+      <!-- Wizard steps -->
+      <div class="wizard-steps">
+        <div class="wizard-step active" id="ws-1">
+          <div class="wizard-step-num">1</div>
+          <div class="wizard-step-label">Basic Info</div>
+        </div>
+        <div class="wizard-connector" id="wc-1"></div>
+        <div class="wizard-step" id="ws-2">
+          <div class="wizard-step-num">2</div>
+          <div class="wizard-step-label">Curriculum</div>
+        </div>
+        <div class="wizard-connector" id="wc-2"></div>
+        <div class="wizard-step" id="ws-3">
+          <div class="wizard-step-num">3</div>
+          <div class="wizard-step-label">Media</div>
+        </div>
+        <div class="wizard-connector" id="wc-3"></div>
+        <div class="wizard-step" id="ws-4">
+          <div class="wizard-step-num">4</div>
+          <div class="wizard-step-label">Publish</div>
+        </div>
+      </div>
+
+      <!-- Step 1: Basic Info -->
+      <div id="step-1">
+        <div class="form-section" data-animate>
+          <div class="form-section-title">📋 Course information</div>
+          <div class="form-group">
+            <label class="form-label">Course title *</label>
+            <input class="form-input" type="text" id="course-title" placeholder="e.g. The Complete Machine Learning Course 2025" oninput="updateSlug(this.value)"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">URL slug (auto-generated)</label>
+            <div style="display:flex;gap:10px;align-items:center">
+              <span style="color:var(--text-muted);font-size:.875rem;white-space:nowrap">edunova.com/cours/</span>
+              <input class="form-input" type="text" id="course-slug" placeholder="machine-learning-course-2025" style="flex:1"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Short description (shown in cards) *</label>
+            <input class="form-input" type="text" id="course-short-desc" placeholder="A compelling one-liner about your course" maxlength="200"/>
+            <div class="form-hint" id="short-desc-count">0 / 200 characters</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full description *</label>
+            <textarea class="form-input" id="course-desc" rows="6" placeholder="Describe what students will learn, who the course is for, what makes it unique..."></textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select class="form-input form-select" id="course-cat">
+                <option value="">Select category</option>
+                <option>Développement</option>
+                <option>Design</option>
+                <option>Data Science</option>
+                <option>Intelligence Artificielle</option>
+                <option>Cybersécurité</option>
+                <option>Cloud & DevOps</option>
+                <option>Business</option>
+                <option>Marketing Digital</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Level *</label>
+              <select class="form-input form-select" id="course-level">
+                <option value="DEBUTANT">🌱 Beginner</option>
+                <option value="INTERMEDIAIRE">⚡ Intermediate</option>
+                <option value="AVANCE">🔥 Advanced</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Language *</label>
+              <select class="form-input form-select">
+                <option value="fr">🇫🇷 French</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="ar">🇩🇿 Arabic</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="form-group">
+              <label class="form-label">Price (leave 0 for free)</label>
+              <div style="position:relative">
+                <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted)">$</span>
+                <input class="form-input" type="number" min="0" step="0.01" value="0" style="padding-left:28px"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Minimum pass score (%)</label>
+              <input class="form-input" type="number" min="50" max="100" value="70"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Learning objectives -->
+        <div class="form-section" data-animate>
+          <div class="form-section-title">🎯 Learning objectives</div>
+          <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:16px">What will students be able to do after completing this course?</p>
+          <div id="objectives-list">
+            <div class="objective-item">
+              <input class="form-input" type="text" placeholder="e.g. Build and deploy machine learning models"/>
+              <button class="remove-btn" onclick="removeObjective(this)">×</button>
+            </div>
+            <div class="objective-item">
+              <input class="form-input" type="text" placeholder="e.g. Understand supervised and unsupervised learning"/>
+              <button class="remove-btn" onclick="removeObjective(this)">×</button>
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="addObjective()" style="margin-top:8px">+ Add objective</button>
+        </div>
+
+        <!-- Prerequisites -->
+        <div class="form-section" data-animate>
+          <div class="form-section-title">✅ Prerequisites</div>
+          <div id="prereq-list">
+            <div class="objective-item">
+              <input class="form-input" type="text" placeholder="e.g. Basic Python programming knowledge"/>
+              <button class="remove-btn" onclick="removeObjective(this)">×</button>
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="addPrereq()" style="margin-top:8px">+ Add prerequisite</button>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;margin-top:24px">
+          <button class="btn btn-primary btn-lg" onclick="goStep(2)">Next: Curriculum →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Curriculum -->
+      <div id="step-2" class="hidden">
+        <div class="form-section" data-animate>
+          <div class="form-section-title">📚 Course curriculum</div>
+          <div id="sections-list">
+            <!-- Section 1 -->
+            <div class="curriculum-section" style="background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-md);margin-bottom:12px;overflow:hidden">
+              <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,.02)">
+                <span class="drag-handle">⠿</span>
+                <input class="form-input" type="text" value="Section 1: Welcome to the Course" style="flex:1;font-weight:600"/>
+                <button class="btn btn-ghost btn-sm" onclick="addLesson(this)">+ Add lesson</button>
+                <button class="remove-btn" onclick="this.closest('.curriculum-section').remove()">×</button>
+              </div>
+              <!-- Lessons -->
+              <div class="curriculum-lessons" style="padding:8px 12px">
+                <div class="lesson-builder-item">
+                  <span class="drag-handle">⠿</span>
+                  <div class="lesson-type-icon" style="background:rgba(124,58,237,.15)">▶</div>
+                  <input class="form-input" type="text" value="Welcome to the course" style="flex:1;background:transparent;border:none;padding:4px 8px"/>
+                  <select class="form-input form-select" style="width:120px;padding:6px 30px 6px 10px;font-size:.75rem">
+                    <option>Video</option>
+                    <option>Document</option>
+                    <option>Quiz</option>
+                    <option>Text</option>
+                  </select>
+                  <input type="text" class="form-input" placeholder="05:30" style="width:70px;text-align:center;font-size:.8rem"/>
+                  <label style="display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--text-muted);cursor:pointer;white-space:nowrap">
+                    <input type="checkbox" style="accent-color:var(--accent-cyan)"/> Free
+                  </label>
+                  <button class="remove-btn" style="width:28px;height:28px" onclick="this.closest('.lesson-builder-item').remove()">×</button>
+                </div>
+                <div class="lesson-builder-item">
+                  <span class="drag-handle">⠿</span>
+                  <div class="lesson-type-icon" style="background:rgba(0,229,255,.15)">📄</div>
+                  <input class="form-input" type="text" value="Course resources & cheat sheets" style="flex:1;background:transparent;border:none;padding:4px 8px"/>
+                  <select class="form-input form-select" style="width:120px;padding:6px 30px 6px 10px;font-size:.75rem">
+                    <option>Video</option>
+                    <option selected>Document</option>
+                    <option>Quiz</option>
+                  </select>
+                  <input type="text" class="form-input" placeholder="Resource" style="width:70px;text-align:center;font-size:.8rem"/>
+                  <label style="display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--text-muted);cursor:pointer;white-space:nowrap">
+                    <input type="checkbox" style="accent-color:var(--accent-cyan)"/> Free
+                  </label>
+                  <button class="remove-btn" style="width:28px;height:28px" onclick="this.closest('.lesson-builder-item').remove()">×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-ghost" onclick="addSection()" style="margin-top:8px">+ Add section</button>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:24px">
+          <button class="btn btn-ghost btn-lg" onclick="goStep(1)">← Back</button>
+          <button class="btn btn-primary btn-lg" onclick="goStep(3)">Next: Media →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Media -->
+      <div id="step-3" class="hidden">
+        <div class="form-section" data-animate>
+          <div class="form-section-title">🖼 Course thumbnail</div>
+          <div class="upload-zone" id="thumb-zone" onclick="document.getElementById('thumb-input').click()" ondragover="handleDragOver(event,this)" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event,this,'thumb')">
+            <div id="thumb-preview">
+              <div style="font-size:3rem;margin-bottom:12px">🖼</div>
+              <div style="font-weight:600;color:var(--text-primary);margin-bottom:6px">Drop image here or click to upload</div>
+              <div style="font-size:.8125rem;color:var(--text-muted)">Recommended: 1280×720px · JPG, PNG · Max 5MB</div>
+            </div>
+            <input id="thumb-input" type="file" accept="image/*" style="display:none" onchange="previewFile(this,'thumb-preview')"/>
+          </div>
+        </div>
+
+        <div class="form-section" data-animate>
+          <div class="form-section-title">🎬 Intro video (optional)</div>
+          <div class="upload-zone" onclick="document.getElementById('intro-input').click()">
+            <div style="font-size:3rem;margin-bottom:12px">🎬</div>
+            <div style="font-weight:600;color:var(--text-primary);margin-bottom:6px">Upload intro video</div>
+            <div style="font-size:.8125rem;color:var(--text-muted)">MP4, MOV · Max 500MB · 2–5 minutes recommended</div>
+            <input id="intro-input" type="file" accept="video/*" style="display:none" onchange="Toast.info('File selected',this.files[0]?.name)"/>
+          </div>
+          <div style="margin-top:16px">
+            <label class="form-label">Or paste a YouTube/Vimeo URL</label>
+            <input class="form-input" type="url" placeholder="https://youtube.com/watch?v=..."/>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:24px">
+          <button class="btn btn-ghost btn-lg" onclick="goStep(2)">← Back</button>
+          <button class="btn btn-primary btn-lg" onclick="goStep(4)">Next: Publish →</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Review & Submit -->
+      <div id="step-4" class="hidden">
+        <div class="form-section" data-animate>
+          <div class="form-section-title">🔍 Review before submitting</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
+            <div>
+              <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px">Checklist</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span style="color:#10b981">✓</span> Course title filled</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span style="color:#10b981">✓</span> Description written (200+ chars)</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span style="color:#10b981">✓</span> Category selected</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span style="color:#10b981">✓</span> At least 1 section with 1 lesson</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span style="color:#10b981">✓</span> Thumbnail uploaded</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span style="color:#f59e0b">⚠</span> Intro video (optional but recommended)</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px">What happens next</div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span>📤</span> Your course is submitted for admin review</div>
+                <div style="display:flex;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span>🕐</span> Review takes 1–3 business days</div>
+                <div style="display:flex;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span>📧</span> You'll receive an email decision</div>
+                <div style="display:flex;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span>🚀</span> Once approved, course goes live immediately</div>
+                <div style="display:flex;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span>✏️</span> You can edit after rejection and resubmit</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Agreement -->
+          <div style="padding:16px 20px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:var(--radius-md)">
+            <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;font-size:.875rem;color:var(--text-secondary);line-height:1.6">
+              <input type="checkbox" id="agreement" style="accent-color:var(--accent-violet);margin-top:3px"/>
+              I confirm that this course is my original work, does not infringe any copyright, and complies with EduNova's <a href="#" style="color:var(--accent-cyan)">Content Guidelines</a> and <a href="#" style="color:var(--accent-cyan)">Terms of Service</a>.
+            </label>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:24px">
+          <button class="btn btn-ghost btn-lg" onclick="goStep(3)">← Back</button>
+          <div style="display:flex;gap:12px">
+            <button class="btn btn-ghost btn-lg" onclick="saveDraft()">💾 Save as draft</button>
+            <button class="btn btn-cyan btn-lg" onclick="submitCourse()">🚀 Submit for review</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/main.js"></script>
+  <script>
+    let currentStep = 1;
+
+    function goStep(n) {
+      document.getElementById('step-' + currentStep).classList.add('hidden');
+      document.getElementById('ws-' + currentStep).classList.remove('active');
+      if (n > currentStep) {
+        document.getElementById('ws-' + currentStep).classList.add('done');
+        for (let i = currentStep; i < n; i++) {
+          const wc = document.getElementById('wc-' + i);
+          if (wc) wc.classList.add('done');
+        }
+      }
+      currentStep = n;
+      document.getElementById('step-' + n).classList.remove('hidden');
+      document.getElementById('ws-' + n).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateSlug(val) {
+      document.getElementById('course-slug').value =
+        val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    function addObjective() {
+      const div = document.createElement('div');
+      div.className = 'objective-item';
+      div.innerHTML = `<input class="form-input" type="text" placeholder="Enter a learning objective"/><button class="remove-btn" onclick="removeObjective(this)">×</button>`;
+      document.getElementById('objectives-list').appendChild(div);
+    }
+
+    function addPrereq() {
+      const div = document.createElement('div');
+      div.className = 'objective-item';
+      div.innerHTML = `<input class="form-input" type="text" placeholder="Enter a prerequisite"/><button class="remove-btn" onclick="removeObjective(this)">×</button>`;
+      document.getElementById('prereq-list').appendChild(div);
+    }
+
+    function removeObjective(btn) {
+      const items = btn.closest('#objectives-list, #prereq-list')?.querySelectorAll('.objective-item');
+      if (items && items.length > 1) btn.closest('.objective-item').remove();
+      else Toast.warning('Required', 'At least one item is required.');
+    }
+
+    function addSection() {
+      const div = document.createElement('div');
+      div.className = 'curriculum-section';
+      div.style.cssText = 'background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-md);margin-bottom:12px;overflow:hidden';
+      div.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,.02)">
+          <span class="drag-handle">⠿</span>
+          <input class="form-input" type="text" placeholder="Section title" style="flex:1;font-weight:600"/>
+          <button class="btn btn-ghost btn-sm" onclick="addLesson(this)">+ Add lesson</button>
+          <button class="remove-btn" onclick="this.closest('.curriculum-section').remove()">×</button>
+        </div>
+        <div class="curriculum-lessons" style="padding:8px 12px"></div>`;
+      document.getElementById('sections-list').appendChild(div);
+    }
+
+    function addLesson(btn) {
+      const lessons = btn.closest('.curriculum-section').querySelector('.curriculum-lessons');
+      const div = document.createElement('div');
+      div.className = 'lesson-builder-item';
+      div.innerHTML = `
+        <span class="drag-handle">⠿</span>
+        <div class="lesson-type-icon" style="background:rgba(124,58,237,.15)">▶</div>
+        <input class="form-input" type="text" placeholder="Lesson title" style="flex:1;background:transparent;border:none;padding:4px 8px"/>
+        <select class="form-input form-select" style="width:120px;padding:6px 30px 6px 10px;font-size:.75rem">
+          <option>Video</option><option>Document</option><option>Quiz</option><option>Text</option>
+        </select>
+        <input type="text" class="form-input" placeholder="00:00" style="width:70px;text-align:center;font-size:.8rem"/>
+        <label style="display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--text-muted);cursor:pointer;white-space:nowrap">
+          <input type="checkbox" style="accent-color:var(--accent-cyan)"/> Free
+        </label>
+        <button class="remove-btn" style="width:28px;height:28px" onclick="this.closest('.lesson-builder-item').remove()">×</button>`;
+      lessons.appendChild(div);
+    }
+
+    function saveDraft() {
+      Toast.success('Draft saved!', 'Your course progress has been saved.');
+    }
+
+    function submitCourse() {
+      if (!document.getElementById('agreement')?.checked) {
+        Toast.warning('Agreement required', 'Please accept the content guidelines first.');
+        return;
+      }
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '⟳ Submitting…';
+      setTimeout(() => {
+        Toast.success('Submitted! 🎉', 'Your course is now under admin review. You\'ll hear back within 1-3 days.');
+        setTimeout(() => location.href = 'dashboard.html', 2000);
+      }, 1500);
+    }
+
+    function handleDragOver(e, zone) {
+      e.preventDefault();
+      zone.classList.add('drag');
+    }
+
+    function handleDrop(e, zone, type) {
+      e.preventDefault();
+      zone.classList.remove('drag');
+      const file = e.dataTransfer.files[0];
+      if (file) Toast.info('File dropped', file.name);
+    }
+
+    function previewFile(input, previewId) {
+      const file = input.files[0];
+      if (!file) return;
+      Toast.success('Thumbnail uploaded', file.name);
+      const el = document.getElementById(previewId);
+      if (el && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          el.innerHTML = `<img src="${e.target.result}" style="max-height:200px;border-radius:10px;object-fit:cover"/>`;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Short description counter
+    document.getElementById('short-desc')?.addEventListener('input', function() {
+      document.getElementById('short-desc-count').textContent = `${this.value.length} / 200 characters`;
+    });
+    document.getElementById('course-short-desc')?.addEventListener('input', function() {
+      document.getElementById('short-desc-count').textContent = `${this.value.length} / 200 characters`;
+    });
+  
+    // Logout helper
+    function logout() {
+      Auth.clear();
+      const depth = window.location.pathname.split('/').length - 1;
+      const prefix = depth >= 4 ? '../../' : '../';
+      window.location.href = prefix + 'login.html';
+    }
+
+  </script>
+</body>
+</html>

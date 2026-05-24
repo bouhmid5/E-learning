@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Courses — EduNova</title>
+  <link rel="stylesheet" href="../../styles/main.css"/>
+  <style>
+    .course-progress-card { background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); overflow: hidden; transition: var(--transition-medium); }
+    .course-progress-card:hover { border-color: var(--border-accent); transform: translateY(-3px); box-shadow: var(--shadow-glow-cyan), var(--shadow-card); }
+    .cpc-thumb { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 4rem; position: relative; }
+    .cpc-status { position: absolute; top: 12px; right: 12px; }
+    .cpc-body { padding: 20px; }
+    .cpc-category { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--accent-cyan); margin-bottom: 6px; }
+    .cpc-title { font-family:'Syne',sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; line-height: 1.35; }
+    .cpc-meta { font-size: .75rem; color: var(--text-muted); margin-bottom: 12px; }
+    .cpc-bar-wrap { height: 6px; background: var(--bg-elevated); border-radius: 99px; overflow: hidden; margin-bottom: 8px; }
+    .cpc-bar-fill { height: 100%; border-radius: 99px; transition: width 1s ease; }
+    .cpc-footer { padding: 14px 20px; border-top: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; }
+    .filter-tabs { display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="navbar-logo-icon" style="width:28px;height:28px;font-size:.875rem">🎓</div>EduNova</div>
+    <p class="sidebar-section-label">Learning</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="dashboard.html"><span class="sidebar-nav-icon">🏠</span> Dashboard</a></li>
+      <li class="sidebar-nav-item"><a href="mes-cours.html" class="active"><span class="sidebar-nav-icon">📚</span> My courses</a></li>
+      <li class="sidebar-nav-item"><a href="../catalogue.html"><span class="sidebar-nav-icon">🔍</span> Catalogue</a></li>
+      <li class="sidebar-nav-item"><a href="lecon.html"><span class="sidebar-nav-icon">▶️</span> Continue learning</a></li>
+    </ul>
+    <p class="sidebar-section-label">Progress</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="certificats.html"><span class="sidebar-nav-icon">📜</span> Certificates</a></li>
+      <li class="sidebar-nav-item"><a href="quiz.html"><span class="sidebar-nav-icon">📝</span> Quizzes</a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">🏆</span> Achievements</a></li>
+    </ul>
+    <div style="flex:1"></div>
+    <div class="sidebar-user">
+      <div class="avatar avatar-sm avatar-gradient" data-user-avatar>SA</div>
+      <div class="sidebar-user-info"><div class="sidebar-user-name" data-user-name>Sara Aissaoui</div><div class="sidebar-user-role" data-user-role>🌱 Beginner · 840 XP</div></div>
+    </div>
+  </aside>
+
+  <div id="sidebar-overlay" class="hidden" style="position:fixed;inset:0;z-index:49;background:rgba(0,0,0,.6)"></div>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <button class="hamburger"><span></span><span></span><span></span></button>
+      <div style="flex:1"></div>
+      <a href="../catalogue.html" class="btn btn-primary btn-sm">+ Enroll new course</a>
+      <div class="avatar avatar-sm avatar-gradient" data-user-avatar style="cursor:pointer;margin-left:12px">SA</div>
+    </div>
+  </nav>
+
+  <div class="dashboard-layout">
+    <div class="dashboard-content">
+
+      <div class="dashboard-header">
+        <div class="dashboard-title">My Courses 📚</div>
+        <div class="dashboard-subtitle">Track your learning progress across all enrolled courses</div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="grid-stats" style="margin-bottom:28px">
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,#7c3aed,#00e5ff)" data-animate>
+          <div style="display:flex;justify-content:space-between"><div><div class="stat-value" data-count="6">0</div><div class="stat-label">Total enrolled</div></div><span style="font-size:1.75rem">📚</span></div>
+        </div>
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,#10b981,#059669)" data-animate data-delay="100">
+          <div style="display:flex;justify-content:space-between"><div><div class="stat-value" data-count="2">0</div><div class="stat-label">Completed</div></div><span style="font-size:1.75rem">✅</span></div>
+        </div>
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,#f59e0b,#d97706)" data-animate data-delay="200">
+          <div style="display:flex;justify-content:space-between"><div><div class="stat-value" data-count="4">0</div><div class="stat-label">In progress</div></div><span style="font-size:1.75rem">⏳</span></div>
+        </div>
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,#f43f5e,#be123c)" data-animate data-delay="300">
+          <div style="display:flex;justify-content:space-between"><div><div class="stat-value" data-count="72" data-suffix="%">0%</div><div class="stat-label">Avg progress</div></div><span style="font-size:1.75rem">📈</span></div>
+        </div>
+      </div>
+
+      <!-- Filter tabs -->
+      <div class="filter-tabs" id="status-filter" data-mode="single">
+        <span class="tag active" data-value="all">All courses</span>
+        <span class="tag" data-value="active">In progress</span>
+        <span class="tag" data-value="complete">Completed</span>
+        <span class="tag" data-value="abandoned">Abandoned</span>
+      </div>
+
+      <!-- Courses grid -->
+      <div class="grid-courses" id="courses-container">
+
+        <!-- ML A-Z – 8% -->
+        <div class="course-progress-card" data-animate data-status="active">
+          <div class="cpc-thumb" style="background:linear-gradient(135deg,#1e1b4b,#312e81)">
+            🧠
+            <div class="cpc-status"><span class="badge badge-violet">In progress</span></div>
+          </div>
+          <div class="cpc-body">
+            <div class="cpc-category">AI & Machine Learning</div>
+            <div class="cpc-title">Machine Learning A-Z: Python & R</div>
+            <div class="cpc-meta">14 of 186 lessons · Last studied 2h ago</div>
+            <div class="cpc-bar-wrap"><div class="cpc-bar-fill" style="width:8%;background:linear-gradient(90deg,#7c3aed,#00e5ff)"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-muted)"><span>8% complete</span><span>42h total</span></div>
+          </div>
+          <div class="cpc-footer">
+            <div style="font-size:.75rem;color:var(--text-muted)">⭐ 4.9 · Dr. Ryan Mitchell</div>
+            <a href="lecon.html" class="btn btn-primary btn-sm">Resume →</a>
+          </div>
+        </div>
+
+        <!-- React – 20% -->
+        <div class="course-progress-card" data-animate data-delay="100" data-status="active">
+          <div class="cpc-thumb" style="background:linear-gradient(135deg,#0c4a6e,#0284c7)">
+            ⚡
+            <div class="cpc-status"><span class="badge badge-cyan">In progress</span></div>
+          </div>
+          <div class="cpc-body">
+            <div class="cpc-category">Web Development</div>
+            <div class="cpc-title">The Complete React Developer 2025</div>
+            <div class="cpc-meta">48 of 240 lessons · Last studied yesterday</div>
+            <div class="cpc-bar-wrap"><div class="cpc-bar-fill" style="width:20%;background:linear-gradient(90deg,#0891b2,#00e5ff)"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-muted)"><span>20% complete</span><span>58h total</span></div>
+          </div>
+          <div class="cpc-footer">
+            <div style="font-size:.75rem;color:var(--text-muted)">⭐ 4.8 · Zach Adams</div>
+            <a href="lecon.html" class="btn btn-primary btn-sm">Resume →</a>
+          </div>
+        </div>
+
+        <!-- Figma – 77% -->
+        <div class="course-progress-card" data-animate data-delay="200" data-status="active">
+          <div class="cpc-thumb" style="background:linear-gradient(135deg,#14532d,#15803d)">
+            🎨
+            <div class="cpc-status"><span class="badge badge-amber">Almost done!</span></div>
+          </div>
+          <div class="cpc-body">
+            <div class="cpc-category">UI/UX Design</div>
+            <div class="cpc-title">Figma Masterclass: Design Systems</div>
+            <div class="cpc-meta">89 of 115 lessons · Last studied 3h ago</div>
+            <div class="cpc-bar-wrap"><div class="cpc-bar-fill" style="width:77%;background:linear-gradient(90deg,#15803d,#4ade80)"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-muted)"><span>77% complete</span><span>28h total</span></div>
+          </div>
+          <div class="cpc-footer">
+            <div style="font-size:.75rem;color:var(--text-muted)">⭐ 4.7 · Marie Laurent</div>
+            <a href="lecon.html" class="btn btn-primary btn-sm">Resume →</a>
+          </div>
+        </div>
+
+        <!-- Ethical Hacking – 55% -->
+        <div class="course-progress-card" data-animate data-delay="300" data-status="active">
+          <div class="cpc-thumb" style="background:linear-gradient(135deg,#7c2d12,#c2410c)">
+            🔐
+            <div class="cpc-status"><span class="badge badge-rose">In progress</span></div>
+          </div>
+          <div class="cpc-body">
+            <div class="cpc-category">Cybersecurity</div>
+            <div class="cpc-title">Ethical Hacking & Penetration Testing</div>
+            <div class="cpc-meta">162 of 295 lessons · Last studied 2d ago</div>
+            <div class="cpc-bar-wrap"><div class="cpc-bar-fill" style="width:55%;background:linear-gradient(90deg,#c2410c,#f97316)"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-muted)"><span>55% complete</span><span>65h total</span></div>
+          </div>
+          <div class="cpc-footer">
+            <div style="font-size:.75rem;color:var(--text-muted)">⭐ 4.9 · Karim Hassan</div>
+            <a href="lecon.html" class="btn btn-primary btn-sm">Resume →</a>
+          </div>
+        </div>
+
+        <!-- Python – 100% COMPLETE -->
+        <div class="course-progress-card" data-animate data-delay="400" data-status="complete">
+          <div class="cpc-thumb" style="background:linear-gradient(135deg,#14532d,#15803d)">
+            🐍
+            <div class="cpc-status"><span class="badge badge-emerald">✅ Completed</span></div>
+          </div>
+          <div class="cpc-body">
+            <div class="cpc-category">Data Science</div>
+            <div class="cpc-title">Python for Data Science — Complete Bootcamp</div>
+            <div class="cpc-meta">All 184 lessons complete · Finished Mar 2, 2026</div>
+            <div class="cpc-bar-wrap"><div class="cpc-bar-fill" style="width:100%;background:linear-gradient(90deg,#10b981,#34d399)"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:.75rem;color:#34d399;font-weight:600"><span>100% complete 🎉</span><span>Score: 92%</span></div>
+          </div>
+          <div class="cpc-footer">
+            <div style="font-size:.75rem;color:var(--text-muted)">⭐ 4.7 · Nour Benali</div>
+            <a href="certificats.html" class="btn btn-cyan btn-sm">📜 Certificate</a>
+          </div>
+        </div>
+
+        <!-- Figma 2 – 100% COMPLETE -->
+        <div class="course-progress-card" data-animate data-delay="500" data-status="complete">
+          <div class="cpc-thumb" style="background:linear-gradient(135deg,#3b0764,#7e22ce)">
+            🎨
+            <div class="cpc-status"><span class="badge badge-emerald">✅ Completed</span></div>
+          </div>
+          <div class="cpc-body">
+            <div class="cpc-category">UI/UX Design</div>
+            <div class="cpc-title">Figma Masterclass: Design Systems & Prototyping</div>
+            <div class="cpc-meta">All 115 lessons complete · Finished Apr 14, 2026</div>
+            <div class="cpc-bar-wrap"><div class="cpc-bar-fill" style="width:100%;background:linear-gradient(90deg,#7c3aed,#a855f7)"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:.75rem;color:#34d399;font-weight:600"><span>100% complete 🎉</span><span>Score: 96%</span></div>
+          </div>
+          <div class="cpc-footer">
+            <div style="font-size:.75rem;color:var(--text-muted)">⭐ 4.9 · Marie Laurent</div>
+            <a href="certificats.html" class="btn btn-cyan btn-sm">📜 Certificate</a>
+          </div>
+        </div>
+
+      </div><!-- /grid -->
+
+      <!-- Discover more -->
+      <div style="text-align:center;padding:48px 0;border-top:1px solid var(--border-subtle);margin-top:40px" data-animate>
+        <div style="font-size:2.5rem;margin-bottom:16px">🔍</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">Ready for more?</div>
+        <div style="color:var(--text-muted);font-size:.9375rem;margin-bottom:24px">Discover 840+ expert courses waiting for you</div>
+        <a href="../catalogue.html" class="btn btn-cyan btn-lg">Browse catalogue →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/main.js"></script>
+  <script>
+    // Filter by status
+    document.querySelectorAll('#status-filter .tag').forEach(tag => {
+      tag.addEventListener('click', () => {
+        const val = tag.dataset.value;
+        document.querySelectorAll('#courses-container .course-progress-card').forEach(card => {
+          if (val === 'all' || card.dataset.status === val) card.style.display = '';
+          else card.style.display = 'none';
+        });
+      });
+    });
+  
+    // Logout helper
+    function logout() {
+      Auth.clear();
+      const depth = window.location.pathname.split('/').length - 1;
+      const prefix = depth >= 4 ? '../../' : '../';
+      window.location.href = prefix + 'login.html';
+    }
+
+  </script>
+</body>
+</html>

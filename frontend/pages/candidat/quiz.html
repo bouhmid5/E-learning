@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz: Data Preprocessing — EduNova</title>
+  <link rel="stylesheet" href="../../styles/main.css"/>
+  <style>
+    .quiz-layout { max-width: 760px; margin: 0 auto; padding: 90px 24px 60px; }
+    .quiz-topbar { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: rgba(8,12,20,.95); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 16px; padding: 0 24px; z-index: 100; backdrop-filter: blur(16px); }
+    .quiz-timer { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(244,63,94,.1); border: 1px solid rgba(244,63,94,.2); border-radius: 99px; font-family: monospace; font-size: 1rem; font-weight: 700; color: #fb7185; }
+    .quiz-timer.warning { background: rgba(245,158,11,.1); border-color: rgba(245,158,11,.2); color: #fbbf24; animation: timerPulse 1s ease-in-out infinite; }
+    @keyframes timerPulse { 0%,100%{opacity:1}50%{opacity:.6} }
+    .quiz-dots { display: flex; gap: 6px; flex-wrap: wrap; }
+    .quiz-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bg-elevated); border: 1px solid var(--border-subtle); cursor: pointer; transition: .2s; }
+    .quiz-dot.answered { background: var(--accent-violet); border-color: var(--accent-violet); }
+    .quiz-dot.current { background: var(--accent-cyan); border-color: var(--accent-cyan); box-shadow: 0 0 8px rgba(0,229,255,.4); }
+    .quiz-dot.correct { background: var(--accent-emerald); border-color: var(--accent-emerald); }
+    .quiz-dot.wrong { background: var(--accent-rose); border-color: var(--accent-rose); }
+    .q-num { font-size: .75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; }
+    .q-text { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--text-primary); line-height: 1.4; margin-bottom: 28px; }
+    .q-option { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); margin-bottom: 10px; cursor: pointer; transition: var(--transition-fast); }
+    .q-option:hover { border-color: rgba(0,229,255,.3); background: rgba(0,229,255,.03); }
+    .q-option.selected { border-color: var(--accent-violet); background: rgba(124,58,237,.08); }
+    .q-option.correct { border-color: var(--accent-emerald); background: rgba(16,185,129,.08); pointer-events: none; }
+    .q-option.wrong { border-color: var(--accent-rose); background: rgba(244,63,94,.08); pointer-events: none; }
+    .q-option.reveal-correct { border-color: var(--accent-emerald); background: rgba(16,185,129,.05); }
+    .q-radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border-subtle); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: .2s; }
+    .q-option.selected .q-radio { border-color: var(--accent-violet); background: var(--accent-violet); }
+    .q-option.correct .q-radio { border-color: var(--accent-emerald); background: var(--accent-emerald); }
+    .q-option.wrong .q-radio { border-color: var(--accent-rose); background: var(--accent-rose); }
+    .q-option-text { font-size: .9375rem; color: var(--text-secondary); line-height: 1.5; flex: 1; }
+    .q-option.selected .q-option-text { color: var(--text-primary); }
+    .q-option.correct .q-option-text { color: #34d399; font-weight: 500; }
+    .q-option.wrong .q-option-text { color: #fb7185; }
+    .explanation-box { padding: 16px 20px; border-radius: var(--radius-md); margin-top: 16px; font-size: .875rem; line-height: 1.7; }
+    .explanation-box.correct { background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2); color: #34d399; }
+    .explanation-box.wrong { background: rgba(244,63,94,.08); border: 1px solid rgba(244,63,94,.2); color: #fb7185; }
+    .result-card { background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 48px; text-align: center; }
+    .result-score-circle { width: 140px; height: 140px; margin: 0 auto 28px; position: relative; }
+    .result-score-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+    @media (max-width: 600px) { .quiz-topbar { flex-wrap: wrap; height: auto; padding: 12px 16px; gap: 10px; } }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Top bar -->
+  <div class="quiz-topbar">
+    <a href="lecon.html" class="btn btn-ghost btn-sm btn-icon">←</a>
+    <div style="height:24px;width:1px;background:var(--border-subtle)"></div>
+    <div style="font-weight:600;font-size:.875rem;color:var(--text-primary);flex:1">📝 Quiz: Data Preprocessing · Machine Learning A-Z</div>
+    <div class="quiz-timer" id="timer">⏱ 14:32</div>
+    <div class="quiz-dots" id="quiz-dots"></div>
+  </div>
+
+  <div class="quiz-layout">
+
+    <!-- Progress bar -->
+    <div style="margin-bottom:32px">
+      <div style="display:flex;justify-content:space-between;font-size:.8125rem;color:var(--text-muted);margin-bottom:8px">
+        <span>Question <strong id="q-current" style="color:var(--text-primary)">1</strong> of <strong style="color:var(--text-primary)">8</strong></span>
+        <span id="q-answered-count">0 answered</span>
+      </div>
+      <div style="height:6px;background:var(--bg-elevated);border-radius:99px;overflow:hidden">
+        <div id="quiz-progress-fill" style="width:12.5%;height:100%;background:linear-gradient(90deg,#7c3aed,#00e5ff);border-radius:99px;transition:width .4s ease"></div>
+      </div>
+    </div>
+
+    <!-- Questions container -->
+    <div id="questions-container"></div>
+
+    <!-- Result (hidden initially) -->
+    <div id="result-section" class="hidden">
+      <div class="result-card animate-in">
+        <div style="font-size:1rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:24px">Quiz complete!</div>
+        <div class="result-score-circle">
+          <canvas data-chart-donut="87" data-color="#10b981" width="140" height="140"></canvas>
+          <div class="result-score-label">
+            <div id="final-score" style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:#34d399">87%</div>
+            <div style="font-size:.7rem;color:var(--text-muted)">Score</div>
+          </div>
+        </div>
+        <h2 style="font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;color:var(--text-primary);margin-bottom:12px" id="result-title">Excellent work! 🎉</h2>
+        <p style="color:var(--text-secondary);font-size:.9375rem;margin-bottom:28px" id="result-msg">You passed with a score of 7/8. You've earned 150 XP!</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px">
+          <div style="padding:16px;background:var(--bg-elevated);border-radius:var(--radius-md)">
+            <div id="res-correct" style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:#34d399">7</div>
+            <div style="font-size:.75rem;color:var(--text-muted)">Correct</div>
+          </div>
+          <div style="padding:16px;background:var(--bg-elevated);border-radius:var(--radius-md)">
+            <div id="res-wrong" style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:#fb7185">1</div>
+            <div style="font-size:.75rem;color:var(--text-muted)">Wrong</div>
+          </div>
+          <div style="padding:16px;background:var(--bg-elevated);border-radius:var(--radius-md)">
+            <div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:#fbbf24">+150</div>
+            <div style="font-size:.75rem;color:var(--text-muted)">XP earned</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-ghost" onclick="retakeQuiz()">🔄 Retake quiz</button>
+          <a href="lecon.html" class="btn btn-primary">Continue course →</a>
+          <a href="certificats.html" class="btn btn-cyan">📜 View certificates</a>
+        </div>
+        <!-- XP animation -->
+        <div id="xp-popup" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:#fbbf24;text-shadow:0 0 40px rgba(245,158,11,.5);pointer-events:none;display:none">+150 XP ⚡</div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div id="nav-btns" style="display:flex;gap:12px;margin-top:32px">
+      <button class="btn btn-ghost" id="prev-btn" onclick="prevQuestion()" style="flex:1" disabled>← Previous</button>
+      <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" style="flex:2">Next question →</button>
+    </div>
+  </div>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/main.js"></script>
+  <script>
+    const questions = [
+      { id: 1, text: 'What is the primary purpose of data preprocessing in Machine Learning?', options: ['To increase model complexity', 'To clean and prepare raw data for model training', 'To visualize data patterns', 'To deploy models to production'], correct: 1, explanation: 'Data preprocessing transforms raw data into a clean, usable format — handling missing values, encoding, scaling, and splitting — so ML models can learn effectively.' },
+      { id: 2, text: 'Which of the following is a common technique for handling missing data?', options: ['Deleting all rows with missing values', 'Imputation with mean/median/mode', 'Both A and B depending on context', 'Ignoring missing values entirely'], correct: 2, explanation: 'Both deletion (for small amounts) and imputation (filling with statistical values) are valid strategies. The best choice depends on the amount of missing data and its distribution.' },
+      { id: 3, text: 'What does "feature scaling" achieve in ML preprocessing?', options: ['Adds more features to the dataset', 'Normalizes feature values to a similar range', 'Removes irrelevant features', 'Splits data into train and test sets'], correct: 1, explanation: 'Feature scaling (normalization/standardization) ensures all features contribute equally to model training, preventing features with large values from dominating the model.' },
+      { id: 4, text: 'What is one-hot encoding used for?', options: ['Encrypting sensitive data', 'Converting categorical variables into numerical binary columns', 'Scaling numerical features', 'Splitting datasets'], correct: 1, explanation: 'One-hot encoding converts categorical variables (e.g., colors: Red, Blue, Green) into binary columns, allowing ML algorithms that require numerical input to process them.' },
+      { id: 5, text: 'Which split ratio is most commonly used for training and testing sets?', options: ['50% / 50%', '90% / 10%', '80% / 20%', '60% / 40%'], correct: 2, explanation: 'An 80/20 split is the most common starting point. It gives the model enough data to learn from while leaving a meaningful test set to evaluate generalization.' },
+      { id: 6, text: 'What is "data leakage" in the context of ML preprocessing?', options: ['Accidentally deleting important data', 'When information from the test set influences model training', 'When models generate synthetic data', 'Memory errors during data loading'], correct: 1, explanation: 'Data leakage occurs when information outside the training dataset is used to create the model, leading to overly optimistic performance estimates that do not generalize.' },
+      { id: 7, text: 'Which Python library is most commonly used for numerical data preprocessing?', options: ['Matplotlib', 'NumPy', 'Flask', 'Django'], correct: 1, explanation: 'NumPy is the foundational library for numerical computing in Python. It provides efficient array operations that are the basis for most ML preprocessing workflows.' },
+      { id: 8, text: 'What is the purpose of StandardScaler in scikit-learn?', options: ['To select the best features', 'To standardize features by removing the mean and scaling to unit variance', 'To encode categorical data', 'To split datasets'], correct: 1, explanation: 'StandardScaler transforms features so they have mean=0 and std=1 (z-score normalization), which is important for algorithms sensitive to feature scales like SVM and gradient descent.' },
+    ];
+
+    let current = 0;
+    let answers = new Array(questions.length).fill(null);
+    let revealed = new Array(questions.length).fill(false);
+    let timerVal = 14 * 60 + 32;
+    let timerInterval;
+    let quizSubmitted = false;
+
+    // Build dots
+    const dotsEl = document.getElementById('quiz-dots');
+    questions.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'quiz-dot' + (i === 0 ? ' current' : '');
+      d.title = `Question ${i+1}`;
+      d.onclick = () => { if (!quizSubmitted) goToQ(i); };
+      dotsEl.appendChild(d);
+    });
+
+    function updateDots() {
+      const dots = dotsEl.querySelectorAll('.quiz-dot');
+      dots.forEach((d, i) => {
+        d.className = 'quiz-dot';
+        if (i === current) d.classList.add('current');
+        else if (quizSubmitted && answers[i] !== null) {
+          if (answers[i] === questions[i].correct) d.classList.add('correct');
+          else d.classList.add('wrong');
+        } else if (answers[i] !== null) d.classList.add('answered');
+      });
+    }
+
+    function renderQuestion() {
+      const q = questions[current];
+      const container = document.getElementById('questions-container');
+      const isRevealed = revealed[current];
+      container.innerHTML = `
+        <div class="quiz-question animate-in">
+          <div class="q-num">Question ${q.id} of ${questions.length}</div>
+          <div class="q-text">${q.text}</div>
+          ${q.options.map((opt, i) => {
+            let cls = 'q-option';
+            let radioInner = '';
+            if (isRevealed) {
+              if (i === q.correct) { cls += ' correct'; radioInner = '✓'; }
+              else if (i === answers[current] && i !== q.correct) { cls += ' wrong'; radioInner = '×'; }
+            } else if (answers[current] === i) { cls += ' selected'; radioInner = '●'; }
+            return `<div class="${cls}" onclick="selectOption(${i})">
+              <div class="q-radio" style="font-size:.75rem;color:white">${radioInner}</div>
+              <div class="q-option-text">${String.fromCharCode(65+i)}. ${opt}</div>
+            </div>`;
+          }).join('')}
+          ${isRevealed ? `<div class="explanation-box ${answers[current]===q.correct?'correct':'wrong'}">
+            <strong>${answers[current]===q.correct?'✓ Correct!':'✗ Incorrect!'}</strong> ${q.explanation}
+          </div>` : ''}
+        </div>`;
+      document.getElementById('q-current').textContent = current + 1;
+      document.getElementById('quiz-progress-fill').style.width = ((current + 1) / questions.length * 100) + '%';
+      document.getElementById('q-answered-count').textContent = answers.filter(a=>a!==null).length + ' answered';
+      document.getElementById('prev-btn').disabled = current === 0;
+      const nextBtn = document.getElementById('next-btn');
+      if (current === questions.length - 1) {
+        nextBtn.textContent = '✅ Submit quiz';
+        nextBtn.onclick = submitQuiz;
+        nextBtn.className = 'btn btn-cyan';
+        nextBtn.style.flex = '2';
+      } else {
+        nextBtn.textContent = 'Next question →';
+        nextBtn.onclick = nextQuestion;
+        nextBtn.className = 'btn btn-primary';
+      }
+      updateDots();
+    }
+
+    function selectOption(i) {
+      if (revealed[current] || quizSubmitted) return;
+      answers[current] = i;
+      renderQuestion();
+    }
+
+    function nextQuestion() {
+      if (current < questions.length - 1) { current++; renderQuestion(); }
+    }
+    function prevQuestion() {
+      if (current > 0) { current--; renderQuestion(); }
+    }
+    function goToQ(i) { current = i; renderQuestion(); }
+
+    function submitQuiz() {
+      if (answers.some(a => a === null)) {
+        const unanswered = answers.filter(a=>a===null).length;
+        Toast.warning('Unanswered questions', `You have ${unanswered} unanswered question${unanswered>1?'s':''}. Submit anyway?`);
+        if (answers.filter(a=>a===null).length > 2) return;
+      }
+      quizSubmitted = true;
+      revealed = new Array(questions.length).fill(true);
+      clearInterval(timerInterval);
+      const correct = answers.filter((a, i) => a === questions[i].correct).length;
+      const total = questions.length;
+      const pct = Math.round(correct / total * 100);
+      document.getElementById('questions-container').classList.add('hidden');
+      document.getElementById('nav-btns').classList.add('hidden');
+      const resultEl = document.getElementById('result-section');
+      resultEl.classList.remove('hidden');
+      document.getElementById('final-score').textContent = pct + '%';
+      document.getElementById('res-correct').textContent = correct;
+      document.getElementById('res-wrong').textContent = total - correct;
+      const passed = pct >= 70;
+      document.getElementById('result-title').textContent = passed ? (pct >= 90 ? 'Outstanding! 🌟' : 'Great job! 🎉') : 'Keep practicing 💪';
+      document.getElementById('result-msg').textContent = passed
+        ? `You passed with ${correct}/${total} correct. You've earned ${pct >= 90 ? 200 : 150} XP!`
+        : `You scored ${correct}/${total}. You need 70% to pass. Review the material and try again.`;
+      // Update donut
+      const canvas = resultEl.querySelector('canvas');
+      if (canvas) { canvas.dataset.chartDonut = pct; canvas.dataset.color = passed ? '#10b981' : '#f43f5e'; }
+      // XP popup
+      if (passed) {
+        const xp = document.getElementById('xp-popup');
+        xp.style.display = 'block';
+        xp.style.animation = 'animateIn 500ms ease both, fadeUp 1s 1.5s ease forwards';
+        setTimeout(() => { xp.style.display = 'none'; }, 2500);
+        Toast.success('Quiz passed! 🎉', `You earned ${pct>=90?200:150} XP!`);
+      }
+      updateDots();
+    }
+
+    function retakeQuiz() {
+      answers = new Array(questions.length).fill(null);
+      revealed = new Array(questions.length).fill(false);
+      quizSubmitted = false;
+      current = 0;
+      document.getElementById('questions-container').classList.remove('hidden');
+      document.getElementById('nav-btns').classList.remove('hidden');
+      document.getElementById('result-section').classList.add('hidden');
+      timerVal = 14 * 60 + 32;
+      startTimer();
+      renderQuestion();
+    }
+
+    // Timer
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timerVal--;
+        const m = Math.floor(timerVal / 60);
+        const s = timerVal % 60;
+        const el = document.getElementById('timer');
+        el.textContent = `⏱ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        if (timerVal <= 120) el.classList.add('warning');
+        if (timerVal <= 0) { clearInterval(timerInterval); submitQuiz(); }
+      }, 1000);
+    }
+
+    startTimer();
+    renderQuestion();
+  </script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account — EduNova</title>
+  <link rel="stylesheet" href="../styles/main.css"/>
+  <style>
+    .auth-layout { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+    .auth-visual { background: linear-gradient(135deg,#0d1220,#1a0a2e,#0a1628); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 60px; position: relative; overflow: hidden; }
+    .auth-visual::before { content:''; position:absolute; width:500px; height:500px; background:radial-gradient(circle,rgba(0,229,255,0.15) 0%,transparent 70%); top:-100px; right:-100px; }
+    .auth-form-panel { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 60px 60px; background: var(--bg-void); overflow-y: auto; }
+    .auth-form-box { width: 100%; max-width: 480px; }
+    .auth-title { font-family:'Syne',sans-serif; font-size:1.75rem; font-weight:800; color:var(--text-primary); margin-bottom:8px; }
+    .auth-subtitle { color:var(--text-secondary); font-size:.9375rem; margin-bottom:32px; }
+    .role-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+    .role-card { padding: 20px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--bg-glass); cursor: pointer; text-align: center; transition: var(--transition-medium); position: relative; }
+    .role-card.active { border-color: var(--accent-violet); background: rgba(124,58,237,.08); }
+    .role-card.active::after { content:'✓'; position:absolute; top:8px; right:10px; color:#a78bfa; font-size:.875rem; font-weight:700; }
+    .role-card-icon { font-size: 2rem; margin-bottom: 10px; }
+    .role-card-title { font-family:'Syne',sans-serif; font-size:.9375rem; font-weight:700; color: var(--text-primary); margin-bottom: 6px; }
+    .role-card-desc { font-size:.75rem; color:var(--text-muted); line-height:1.6; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .strength-bar { height: 4px; border-radius: 99px; background: var(--bg-elevated); margin-top: 8px; overflow: hidden; }
+    .strength-fill { height: 100%; border-radius: 99px; transition: width .4s ease, background .4s ease; width: 0; }
+    .strength-label { font-size: .7rem; color: var(--text-muted); margin-top: 4px; }
+    .steps-indicator { display: flex; gap: 8px; margin-bottom: 32px; }
+    .step-dot { flex: 1; height: 3px; border-radius: 99px; background: var(--bg-elevated); transition: var(--transition-medium); }
+    .step-dot.active { background: var(--accent-violet); }
+    .step-dot.done { background: var(--accent-emerald); }
+    .social-btn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:12px; background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-md); color:var(--text-primary); font-family:var(--font-body); font-size:.875rem; font-weight:500; cursor:pointer; transition:var(--transition-fast); margin-bottom:10px; }
+    .social-btn:hover { background:var(--bg-glass-hover); border-color:rgba(255,255,255,.12); }
+    @media (max-width:768px) { .auth-layout{grid-template-columns:1fr} .auth-visual{display:none} .auth-form-panel{padding:32px 20px} .form-row{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+  <div class="auth-layout">
+
+    <!-- Visual -->
+    <div class="auth-visual">
+      <div style="position:relative;z-index:1;text-align:center;max-width:420px">
+        <div style="font-size:3.5rem;margin-bottom:24px">🚀</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.875rem;font-weight:800;color:#f0f4ff;margin-bottom:16px">Start your learning journey today</div>
+        <div style="color:#4b5563;font-size:.9375rem;line-height:1.75;margin-bottom:40px">Join thousands of professionals leveling up their skills on EduNova. Free to start, no credit card needed.</div>
+        <!-- Benefits -->
+        <div style="display:flex;flex-direction:column;gap:14px;text-align:left">
+          <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px">
+            <span style="font-size:1.25rem">📚</span>
+            <div><div style="font-weight:600;color:#f0f4ff;font-size:.875rem">Access 840+ courses</div><div style="font-size:.75rem;color:#4b5563">All levels, all disciplines</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px">
+            <span style="font-size:1.25rem">🏆</span>
+            <div><div style="font-weight:600;color:#f0f4ff;font-size:.875rem">Earn verified certificates</div><div style="font-size:.75rem;color:#4b5563">Share on LinkedIn instantly</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px">
+            <span style="font-size:1.25rem">📈</span>
+            <div><div style="font-weight:600;color:#f0f4ff;font-size:.875rem">Track your progress</div><div style="font-size:.75rem;color:#4b5563">Dashboard, streaks & analytics</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="auth-form-panel">
+      <div class="auth-form-box animate-in">
+        <a href="../index.html" class="navbar-logo" style="margin-bottom:32px;display:inline-flex">
+          <div class="navbar-logo-icon">🎓</div>EduNova
+        </a>
+
+        <!-- Progress dots -->
+        <div class="steps-indicator">
+          <div class="step-dot active" id="dot-1"></div>
+          <div class="step-dot" id="dot-2"></div>
+          <div class="step-dot" id="dot-3"></div>
+        </div>
+
+        <div class="auth-title">Create your account</div>
+        <div class="auth-subtitle">Already have one? <a href="login.html" style="color:var(--accent-cyan);text-decoration:none">Sign in</a></div>
+
+        <!-- Step 1: Role -->
+        <div id="step-1">
+          <p style="font-size:.875rem;font-weight:600;color:var(--text-secondary);margin-bottom:16px;text-transform:uppercase;letter-spacing:.06em">I want to…</p>
+          <div class="role-selector" style="grid-template-columns:1fr 1fr">
+            <div class="role-card active" onclick="selectRole(this,'candidate')">
+              <div class="role-card-icon">🧑‍💻</div>
+              <div class="role-card-title">Learn</div>
+              <div class="role-card-desc">Enroll in courses and earn certificates</div>
+            </div>
+            <div class="role-card" onclick="selectRole(this,'trainer')">
+              <div class="role-card-icon">👩‍🏫</div>
+              <div class="role-card-title">Teach</div>
+              <div class="role-card-desc">Create courses and reach thousands</div>
+            </div>
+          </div>
+
+          <!-- Social -->
+          <button class="social-btn" onclick="Toast.info('OAuth','Google sign-up would open here.')">
+            <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285f4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34a853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#fbbc05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#ea4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
+            Sign up with Google
+          </button>
+          <div class="divider-text" style="margin:20px 0">or continue with email</div>
+          <button class="btn btn-primary btn-lg w-full" onclick="goStep(2)">Continue with email →</button>
+        </div>
+
+        <!-- Step 2: Personal Info -->
+        <div id="step-2" class="hidden">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First name</label>
+              <input class="form-input" type="text" placeholder="Sara" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last name</label>
+              <input class="form-input" type="text" placeholder="Aissaoui" required/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email address</label>
+            <input class="form-input" type="email" placeholder="you@example.com" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div style="position:relative">
+              <input class="form-input" type="password" id="reg-password" placeholder="Min. 8 characters" required style="padding-right:44px" oninput="checkStrength(this.value)"/>
+              <button type="button" onclick="togglePwd('reg-password',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem">👁</button>
+            </div>
+            <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+            <div class="strength-label" id="strength-label">Enter a password</div>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:8px">
+            <button class="btn btn-ghost btn-lg" style="flex:1" onclick="goStep(1)">← Back</button>
+            <button class="btn btn-primary btn-lg" style="flex:2" onclick="goStep(3)">Continue →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Preferences / Confirm -->
+        <div id="step-3" class="hidden">
+          <div id="trainer-fields" class="hidden">
+            <div class="form-group">
+              <label class="form-label">Speciality</label>
+              <input class="form-input" type="text" placeholder="e.g. Machine Learning, Web Development"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Years of experience</label>
+              <select class="form-input form-select">
+                <option>Less than 1 year</option>
+                <option>1–3 years</option>
+                <option>3–5 years</option>
+                <option>5–10 years</option>
+                <option>10+ years</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">LinkedIn profile <span style="color:var(--text-muted)">(optional)</span></label>
+              <input class="form-input" type="url" placeholder="https://linkedin.com/in/you"/>
+            </div>
+          </div>
+          <div id="candidate-fields">
+            <div class="form-group">
+              <label class="form-label">Learning goal</label>
+              <select class="form-input form-select">
+                <option>Career change</option>
+                <option>Skill upgrade</option>
+                <option>Personal development</option>
+                <option>Academic supplement</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Experience level</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+                <label style="cursor:pointer">
+                  <input type="radio" name="level" value="DEBUTANT" checked style="display:none" onchange="document.querySelectorAll('.level-opt').forEach(l=>l.classList.remove('active'));this.parentElement.querySelector('.level-opt').classList.add('active')"/>
+                  <div class="level-opt active" style="padding:10px;border:1px solid var(--border-subtle);border-radius:10px;text-align:center;font-size:.8125rem;color:var(--text-secondary);transition:.2s;cursor:pointer" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.level-opt').forEach(l=>l.classList.remove('active'));this.classList.add('active')">
+                    <div style="font-size:1.25rem">🌱</div>Beginner
+                  </div>
+                </label>
+                <label style="cursor:pointer">
+                  <input type="radio" name="level" value="INTERMEDIAIRE" style="display:none"/>
+                  <div class="level-opt" style="padding:10px;border:1px solid var(--border-subtle);border-radius:10px;text-align:center;font-size:.8125rem;color:var(--text-secondary);transition:.2s;cursor:pointer" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.level-opt').forEach(l=>l.classList.remove('active'));this.classList.add('active')">
+                    <div style="font-size:1.25rem">⚡</div>Intermediate
+                  </div>
+                </label>
+                <label style="cursor:pointer">
+                  <input type="radio" name="level" value="AVANCE" style="display:none"/>
+                  <div class="level-opt" style="padding:10px;border:1px solid var(--border-subtle);border-radius:10px;text-align:center;font-size:.8125rem;color:var(--text-secondary);transition:.2s;cursor:pointer" onclick="this.previousElementSibling.checked=true;document.querySelectorAll('.level-opt').forEach(l=>l.classList.remove('active'));this.classList.add('active')">
+                    <div style="font-size:1.25rem">🔥</div>Advanced
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+          <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:.8125rem;color:var(--text-secondary);margin-bottom:24px;line-height:1.6">
+            <input type="checkbox" required style="margin-top:3px;accent-color:var(--accent-violet)"/>
+            I agree to EduNova's <a href="#" style="color:var(--accent-cyan);text-decoration:none">Terms of Service</a> and <a href="#" style="color:var(--accent-cyan);text-decoration:none">Privacy Policy</a>
+          </label>
+          <div style="display:flex;gap:12px">
+            <button class="btn btn-ghost btn-lg" style="flex:1" onclick="goStep(2)">← Back</button>
+            <button class="btn btn-cyan btn-lg" style="flex:2" onclick="handleRegister()">Create account 🎉</button>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:28px;font-size:.75rem;color:var(--text-muted)">
+          🔒 Your data is encrypted and never sold
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    let currentStep = 1;
+    let selectedRole = 'candidate';
+
+    function selectRole(el, role) {
+      document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      selectedRole = role;
+    }
+
+    function goStep(n) {
+      document.getElementById('step-' + currentStep).classList.add('hidden');
+      document.getElementById('dot-' + currentStep).classList.remove('active');
+      document.getElementById('dot-' + currentStep).classList.add('done');
+      currentStep = n;
+      document.getElementById('step-' + n).classList.remove('hidden');
+      document.getElementById('dot-' + n).classList.add('active');
+      if (n === 3) {
+        const trainerFields = document.getElementById('trainer-fields');
+        const candidateFields = document.getElementById('candidate-fields');
+        if (selectedRole === 'trainer') { trainerFields.classList.remove('hidden'); candidateFields.classList.add('hidden'); }
+        else { trainerFields.classList.add('hidden'); candidateFields.classList.remove('hidden'); }
+      }
+    }
+
+    function togglePwd(id, btn) {
+      const inp = document.getElementById(id);
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+    }
+
+    function checkStrength(val) {
+      const fill = document.getElementById('strength-fill');
+      const label = document.getElementById('strength-label');
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      const configs = [
+        { w:'0%', c:'transparent', t:'Enter a password' },
+        { w:'25%', c:'#f43f5e', t:'Too weak' },
+        { w:'50%', c:'#f59e0b', t:'Fair' },
+        { w:'75%', c:'#0891b2', t:'Good' },
+        { w:'100%', c:'#10b981', t:'Strong ✓' },
+      ];
+      const cfg = configs[score];
+      fill.style.width = cfg.w; fill.style.background = cfg.c; label.textContent = cfg.t;
+      label.style.color = cfg.c;
+    }
+
+    function handleRegister() {
+      // Collect form values from step 2 inputs
+      const s2inputs = document.querySelectorAll('#step-2 input');
+      const firstName = s2inputs[0]?.value.trim() || 'User';
+      const lastName  = s2inputs[1]?.value.trim() || '';
+      const email     = s2inputs[2]?.value.trim() || 'user@edunova.com';
+      const level     = document.querySelector('input[name="level"]:checked')?.value || 'DEBUTANT';
+
+      if (!firstName) { Toast.warning('Missing info', 'Please enter your first name.'); goStep(2); return; }
+
+      const user = {
+        name:     [firstName, lastName].filter(Boolean).join(' '),
+        email:    email,
+        role:     selectedRole,
+        level:    level,
+        xp:       0,
+        joinedAt: new Date().toISOString(),
+      };
+
+      Auth.save(user);
+      Toast.success('Account created! 🎉', `Welcome, ${firstName}! Check your email to verify.`);
+      setTimeout(() => {
+        if (selectedRole === 'candidate') window.location.href = 'candidat/dashboard.html';
+        else window.location.href = 'formateur/dashboard.html';
+      }, 1800);
+    }
+  </script>
+</body>
+</html>
