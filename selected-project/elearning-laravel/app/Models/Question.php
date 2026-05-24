@@ -49,4 +49,9 @@ class Question extends Model
     {
         return $this->hasMany(ReponseCandidat::class);
     }
+
+    public function criteresCorrection(): HasMany
+    {
+        return $this->hasMany(CritereCorrection::class);
+    }
 }

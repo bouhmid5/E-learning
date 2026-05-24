@@ -15,6 +15,7 @@ class CritereCorrectionFactory extends Factory
     {
         return [
             'evaluation_id' => Evaluation::factory(),
+            'question_id' => null,
             'description' => fake()->sentence(),
             'poids' => 1,
             'valeur_attendue' => null,
@@ -22,4 +23,3 @@ class CritereCorrectionFactory extends Factory
         ];
     }
 }
-

@@ -6,12 +6,16 @@ use App\Http\Controllers\Admin\CourseValidationController;
 use App\Http\Controllers\Admin\TrainerValidationController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Candidate\EnrollmentController;
+use App\Http\Controllers\Candidate\EvaluationSubmissionController;
 use App\Http\Controllers\Candidate\ProgressionController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Public\CategoryController;
 use App\Http\Controllers\Public\CourseCatalogueController;
 use App\Http\Controllers\Trainer\CourseController as TrainerCourseController;
+use App\Http\Controllers\Trainer\EvaluationController as TrainerEvaluationController;
 use App\Http\Controllers\Trainer\LessonController as TrainerLessonController;
+use App\Http\Controllers\Trainer\OptionReponseController as TrainerOptionReponseController;
+use App\Http\Controllers\Trainer\QuestionController as TrainerQuestionController;
 use App\Http\Controllers\Trainer\ResourceController as TrainerResourceController;
 use Illuminate\Support\Facades\Route;
 
@@ -53,12 +57,24 @@ Route::middleware(['auth', 'role:formateur'])->prefix('trainer')->name('trainer.
     Route::get('/courses', [TrainerCourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/create', [TrainerCourseController::class, 'create'])->name('courses.create');
     Route::post('/courses', [TrainerCourseController::class, 'store'])->name('courses.store');
+    Route::get('/courses/{cours}/evaluations', [TrainerEvaluationController::class, 'index'])->name('courses.evaluations.index');
+    Route::get('/courses/{cours}/evaluations/create', [TrainerEvaluationController::class, 'create'])->name('courses.evaluations.create');
+    Route::post('/courses/{cours}/evaluations', [TrainerEvaluationController::class, 'store'])->name('courses.evaluations.store');
     Route::get('/courses/{cours}', [TrainerCourseController::class, 'show'])->name('courses.show');
     Route::get('/courses/{cours}/edit', [TrainerCourseController::class, 'edit'])->name('courses.edit');
     Route::put('/courses/{cours}', [TrainerCourseController::class, 'update'])->name('courses.update');
     Route::delete('/courses/{cours}', [TrainerCourseController::class, 'destroy'])->name('courses.destroy');
     Route::post('/courses/{cours}/lessons', [TrainerLessonController::class, 'store'])->name('courses.lessons.store');
     Route::post('/courses/{cours}/submit', [TrainerCourseController::class, 'submit'])->name('courses.submit');
+    Route::get('/evaluations/{evaluation}/edit', [TrainerEvaluationController::class, 'edit'])->name('evaluations.edit');
+    Route::put('/evaluations/{evaluation}', [TrainerEvaluationController::class, 'update'])->name('evaluations.update');
+    Route::delete('/evaluations/{evaluation}', [TrainerEvaluationController::class, 'destroy'])->name('evaluations.destroy');
+    Route::post('/evaluations/{evaluation}/questions', [TrainerQuestionController::class, 'store'])->name('evaluations.questions.store');
+    Route::put('/questions/{question}', [TrainerQuestionController::class, 'update'])->name('questions.update');
+    Route::delete('/questions/{question}', [TrainerQuestionController::class, 'destroy'])->name('questions.destroy');
+    Route::post('/questions/{question}/options', [TrainerOptionReponseController::class, 'store'])->name('questions.options.store');
+    Route::put('/options/{option}', [TrainerOptionReponseController::class, 'update'])->name('options.update');
+    Route::delete('/options/{option}', [TrainerOptionReponseController::class, 'destroy'])->name('options.destroy');
     Route::put('/lessons/{lecon}', [TrainerLessonController::class, 'update'])->name('lessons.update');
     Route::delete('/lessons/{lecon}', [TrainerLessonController::class, 'destroy'])->name('lessons.destroy');
     Route::post('/lessons/{lecon}/resources', [TrainerResourceController::class, 'store'])->name('lessons.resources.store');
@@ -77,6 +93,11 @@ Route::middleware(['auth', 'role:candidat'])->prefix('candidate')->name('candida
     Route::post('/enrollments/{inscription}/lessons/{lecon}/complete', [ProgressionController::class, 'complete'])->name('enrollments.lessons.complete');
     Route::get('/enrollments/{inscription}/progress', [ProgressionController::class, 'progress'])->name('enrollments.progress');
     Route::get('/enrollments/{inscription}/resources/{ressource}/download', [EnrollmentController::class, 'download'])->name('enrollments.resources.download');
+    Route::get('/evaluations/{evaluation}', [EvaluationSubmissionController::class, 'show'])->name('evaluations.show');
+    Route::post('/evaluations/{evaluation}/start', [EvaluationSubmissionController::class, 'start'])->name('evaluations.start');
+    Route::post('/evaluations/{evaluation}/submit', [EvaluationSubmissionController::class, 'submit'])->name('evaluations.submit');
+    Route::get('/submissions/{soumission}', [EvaluationSubmissionController::class, 'submission'])->name('submissions.show');
+    Route::get('/results', [EvaluationSubmissionController::class, 'results'])->name('results');
 });
 
 Route::get('/admin/dashboard', [DashboardController::class, 'admin'])
