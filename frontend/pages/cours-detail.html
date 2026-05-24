@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Machine Learning A-Z — EduNova</title>
+  <link rel="stylesheet" href="../styles/main.css"/>
+  <style>
+    .course-hero { background: linear-gradient(to bottom, rgba(30,27,75,.6), var(--bg-void)); padding: 110px 0 60px; border-bottom: 1px solid var(--border-subtle); }
+    .course-hero-grid { display: grid; grid-template-columns: 1fr 360px; gap: 48px; align-items: start; }
+    .course-breadcrumb { font-size: .8125rem; color: var(--text-muted); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+    .course-breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .course-breadcrumb a:hover { color: var(--text-primary); }
+    .course-main-title { font-family:'Syne',sans-serif; font-size:clamp(1.75rem,4vw,2.5rem); font-weight:800; color:var(--text-primary); margin-bottom:16px; line-height:1.2; }
+    .course-tagline { font-size:1.0625rem; color:var(--text-secondary); margin-bottom:20px; line-height:1.65; }
+    .course-meta-row { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-bottom: 20px; font-size: .875rem; color: var(--text-secondary); }
+    .course-meta-item { display: flex; align-items: center; gap: 6px; }
+    .course-instructor-mini { display: flex; align-items: center; gap: 10px; margin-top: 20px; }
+    .course-enroll-card { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 28px; position: sticky; top: 90px; }
+    .course-enroll-thumb { aspect-ratio: 16/9; background: linear-gradient(135deg,#1e1b4b,#312e81); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 3.5rem; margin-bottom: 20px; cursor: pointer; position: relative; overflow: hidden; }
+    .course-enroll-thumb:hover .play-overlay { opacity: 1; }
+    .play-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: .3s; font-size: 2.5rem; }
+    .enroll-price { font-family:'Syne',sans-serif; font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 16px; }
+    .enroll-price span { font-size: 1rem; font-weight: 400; color: var(--text-muted); text-decoration: line-through; margin-left: 8px; }
+    .guarantee-text { display: flex; align-items: center; gap: 6px; font-size: .75rem; color: var(--text-muted); margin-top: 12px; justify-content: center; }
+    .course-includes { list-style: none; margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .course-includes li { display: flex; align-items: center; gap: 10px; font-size: .8125rem; color: var(--text-secondary); }
+    .course-body { display: grid; grid-template-columns: 1fr 360px; gap: 48px; padding: 48px 0; }
+    .tabs-content { background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); overflow: hidden; }
+    .tabs-header { display: flex; border-bottom: 1px solid var(--border-subtle); overflow-x: auto; }
+    .tab-link { padding: 16px 24px; font-size: .875rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: .2s; }
+    .tab-link.active { color: var(--accent-cyan); border-bottom-color: var(--accent-cyan); }
+    .tab-link:hover:not(.active) { color: var(--text-primary); }
+    .tab-pane { padding: 28px; }
+    .curriculum-section { margin-bottom: 4px; }
+    .curriculum-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: var(--bg-elevated); border-radius: 10px; cursor: pointer; font-weight: 600; font-size: .9rem; color: var(--text-primary); }
+    .curriculum-header:hover { background: rgba(255,255,255,.05); }
+    .curriculum-lessons { padding: 4px 0; }
+    .lesson-item { display: flex; align-items: center; gap: 12px; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: .2s; font-size: .875rem; color: var(--text-secondary); }
+    .lesson-item:hover { background: var(--bg-glass); color: var(--text-primary); }
+    .lesson-item.free { color: var(--accent-cyan); }
+    .lesson-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; font-size: .8rem; flex-shrink: 0; }
+    .lesson-duration { margin-left: auto; font-size: .75rem; color: var(--text-muted); }
+    .rating-breakdown { display: flex; flex-direction: column; gap: 6px; }
+    .rating-row { display: flex; align-items: center; gap: 10px; font-size: .8125rem; }
+    .rating-bar { flex: 1; height: 6px; background: var(--bg-elevated); border-radius: 99px; overflow: hidden; }
+    .rating-fill { height: 100%; border-radius: 99px; background: var(--accent-amber); }
+    .review-card { padding: 20px 0; border-bottom: 1px solid var(--border-subtle); }
+    .review-card:last-child { border-bottom: none; }
+    .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .review-text { font-size: .875rem; color: var(--text-secondary); line-height: 1.7; }
+    .review-date { font-size: .75rem; color: var(--text-muted); margin-left: auto; }
+    @media (max-width: 900px) { .course-hero-grid, .course-body { grid-template-columns: 1fr; } .course-enroll-card { position: relative; top: 0; } }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="../index.html" class="navbar-logo"><div class="navbar-logo-icon">🎓</div>EduNova</a>
+      <ul class="navbar-nav">
+        <li><a href="catalogue.html">Catalogue</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <a href="login.html" class="btn btn-ghost btn-sm">Sign in</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Get started</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+
+    <!-- ── Course Hero ── -->
+    <div class="course-hero">
+      <div class="container">
+        <div class="course-hero-grid">
+          <div>
+            <div class="course-breadcrumb">
+              <a href="../index.html">Home</a> › <a href="catalogue.html">Catalogue</a> › <a href="#">AI & ML</a> › Machine Learning A-Z
+            </div>
+            <div class="badge badge-violet" style="margin-bottom:16px">🔥 Bestseller</div>
+            <h1 class="course-main-title">Machine Learning A-Z: Hands-On Python & R In Data Science</h1>
+            <p class="course-tagline">Learn to create Machine Learning Algorithms in Python and R from two Data Science experts. Code templates included — build real-world projects from day one.</p>
+
+            <div class="course-meta-row">
+              <div class="course-rating"><span class="stars">★★★★★</span> <strong style="color:var(--accent-amber)">4.9</strong> <span>(12,400 ratings)</span></div>
+              <span>·</span>
+              <span>👥 <strong style="color:var(--text-primary)">89,420</strong> students</span>
+              <span>·</span>
+              <span>🌍 English · French</span>
+              <span>·</span>
+              <span>🔄 Last updated May 2026</span>
+            </div>
+
+            <div class="course-meta-row">
+              <span class="badge badge-cyan">🎯 Advanced</span>
+              <span class="badge badge-violet">📖 186 lessons</span>
+              <span class="badge badge-amber">⏱ 42 hours</span>
+              <span class="badge badge-emerald">📜 Certificate</span>
+            </div>
+
+            <div class="course-instructor-mini">
+              <div class="avatar avatar-md avatar-gradient">DR</div>
+              <div>
+                <div style="font-size:.875rem;font-weight:600;color:var(--text-primary)">Dr. Ryan Mitchell & Kirill Eremenko</div>
+                <div style="font-size:.75rem;color:var(--text-muted)">⭐ 4.9 · 320K students · Data Science Experts</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Enroll Card -->
+          <div class="course-enroll-card animate-in">
+            <div class="course-enroll-thumb" onclick="Toast.info('Preview','Course preview would play here.')">
+              🧠
+              <div class="play-overlay">▶️</div>
+            </div>
+            <div class="enroll-price">Free <span>$149</span></div>
+            <button class="btn btn-cyan btn-lg w-full" data-enroll="ml-az" id="enroll-btn" onclick="handleEnroll()">🎓 Enroll now — it's free</button>
+            <div class="guarantee-text">✅ 30-day money-back guarantee</div>
+            <ul class="course-includes">
+              <li>🎬 42 hours on-demand video</li>
+              <li>📄 186 downloadable resources</li>
+              <li>♾️ Full lifetime access</li>
+              <li>📱 Access on mobile & desktop</li>
+              <li>📜 Certificate of completion</li>
+              <li>🤖 AI-powered recommendations</li>
+            </ul>
+            <div style="border-top:1px solid var(--border-subtle);margin-top:20px;padding-top:16px;display:flex;gap:10px">
+              <button class="btn btn-ghost btn-sm" style="flex:1" onclick="Toast.info('Saved','Course saved to your wishlist.')">♡ Save</button>
+              <button class="btn btn-ghost btn-sm" style="flex:1" onclick="Toast.info('Shared','Share link copied!')">↗ Share</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Course Body ── -->
+    <div class="container">
+      <div class="course-body">
+        <div>
+
+          <!-- What you'll learn -->
+          <div class="glass-card-elevated" style="padding:28px;margin-bottom:24px" data-animate>
+            <h2 style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:20px">What you'll learn</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div style="display:flex;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span style="color:#10b981;margin-top:1px">✓</span>Master Machine Learning on Python & R</div>
+              <div style="display:flex;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span style="color:#10b981;margin-top:1px">✓</span>Handle advanced techniques like Dimensionality Reduction</div>
+              <div style="display:flex;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span style="color:#10b981;margin-top:1px">✓</span>Make accurate predictions with regression models</div>
+              <div style="display:flex;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span style="color:#10b981;margin-top:1px">✓</span>Use Deep Learning, Transfer Learning & NLP</div>
+              <div style="display:flex;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span style="color:#10b981;margin-top:1px">✓</span>Build and deploy ML models to production</div>
+              <div style="display:flex;gap:10px;font-size:.875rem;color:var(--text-secondary)"><span style="color:#10b981;margin-top:1px">✓</span>Apply clustering for market segmentation</div>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="tabs-content" data-animate>
+            <div class="tabs-header">
+              <div class="tab-link active" onclick="switchTab('curriculum',this)">📚 Curriculum</div>
+              <div class="tab-link" onclick="switchTab('overview',this)">📋 Overview</div>
+              <div class="tab-link" onclick="switchTab('reviews',this)">⭐ Reviews (12.4k)</div>
+              <div class="tab-link" onclick="switchTab('instructor',this)">👨‍🏫 Instructor</div>
+            </div>
+
+            <!-- Curriculum Tab -->
+            <div class="tab-pane" id="tab-curriculum">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                <span style="font-size:.875rem;color:var(--text-secondary)">186 lessons · 42 hours total · <span style="color:var(--accent-cyan)">12 free previews</span></span>
+                <button class="btn btn-ghost btn-sm" onclick="document.querySelectorAll('.curriculum-lessons').forEach(l=>l.style.display=l.style.display==='none'?'block':'none')">Expand all</button>
+              </div>
+
+              <!-- Section 1 -->
+              <div class="curriculum-section" data-accordion>
+                <div class="curriculum-header accordion-trigger">
+                  <span>Section 1: Welcome to the Course</span>
+                  <div style="display:flex;align-items:center;gap:14px">
+                    <span style="font-size:.75rem;color:var(--text-muted)">4 lessons · 30 min</span>
+                    <span class="accordion-icon" style="transition:.2s;color:var(--text-muted)">▾</span>
+                  </div>
+                </div>
+                <div class="accordion-content curriculum-lessons">
+                  <div class="lesson-item free" onclick="location.href='candidat/lecon.html'"><div class="lesson-icon">▶</div><span>1. Welcome to the course</span><span class="badge badge-cyan" style="margin-left:8px;font-size:.65rem;padding:2px 7px">FREE</span><span class="lesson-duration">5:30</span></div>
+                  <div class="lesson-item free" onclick="location.href='candidat/lecon.html'"><div class="lesson-icon">▶</div><span>2. What is Machine Learning?</span><span class="badge badge-cyan" style="margin-left:8px;font-size:.65rem;padding:2px 7px">FREE</span><span class="lesson-duration">8:45</span></div>
+                  <div class="lesson-item" onclick="Toast.info('Locked','Enroll to unlock this lesson.')"><div class="lesson-icon">🔒</div><span>3. Setting up your environment</span><span class="lesson-duration">12:20</span></div>
+                  <div class="lesson-item" onclick="Toast.info('Locked','Enroll to unlock this lesson.')"><div class="lesson-icon">📄</div><span>4. Course resources & cheat sheets</span><span class="lesson-duration">Resource</span></div>
+                </div>
+              </div>
+
+              <!-- Section 2 -->
+              <div class="curriculum-section" data-accordion style="margin-top:4px">
+                <div class="curriculum-header accordion-trigger">
+                  <span>Section 2: Data Preprocessing</span>
+                  <div style="display:flex;align-items:center;gap:14px">
+                    <span style="font-size:.75rem;color:var(--text-muted)">12 lessons · 2h 15min</span>
+                    <span class="accordion-icon" style="transition:.2s;color:var(--text-muted)">▾</span>
+                  </div>
+                </div>
+                <div class="accordion-content curriculum-lessons">
+                  <div class="lesson-item" onclick="Toast.info('Locked','Enroll to unlock.')"><div class="lesson-icon">🔒</div><span>5. Importing libraries</span><span class="lesson-duration">10:15</span></div>
+                  <div class="lesson-item" onclick="Toast.info('Locked','Enroll to unlock.')"><div class="lesson-icon">🔒</div><span>6. Handling missing data</span><span class="lesson-duration">14:30</span></div>
+                  <div class="lesson-item" onclick="Toast.info('Locked','Enroll to unlock.')"><div class="lesson-icon">🔒</div><span>7. Encoding categorical data</span><span class="lesson-duration">18:00</span></div>
+                  <div class="lesson-item" onclick="Toast.info('Locked','Enroll to unlock.')"><div class="lesson-icon">📝</div><span>Quiz: Data Preprocessing</span><span class="lesson-duration">Quiz</span></div>
+                </div>
+              </div>
+
+              <!-- Section 3 -->
+              <div class="curriculum-section" data-accordion style="margin-top:4px">
+                <div class="curriculum-header accordion-trigger">
+                  <span>Section 3: Regression Models</span>
+                  <div style="display:flex;align-items:center;gap:14px">
+                    <span style="font-size:.75rem;color:var(--text-muted)">28 lessons · 6h 40min</span>
+                    <span class="accordion-icon" style="transition:.2s;color:var(--text-muted)">▾</span>
+                  </div>
+                </div>
+                <div class="accordion-content curriculum-lessons">
+                  <div class="lesson-item" onclick="Toast.info('Locked','Enroll to unlock.')"><div class="lesson-icon">🔒</div><span>8. Simple Linear Regression</span><span class="lesson-duration">22:10</span></div>
+                  <div class="lesson-item" onclick="Toast.info('Locked','Enroll to unlock.')"><div class="lesson-icon">🔒</div><span>9. Multiple Linear Regression</span><span class="lesson-duration">35:00</span></div>
+                  <div class="lesson-item" onclick="Toast.info('Locked','Enroll to unlock.')"><div class="lesson-icon">🔒</div><span>10. Polynomial Regression</span><span class="lesson-duration">28:45</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="tab-pane hidden" id="tab-overview">
+              <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:16px">About this course</h3>
+              <p style="font-size:.9375rem;color:var(--text-secondary);line-height:1.8;margin-bottom:16px">Interested in the field of Machine Learning? Then this course is for you! This course has been designed by two professional Data Scientists so that we can share our knowledge and help you learn complex theory, algorithms, and coding libraries in a simple way.</p>
+              <p style="font-size:.9375rem;color:var(--text-secondary);line-height:1.8;margin-bottom:24px">We will walk you step-by-step through exciting journey of Machine Learning. With every tutorial you will develop new skills and improve your understanding of this challenging yet lucrative sub-field of Data Science.</p>
+              <h4 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:12px">Requirements</h4>
+              <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:.875rem;color:var(--text-secondary)">
+                <li>• High School Mathematics level</li>
+                <li>• Basic Python programming knowledge</li>
+                <li>• No ML experience needed — we'll teach from scratch</li>
+              </ul>
+            </div>
+
+            <!-- Reviews Tab -->
+            <div class="tab-pane hidden" id="tab-reviews">
+              <div style="display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;margin-bottom:32px">
+                <div style="text-align:center">
+                  <div style="font-family:'Syne',sans-serif;font-size:4rem;font-weight:800;color:var(--accent-amber);line-height:1">4.9</div>
+                  <div class="stars" style="font-size:1.25rem">★★★★★</div>
+                  <div style="font-size:.75rem;color:var(--text-muted);margin-top:4px">Course rating</div>
+                </div>
+                <div class="rating-breakdown">
+                  <div class="rating-row"><span style="font-size:.75rem;white-space:nowrap">5 ★</span><div class="rating-bar"><div class="rating-fill" style="width:82%"></div></div><span style="font-size:.75rem;color:var(--text-muted)">82%</span></div>
+                  <div class="rating-row"><span style="font-size:.75rem;white-space:nowrap">4 ★</span><div class="rating-bar"><div class="rating-fill" style="width:12%;"></div></div><span style="font-size:.75rem;color:var(--text-muted)">12%</span></div>
+                  <div class="rating-row"><span style="font-size:.75rem;white-space:nowrap">3 ★</span><div class="rating-bar"><div class="rating-fill" style="width:4%"></div></div><span style="font-size:.75rem;color:var(--text-muted)">4%</span></div>
+                  <div class="rating-row"><span style="font-size:.75rem;white-space:nowrap">2 ★</span><div class="rating-bar"><div class="rating-fill" style="width:1%"></div></div><span style="font-size:.75rem;color:var(--text-muted)">1%</span></div>
+                  <div class="rating-row"><span style="font-size:.75rem;white-space:nowrap">1 ★</span><div class="rating-bar"><div class="rating-fill" style="width:1%"></div></div><span style="font-size:.75rem;color:var(--text-muted)">1%</span></div>
+                </div>
+              </div>
+              <div class="review-card">
+                <div class="review-header">
+                  <div class="avatar avatar-sm avatar-gradient">SA</div>
+                  <div><div style="font-weight:600;font-size:.875rem;color:var(--text-primary)">Sara Aissaoui</div><div style="color:#f59e0b;font-size:.8rem">★★★★★</div></div>
+                  <div class="review-date">2 weeks ago</div>
+                </div>
+                <div class="review-text">Absolutely incredible course. The instructors break down complex topics into digestible chunks. I went from zero ML knowledge to deploying my first model in just 6 weeks!</div>
+              </div>
+              <div class="review-card">
+                <div class="review-header">
+                  <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#0891b2,#00e5ff);color:#fff;width:36px;height:36px;font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%">YB</div>
+                  <div><div style="font-weight:600;font-size:.875rem;color:var(--text-primary)">Youssef Belhaj</div><div style="color:#f59e0b;font-size:.8rem">★★★★★</div></div>
+                  <div class="review-date">1 month ago</div>
+                </div>
+                <div class="review-text">Best ML course on the internet, period. The code templates saved me countless hours. The gamification system kept me hooked — earned the Gold Learner badge!</div>
+              </div>
+            </div>
+
+            <!-- Instructor Tab -->
+            <div class="tab-pane hidden" id="tab-instructor">
+              <div style="display:flex;gap:24px;align-items:flex-start;margin-bottom:24px">
+                <div class="avatar avatar-xl avatar-gradient" style="flex-shrink:0">DR</div>
+                <div>
+                  <div style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;color:var(--text-primary);margin-bottom:4px">Dr. Ryan Mitchell</div>
+                  <div style="font-size:.875rem;color:var(--text-muted);margin-bottom:12px">Senior Data Scientist · ML Researcher</div>
+                  <div style="display:flex;gap:20px;font-size:.8125rem;color:var(--text-secondary)">
+                    <span>⭐ 4.9 rating</span><span>👥 320K students</span><span>📚 6 courses</span>
+                  </div>
+                </div>
+              </div>
+              <p style="font-size:.9375rem;color:var(--text-secondary);line-height:1.8">Dr. Ryan Mitchell holds a PhD in Machine Learning and has over 10 years of industry experience at top AI companies. He has trained over 320,000 students worldwide and is passionate about making complex AI concepts accessible to everyone.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar recommendations -->
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:16px;font-size:1rem;color:var(--text-primary)">🔥 Related courses</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="glass-card" style="padding:14px;cursor:pointer" onclick="Toast.info('Course','Opening course…')">
+              <div style="display:flex;gap:12px;align-items:center">
+                <div style="width:60px;height:45px;border-radius:8px;background:linear-gradient(135deg,#1e3a5f,#2563eb);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.25rem">📊</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:.8125rem;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Deep Learning Specialization</div>
+                  <div style="font-size:.75rem;color:var(--text-muted)">⭐ 4.8 · 42h</div>
+                </div>
+              </div>
+            </div>
+            <div class="glass-card" style="padding:14px;cursor:pointer" onclick="Toast.info('Course','Opening course…')">
+              <div style="display:flex;gap:12px;align-items:center">
+                <div style="width:60px;height:45px;border-radius:8px;background:linear-gradient(135deg,#14532d,#15803d);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.25rem">🐍</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:.8125rem;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Python for Data Science</div>
+                  <div style="font-size:.75rem;color:var(--text-muted)">⭐ 4.7 · 28h</div>
+                </div>
+              </div>
+            </div>
+            <div class="glass-card" style="padding:14px;cursor:pointer" onclick="Toast.info('Course','Opening course…')">
+              <div style="display:flex;gap:12px;align-items:center">
+                <div style="width:60px;height:45px;border-radius:8px;background:linear-gradient(135deg,#3b0764,#7e22ce);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.25rem">🤖</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:.8125rem;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">NLP with Transformers</div>
+                  <div style="font-size:.75rem;color:var(--text-muted)">⭐ 4.9 · 36h</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script>
+    function switchTab(id, el) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.remove('hidden');
+      el.classList.add('active');
+    }
+    function handleEnroll() {
+      const btn = document.getElementById('enroll-btn');
+      if (btn.classList.contains('enrolled')) return;
+      btn.disabled = true;
+      btn.innerHTML = '⟳ Enrolling…';
+      setTimeout(() => {
+        btn.innerHTML = '✅ Enrolled — Go to course';
+        btn.classList.add('enrolled');
+        btn.onclick = () => location.href = 'candidat/lecon.html';
+        Toast.success('Enrolled! 🎉', 'Welcome to Machine Learning A-Z!');
+      }, 1200);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trainer Dashboard — EduNova</title>
+  <link rel="stylesheet" href="../../styles/main.css"/>
+  <style>
+    .mini-chart-wrap { height: 80px; position: relative; }
+    .student-row { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; transition: .2s; cursor: pointer; }
+    .student-row:hover { background: var(--bg-glass); }
+    .student-status { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .course-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.04); }
+    .course-row:last-child { border-bottom: none; }
+    .course-mini-thumb { width: 48px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="navbar-logo-icon" style="width:28px;height:28px;font-size:.875rem">🎓</div>EduNova</div>
+    <p class="sidebar-section-label">Teaching</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="dashboard.html" class="active"><span class="sidebar-nav-icon">🏠</span> Dashboard</a></li>
+      <li class="sidebar-nav-item"><a href="mes-cours.html"><span class="sidebar-nav-icon">📚</span> My courses</a></li>
+      <li class="sidebar-nav-item"><a href="creer-cours.html"><span class="sidebar-nav-icon">➕</span> Create course</a></li>
+      <li class="sidebar-nav-item"><a href="etudiants.html"><span class="sidebar-nav-icon">👥</span> Students</a></li>
+    </ul>
+    <p class="sidebar-section-label">Analytics</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">📊</span> Analytics</a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">💰</span> Revenue</a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">📝</span> Reviews</a></li>
+    </ul>
+    <p class="sidebar-section-label">Account</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">💬</span> Messages <span class="sidebar-badge">7</span></a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">⚙️</span> Settings</a></li>
+    </ul>
+    <div style="flex:1"></div>
+    <div class="sidebar-user">
+      <div class="avatar avatar-sm" data-user-avatar style="background:linear-gradient(135deg,#0891b2,#00e5ff);color:#fff;width:36px;height:36px;font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0">KM</div>
+      <div class="sidebar-user-info"><div class="sidebar-user-name" data-user-name>Karim Mansouri</div><div class="sidebar-user-role" data-user-role>👩‍🏫 Trainer · Verified ✅</div></div>
+    </div>
+  </aside>
+
+  <div id="sidebar-overlay" class="hidden" style="position:fixed;inset:0;z-index:49;background:rgba(0,0,0,.6)"></div>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <button class="hamburger"><span></span><span></span><span></span></button>
+      <div style="flex:1"></div>
+      <a href="creer-cours.html" class="btn btn-primary btn-sm">+ New course</a>
+      <div class="avatar avatar-sm" data-user-avatar style="background:linear-gradient(135deg,#0891b2,#00e5ff);color:#fff;width:36px;height:36px;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;margin-left:12px">KM</div>
+    </div>
+  </nav>
+
+  <div class="dashboard-layout">
+    <div class="dashboard-content">
+
+      <div class="dashboard-header">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px">
+          <div>
+            <div class="dashboard-title" data-user-welcome>Welcome back, Karim 👋</div>
+            <div class="dashboard-subtitle">You have <strong style="color:#fb7185">12 pending submissions</strong> to review · <strong style="color:#34d399">2,840 active students</strong></div>
+          </div>
+          <div style="display:flex;gap:12px">
+            <a href="creer-cours.html" class="btn btn-primary">+ Create course</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid-stats">
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,#00e5ff,#0891b2)" data-animate>
+          <div style="display:flex;justify-content:space-between">
+            <div><div class="stat-value" data-count="2840">0</div><div class="stat-label">Total students</div></div>
+            <span style="font-size:1.75rem">👥</span>
+          </div>
+          <div class="stat-change up">↑ +142 this month</div>
+        </div>
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,#10b981,#059669)" data-animate data-delay="100">
+          <div style="display:flex;justify-content:space-between">
+            <div><div class="stat-value" data-count="8240" data-suffix="">$0</div><div class="stat-label">Monthly revenue</div></div>
+            <span style="font-size:1.75rem">💰</span>
+          </div>
+          <div class="stat-change up">↑ +$1,240 vs last month</div>
+        </div>
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,#f59e0b,#d97706)" data-animate data-delay="200">
+          <div style="display:flex;justify-content:space-between">
+            <div><div class="stat-value" data-count="4.9">0</div><div class="stat-label">Avg. rating</div></div>
+            <span style="font-size:1.75rem">⭐</span>
+          </div>
+          <div class="stat-change up">↑ +0.1 this month</div>
+        </div>
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,#7c3aed,#5b21b6)" data-animate data-delay="300">
+          <div style="display:flex;justify-content:space-between">
+            <div><div class="stat-value" data-count="6">0</div><div class="stat-label">Active courses</div></div>
+            <span style="font-size:1.75rem">📚</span>
+          </div>
+          <div class="stat-change up">1 pending review</div>
+        </div>
+      </div>
+
+      <!-- Main Grid -->
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:24px">
+
+        <!-- Left -->
+        <div style="display:flex;flex-direction:column;gap:24px">
+
+          <!-- Revenue Chart -->
+          <div class="glass-card-elevated" style="padding:24px" data-animate>
+            <div class="section-header">
+              <div class="section-title">💰 Revenue overview</div>
+              <div class="tabs" style="padding:3px">
+                <button class="tab-btn active" onclick="this.parentElement.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">6M</button>
+                <button class="tab-btn" onclick="this.parentElement.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">1Y</button>
+                <button class="tab-btn" onclick="this.parentElement.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">All</button>
+              </div>
+            </div>
+            <!-- Bar chart visualisation -->
+            <div style="display:flex;align-items:flex-end;gap:6px;height:120px;margin:16px 0 8px">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+                <div style="flex:1;width:100%;background:rgba(0,229,255,.3);border-radius:4px 4px 0 0;position:relative" title="Nov: $5,200" onmouseover="this.style.background='rgba(0,229,255,.5)'" onmouseout="this.style.background='rgba(0,229,255,.3)'" style="height:63%"></div>
+                <span style="font-size:.65rem;color:var(--text-muted)">Nov</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+                <div style="flex:.8;width:100%;background:rgba(0,229,255,.3);border-radius:4px 4px 0 0" title="Dec: $6,100" onmouseover="this.style.background='rgba(0,229,255,.5)'" onmouseout="this.style.background='rgba(0,229,255,.3)'"></div>
+                <span style="font-size:.65rem;color:var(--text-muted)">Dec</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+                <div style="flex:.6;width:100%;background:rgba(0,229,255,.3);border-radius:4px 4px 0 0" title="Jan: $5,800" onmouseover="this.style.background='rgba(0,229,255,.5)'" onmouseout="this.style.background='rgba(0,229,255,.3)'"></div>
+                <span style="font-size:.65rem;color:var(--text-muted)">Jan</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+                <div style="flex:.75;width:100%;background:rgba(0,229,255,.3);border-radius:4px 4px 0 0" title="Feb: $6,800" onmouseover="this.style.background='rgba(0,229,255,.5)'" onmouseout="this.style.background='rgba(0,229,255,.3)'"></div>
+                <span style="font-size:.65rem;color:var(--text-muted)">Feb</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+                <div style="flex:.85;width:100%;background:rgba(0,229,255,.3);border-radius:4px 4px 0 0" title="Mar: $7,200" onmouseover="this.style.background='rgba(0,229,255,.5)'" onmouseout="this.style.background='rgba(0,229,255,.3)'"></div>
+                <span style="font-size:.65rem;color:var(--text-muted)">Mar</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+                <div style="flex:1;width:100%;background:rgba(0,229,255,.6);border-radius:4px 4px 0 0;box-shadow:0 0 12px rgba(0,229,255,.3)" title="Apr: $8,240 (current)"></div>
+                <span style="font-size:.65rem;color:var(--accent-cyan)">May ★</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-muted)">
+              <span>6-month total: <strong style="color:var(--text-primary)">$39,740</strong></span>
+              <span>Best month: <strong style="color:var(--accent-cyan)">May — $8,240</strong></span>
+            </div>
+          </div>
+
+          <!-- Courses Table -->
+          <div class="glass-card-elevated" style="padding:24px" data-animate>
+            <div class="section-header">
+              <div class="section-title">📚 My courses</div>
+              <a href="creer-cours.html" class="btn btn-primary btn-sm">+ New</a>
+            </div>
+            <div>
+              <div class="course-row">
+                <div class="course-mini-thumb" style="background:linear-gradient(135deg,#1e1b4b,#312e81)">🧠</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:600;font-size:.875rem;color:var(--text-primary)">Machine Learning A-Z</div>
+                  <div style="font-size:.75rem;color:var(--text-muted)">1,240 students · 4.9 ★</div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-weight:700;font-size:.9rem;color:#34d399">$4,120</div>
+                  <div style="font-size:.7rem;color:var(--text-muted)">this month</div>
+                </div>
+                <span class="badge badge-emerald" style="margin-left:10px">Live</span>
+              </div>
+              <div class="course-row">
+                <div class="course-mini-thumb" style="background:linear-gradient(135deg,#0c4a6e,#0284c7)">⚡</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:600;font-size:.875rem;color:var(--text-primary)">React Developer 2025</div>
+                  <div style="font-size:.75rem;color:var(--text-muted)">840 students · 4.8 ★</div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-weight:700;font-size:.9rem;color:#34d399">$2,680</div>
+                  <div style="font-size:.7rem;color:var(--text-muted)">this month</div>
+                </div>
+                <span class="badge badge-emerald" style="margin-left:10px">Live</span>
+              </div>
+              <div class="course-row">
+                <div class="course-mini-thumb" style="background:linear-gradient(135deg,#14532d,#15803d)">🎨</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:600;font-size:.875rem;color:var(--text-primary)">Figma Masterclass</div>
+                  <div style="font-size:.75rem;color:var(--text-muted)">480 students · 4.7 ★</div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-weight:700;font-size:.9rem;color:#34d399">$960</div>
+                  <div style="font-size:.7rem;color:var(--text-muted)">this month</div>
+                </div>
+                <span class="badge badge-emerald" style="margin-left:10px">Live</span>
+              </div>
+              <div class="course-row">
+                <div class="course-mini-thumb" style="background:linear-gradient(135deg,#3b0764,#7e22ce)">☁️</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:600;font-size:.875rem;color:var(--text-primary)">NestJS Advanced</div>
+                  <div style="font-size:.75rem;color:var(--text-muted)">280 students · 4.9 ★</div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-weight:700;font-size:.9rem;color:#34d399">$480</div>
+                  <div style="font-size:.7rem;color:var(--text-muted)">this month</div>
+                </div>
+                <span class="badge badge-amber" style="margin-left:10px">Review</span>
+              </div>
+            </div>
+            <a href="mes-cours.html" class="btn btn-ghost w-full" style="margin-top:16px">View all courses →</a>
+          </div>
+
+          <!-- Pending Submissions -->
+          <div class="glass-card-elevated" style="padding:24px" data-animate>
+            <div class="section-header">
+              <div class="section-title">📝 Pending reviews</div>
+              <span class="badge badge-rose">12 pending</span>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr><th>Student</th><th>Course</th><th>Assignment</th><th>Submitted</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar avatar-sm avatar-gradient" style="font-size:.65rem">SA</div><span>Sara Aissaoui</span></div></td>
+                  <td>ML A-Z</td>
+                  <td>Linear Regression Project</td>
+                  <td style="color:var(--text-muted)">2h ago</td>
+                  <td><button class="btn btn-primary btn-sm" onclick="Toast.success('Opened','Reviewing submission…')">Review</button></td>
+                </tr>
+                <tr>
+                  <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#0891b2,#00e5ff);color:#fff;width:28px;height:28px;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%">YB</div><span>Youssef Belhaj</span></div></td>
+                  <td>React Dev</td>
+                  <td>Todo App Component</td>
+                  <td style="color:var(--text-muted)">5h ago</td>
+                  <td><button class="btn btn-primary btn-sm" onclick="Toast.success('Opened','Reviewing submission…')">Review</button></td>
+                </tr>
+                <tr>
+                  <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#15803d,#4ade80);color:#fff;width:28px;height:28px;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%">NB</div><span>Nadia Benali</span></div></td>
+                  <td>Figma</td>
+                  <td>Design System Submission</td>
+                  <td style="color:var(--text-muted)">1d ago</td>
+                  <td><button class="btn btn-primary btn-sm" onclick="Toast.success('Opened','Reviewing submission…')">Review</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div style="display:flex;flex-direction:column;gap:20px">
+
+          <!-- Profile -->
+          <div class="glass-card-elevated" style="padding:24px;text-align:center" data-animate>
+            <div class="avatar avatar-xl" data-user-avatar style="background:linear-gradient(135deg,#0891b2,#00e5ff);color:#fff;margin:0 auto 16px;font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%;width:72px;height:72px">KM</div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.125rem;font-weight:700;color:var(--text-primary)" data-user-name>Karim Mansouri</div>
+            <div style="font-size:.8125rem;color:var(--text-muted);margin-bottom:4px">Senior Full Stack Trainer</div>
+            <span class="badge badge-emerald" style="margin-bottom:16px">✅ Verified Trainer</span>
+            <div style="display:flex;gap:16px;justify-content:center">
+              <div><div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--text-primary)">6</div><div style="font-size:.7rem;color:var(--text-muted)">Courses</div></div>
+              <div><div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--text-primary)">2.8K</div><div style="font-size:.7rem;color:var(--text-muted)">Students</div></div>
+              <div><div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--text-primary)">4.9★</div><div style="font-size:.7rem;color:var(--text-muted)">Rating</div></div>
+            </div>
+          </div>
+
+          <!-- Top students -->
+          <div class="glass-card-elevated" style="padding:20px" data-animate>
+            <div style="font-weight:700;font-size:.875rem;margin-bottom:14px;color:var(--text-primary)">🏆 Top students this month</div>
+            <div>
+              <div class="student-row">
+                <span style="font-size:.875rem;font-weight:700;color:var(--text-muted);width:20px">1</span>
+                <div class="avatar avatar-sm avatar-gradient">SA</div>
+                <div style="flex:1">
+                  <div style="font-size:.8125rem;font-weight:600;color:var(--text-primary)">Sara Aissaoui</div>
+                  <div style="font-size:.7rem;color:var(--text-muted)">ML A-Z · 89% complete</div>
+                </div>
+                <div class="student-status" style="background:#10b981"></div>
+              </div>
+              <div class="student-row">
+                <span style="font-size:.875rem;font-weight:700;color:var(--text-muted);width:20px">2</span>
+                <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#0891b2,#00e5ff);color:#fff;width:36px;height:36px;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%">YB</div>
+                <div style="flex:1">
+                  <div style="font-size:.8125rem;font-weight:600;color:var(--text-primary)">Youssef Belhaj</div>
+                  <div style="font-size:.7rem;color:var(--text-muted)">React Dev · 72% complete</div>
+                </div>
+                <div class="student-status" style="background:#10b981"></div>
+              </div>
+              <div class="student-row">
+                <span style="font-size:.875rem;font-weight:700;color:var(--text-muted);width:20px">3</span>
+                <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#15803d,#4ade80);color:#fff;width:36px;height:36px;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%">NB</div>
+                <div style="flex:1">
+                  <div style="font-size:.8125rem;font-weight:600;color:var(--text-primary)">Nadia Benali</div>
+                  <div style="font-size:.7rem;color:var(--text-muted)">Figma · 95% complete</div>
+                </div>
+                <div class="student-status" style="background:#f59e0b"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick actions -->
+          <div class="glass-card-elevated" style="padding:20px" data-animate>
+            <div style="font-weight:700;font-size:.875rem;margin-bottom:14px;color:var(--text-primary)">⚡ Quick actions</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <a href="creer-cours.html" class="btn btn-primary btn-sm">+ Create new course</a>
+              <button class="btn btn-ghost btn-sm" onclick="Toast.info('Quiz','Opening quiz creator…')">📝 Create quiz</button>
+              <button class="btn btn-ghost btn-sm" onclick="Toast.info('Message','Opening message center…')">💬 Message students</button>
+              <button class="btn btn-ghost btn-sm" onclick="Toast.info('Report','Generating report…')">📊 Export report</button>
+            </div>
+          </div>
+
+          <!-- Recent reviews -->
+          <div class="glass-card-elevated" style="padding:20px" data-animate>
+            <div style="font-weight:700;font-size:.875rem;margin-bottom:14px;color:var(--text-primary)">⭐ Recent reviews</div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                  <div class="avatar avatar-sm avatar-gradient" style="font-size:.65rem;width:28px;height:28px">SA</div>
+                  <div>
+                    <div style="font-size:.8rem;font-weight:600;color:var(--text-primary)">Sara A.</div>
+                    <div style="color:#f59e0b;font-size:.75rem">★★★★★</div>
+                  </div>
+                  <span style="margin-left:auto;font-size:.7rem;color:var(--text-muted)">2h ago</span>
+                </div>
+                <div style="font-size:.8rem;color:var(--text-secondary);line-height:1.6">"Best ML instructor! The projects are incredibly practical."</div>
+              </div>
+              <div style="border-top:1px solid var(--border-subtle);padding-top:14px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                  <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#0891b2,#00e5ff);color:#fff;width:28px;height:28px;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%">YB</div>
+                  <div>
+                    <div style="font-size:.8rem;font-weight:600;color:var(--text-primary)">Youssef B.</div>
+                    <div style="color:#f59e0b;font-size:.75rem">★★★★★</div>
+                  </div>
+                  <span style="margin-left:auto;font-size:.7rem;color:var(--text-muted)">1d ago</span>
+                </div>
+                <div style="font-size:.8rem;color:var(--text-secondary);line-height:1.6">"Amazing React course. Got hired 2 months after completing it!"</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/main.js">
+    // Logout helper
+    function logout() {
+      Auth.clear();
+      const depth = window.location.pathname.split('/').length - 1;
+      const prefix = depth >= 4 ? '../../' : '../';
+      window.location.href = prefix + 'login.html';
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Getting Started Guide — EduNova</title>
+  <link rel="stylesheet" href="styles/main.css"/>
+  <style>
+    .guide-layout { max-width: 920px; margin: 0 auto; padding: 100px 24px 80px; }
+    .guide-nav { position: fixed; top: 80px; right: 32px; width: 220px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 16px; z-index: 10; }
+    .guide-nav-title { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); margin-bottom: 12px; }
+    .guide-nav-item { display: block; font-size: .8125rem; color: var(--text-secondary); text-decoration: none; padding: 6px 10px; border-radius: 6px; margin-bottom: 2px; transition: .2s; }
+    .guide-nav-item:hover, .guide-nav-item.active { background: var(--bg-glass); color: var(--text-primary); }
+    .guide-nav-item.active { color: var(--accent-cyan); }
+    .step-block { background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 32px; margin-bottom: 24px; position: relative; overflow: hidden; }
+    .step-block::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--step-color, linear-gradient(180deg,#7c3aed,#00e5ff)); }
+    .step-number { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--step-bg, rgba(124,58,237,.15)); border: 1px solid var(--step-border, rgba(124,58,237,.3)); font-family: 'Syne',sans-serif; font-size: .9rem; font-weight: 800; color: var(--step-col, #a78bfa); margin-bottom: 16px; }
+    .step-title { font-family: 'Syne',sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; }
+    .step-desc { color: var(--text-secondary); font-size: .9375rem; line-height: 1.75; margin-bottom: 20px; }
+    .code-block { background: #0a0f1a; border: 1px solid rgba(255,255,255,.08); border-radius: var(--radius-md); padding: 20px 24px; font-family: 'Fira Code', 'Cascadia Code', monospace; font-size: .875rem; line-height: 1.8; color: #e2e8f0; overflow-x: auto; position: relative; margin: 16px 0; }
+    .code-block .comment { color: #4b5563; }
+    .code-block .cmd { color: #34d399; }
+    .code-block .str { color: #fbbf24; }
+    .code-block .kw { color: #a78bfa; }
+    .code-block .val { color: #60a5fa; }
+    .copy-code { position: absolute; top: 10px; right: 10px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); color: var(--text-muted); border-radius: 6px; padding: 4px 10px; font-size: .7rem; cursor: pointer; transition: .2s; }
+    .copy-code:hover { color: var(--text-primary); }
+    .tip-box { padding: 16px 20px; border-radius: var(--radius-md); margin: 16px 0; display: flex; gap: 12px; align-items: flex-start; }
+    .tip-box.info { background: rgba(0,229,255,.06); border: 1px solid rgba(0,229,255,.15); }
+    .tip-box.warning { background: rgba(245,158,11,.06); border: 1px solid rgba(245,158,11,.15); }
+    .tip-box.success { background: rgba(16,185,129,.06); border: 1px solid rgba(16,185,129,.15); }
+    .tip-box.danger { background: rgba(244,63,94,.06); border: 1px solid rgba(244,63,94,.15); }
+    .tip-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 1px; }
+    .tip-text { font-size: .875rem; color: var(--text-secondary); line-height: 1.7; }
+    .url-card { display: flex; align-items: center; gap: 14px; padding: 16px 20px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); margin: 10px 0; cursor: pointer; transition: .2s; }
+    .url-card:hover { border-color: rgba(0,229,255,.25); }
+    .url-badge { font-family: monospace; font-size: .8125rem; color: var(--accent-cyan); background: rgba(0,229,255,.08); padding: 4px 10px; border-radius: 6px; }
+    .role-card-guide { padding: 20px 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); flex: 1; }
+    .file-tree { font-family: monospace; font-size: .8125rem; color: var(--text-secondary); line-height: 2; background: #0a0f1a; border: 1px solid rgba(255,255,255,.08); border-radius: var(--radius-md); padding: 24px; overflow-x: auto; }
+    .file-tree .dir { color: #60a5fa; font-weight: 700; }
+    .file-tree .file { color: #e2e8f0; }
+    .file-tree .desc { color: #4b5563; }
+    @media (max-width: 1200px) { .guide-nav { display: none; } }
+    @media (max-width: 768px) { .guide-layout { padding: 90px 16px 60px; } }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-logo"><div class="navbar-logo-icon">🎓</div>EduNova</a>
+      <div style="flex:1"></div>
+      <a href="index.html" class="btn btn-ghost btn-sm">← Back to home</a>
+      <a href="pages/login.html" class="btn btn-primary btn-sm">View platform</a>
+    </div>
+  </nav>
+
+  <!-- Sidebar nav -->
+  <div class="guide-nav">
+    <div class="guide-nav-title">📖 Contents</div>
+    <a href="#overview"   class="guide-nav-item active">Overview</a>
+    <a href="#structure"  class="guide-nav-item">Project structure</a>
+    <a href="#frontend"   class="guide-nav-item">1. Frontend setup</a>
+    <a href="#database"   class="guide-nav-item">2. Database setup</a>
+    <a href="#backend"    class="guide-nav-item">3. Backend setup</a>
+    <a href="#env"        class="guide-nav-item">4. Environment vars</a>
+    <a href="#roles"      class="guide-nav-item">5. User roles & login</a>
+    <a href="#pages"      class="guide-nav-item">6. Pages reference</a>
+    <a href="#api"        class="guide-nav-item">7. API reference</a>
+    <a href="#docker"     class="guide-nav-item">8. Docker</a>
+    <a href="#troubleshoot" class="guide-nav-item">9. Troubleshooting</a>
+  </div>
+
+  <div class="page-wrapper">
+  <div class="guide-layout">
+
+    <!-- Hero -->
+    <div style="text-align:center;margin-bottom:56px" data-animate>
+      <div style="font-size:4rem;margin-bottom:16px">🚀</div>
+      <h1 style="font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:800;color:var(--text-primary);margin-bottom:16px">Getting Started with EduNova</h1>
+      <p style="font-size:1.0625rem;color:var(--text-secondary);max-width:600px;margin:0 auto;line-height:1.75">A complete step-by-step guide to launch the platform locally — from zero to running in under 10 minutes.</p>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap">
+        <span class="badge badge-emerald">✅ No prior setup needed</span>
+        <span class="badge badge-cyan">⚡ 10-minute quickstart</span>
+        <span class="badge badge-violet">🎓 Full-stack platform</span>
+      </div>
+    </div>
+
+    <!-- Overview -->
+    <div id="overview" style="margin-bottom:40px" data-animate>
+      <h2 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--text-primary);margin-bottom:20px">🏗 Platform overview</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px">
+        <div class="role-card-guide" style="background:rgba(0,229,255,.04);border-color:rgba(0,229,255,.15)">
+          <div style="font-size:1.75rem;margin-bottom:10px">🌐</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--text-primary);margin-bottom:6px">Frontend</div>
+          <div style="font-size:.8125rem;color:var(--text-muted);line-height:1.6">Pure HTML + CSS + JS. No framework, no build step. Open <code style="background:var(--bg-elevated);padding:2px 6px;border-radius:4px">index.html</code> in a browser.</div>
+        </div>
+        <div class="role-card-guide" style="background:rgba(124,58,237,.04);border-color:rgba(124,58,237,.15)">
+          <div style="font-size:1.75rem;margin-bottom:10px">⚙️</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--text-primary);margin-bottom:6px">Backend</div>
+          <div style="font-size:.8125rem;color:var(--text-muted);line-height:1.6">NestJS REST API with TypeORM. Requires Node.js 20+ and MySQL 8.0+.</div>
+        </div>
+        <div class="role-card-guide" style="background:rgba(16,185,129,.04);border-color:rgba(16,185,129,.15)">
+          <div style="font-size:1.75rem;margin-bottom:10px">🗄️</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--text-primary);margin-bottom:6px">Database</div>
+          <div style="font-size:.8125rem;color:var(--text-muted);line-height:1.6">MySQL 8.0 with full schema, seeds, indexes, views. Import via phpMyAdmin or CLI.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project structure -->
+    <div id="structure" style="margin-bottom:40px" data-animate>
+      <h2 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--text-primary);margin-bottom:20px">📁 Project structure</h2>
+      <div class="file-tree">
+<span class="dir">elearning-platform/</span>
+├── <span class="dir">frontend/</span>               <span class="desc"># All HTML pages, CSS, JS</span>
+│   ├── <span class="file">index.html</span>          <span class="desc"># Landing page (start here)</span>
+│   ├── <span class="dir">styles/</span>
+│   │   └── <span class="file">main.css</span>        <span class="desc"># Global design system</span>
+│   ├── <span class="dir">js/</span>
+│   │   └── <span class="file">main.js</span>         <span class="desc"># All interactions & charts</span>
+│   └── <span class="dir">pages/</span>
+│       ├── <span class="file">catalogue.html</span>  <span class="desc"># Course browser</span>
+│       ├── <span class="file">cours-detail.html</span><span class="desc"># Course detail + enroll</span>
+│       ├── <span class="file">login.html</span>      <span class="desc"># Sign in</span>
+│       ├── <span class="file">register.html</span>   <span class="desc"># Multi-step registration</span>
+│       ├── <span class="dir">candidat/</span>       <span class="desc"># Learner space</span>
+│       ├── <span class="dir">formateur/</span>      <span class="desc"># Trainer space</span>
+│       └── <span class="dir">admin/</span>          <span class="desc"># Admin control panel</span>
+│
+├── <span class="dir">backend/</span>                <span class="desc"># NestJS API</span>
+│   └── <span class="dir">src/</span>
+│       ├── <span class="file">app.module.ts</span>   <span class="desc"># Root module</span>
+│       ├── <span class="dir">modules/</span>        <span class="desc"># Feature modules</span>
+│       └── <span class="dir">common/</span>         <span class="desc"># Guards, decorators, filters</span>
+│
+├── <span class="dir">database/</span>
+│   └── <span class="file">schema.sql</span>          <span class="desc"># Full MySQL schema + seeds</span>
+│
+├── <span class="file">README.md</span>               <span class="desc"># Full documentation</span>
+└── <span class="file">GUIDE.html</span>              <span class="desc"># This file</span>
+      </div>
+    </div>
+
+    <!-- STEP 1: Frontend -->
+    <div id="frontend" data-animate>
+      <div class="step-block" style="--step-color:linear-gradient(180deg,#00e5ff,#0891b2);--step-bg:rgba(0,229,255,.1);--step-border:rgba(0,229,255,.25);--step-col:#00e5ff">
+        <div class="step-number">1</div>
+        <div class="step-title">🌐 Launch the Frontend</div>
+        <div class="step-desc">The frontend is 100% static — no Node.js, no build process needed. Three ways to open it:</div>
+
+        <p style="font-weight:700;color:var(--text-primary);font-size:.875rem;margin-bottom:8px">Option A — Open directly (simplest)</p>
+        <div class="code-block">
+          <button class="copy-code" onclick="copyCode(this)">Copy</button>
+<span class="comment"># On macOS</span>
+<span class="cmd">open</span> frontend/index.html
+
+<span class="comment"># On Windows</span>
+<span class="cmd">start</span> frontend/index.html
+
+<span class="comment"># On Linux</span>
+<span class="cmd">xdg-open</span> frontend/index.html</div>
+
+        <p style="font-weight:700;color:var(--text-primary);font-size:.875rem;margin:16px 0 8px">Option B — Serve with npx (recommended for links to work)</p>
+        <div class="code-block">
+          <button class="copy-code" onclick="copyCode(this)">Copy</button>
+<span class="comment"># Install serve globally (one time)</span>
+<span class="cmd">npm</span> install -g serve
+
+<span class="comment"># Serve the frontend folder</span>
+<span class="cmd">serve</span> frontend/
+
+<span class="comment"># Or with npx (no install needed)</span>
+<span class="cmd">npx</span> serve frontend/
+
+<span class="comment"># Output:</span>
+<span class="str">→  Local:   http://localhost:3000</span>
+<span class="str">→  Network: http://192.168.x.x:3000</span></div>
+
+        <p style="font-weight:700;color:var(--text-primary);font-size:.875rem;margin:16px 0 8px">Option C — VS Code Live Server</p>
+        <div class="tip-box info">
+          <span class="tip-icon">💡</span>
+          <div class="tip-text">Install the <strong style="color:var(--text-primary)">Live Server</strong> extension in VS Code. Then right-click <code>frontend/index.html</code> → <strong>Open with Live Server</strong>. It auto-reloads on changes.</div>
+        </div>
+
+        <div class="tip-box success">
+          <span class="tip-icon">✅</span>
+          <div class="tip-text"><strong style="color:var(--text-primary)">Frontend works standalone</strong> — all pages are fully functional with simulated data. You can demo the entire UI without setting up the backend or database.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Database -->
+    <div id="database" data-animate>
+      <div class="step-block" style="--step-color:linear-gradient(180deg,#10b981,#059669);--step-bg:rgba(16,185,129,.1);--step-border:rgba(16,185,129,.25);--step-col:#34d399">
+        <div class="step-number" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:#34d399">2</div>
+        <div class="step-title">🗄️ Setup the Database</div>
+        <div class="step-desc">Import the MySQL schema into a new database. Choose phpMyAdmin (visual) or CLI (faster).</div>
+
+        <p style="font-weight:700;color:var(--text-primary);font-size:.875rem;margin-bottom:8px">Option A — phpMyAdmin (visual, beginner-friendly)</p>
+        <ol style="font-size:.875rem;color:var(--text-secondary);line-height:2.2;margin-left:20px">
+          <li>Open <strong style="color:var(--text-primary)">http://localhost/phpmyadmin</strong></li>
+          <li>Click <strong style="color:var(--text-primary)">"New"</strong> in the left sidebar</li>
+          <li>Database name: <code style="background:var(--bg-elevated);padding:2px 8px;border-radius:4px;color:#fbbf24">edunova_db</code></li>
+          <li>Collation: <code style="background:var(--bg-elevated);padding:2px 8px;border-radius:4px;color:#fbbf24">utf8mb4_unicode_ci</code> → Create</li>
+          <li>Click the <strong style="color:var(--text-primary)">"Import"</strong> tab</li>
+          <li>Choose file: <code style="background:var(--bg-elevated);padding:2px 8px;border-radius:4px;color:#fbbf24">database/schema.sql</code></li>
+          <li>Click <strong style="color:var(--text-primary)">"Go"</strong> → Done! ✅</li>
+        </ol>
+
+        <p style="font-weight:700;color:var(--text-primary);font-size:.875rem;margin:16px 0 8px">Option B — MySQL CLI (faster)</p>
+        <div class="code-block">
+          <button class="copy-code" onclick="copyCode(this)">Copy</button>
+<span class="comment"># Login to MySQL</span>
+<span class="cmd">mysql</span> -u root -p
+
+<span class="comment"># Inside MySQL shell — create database</span>
+<span class="kw">CREATE DATABASE</span> edunova_db
+  <span class="kw">CHARACTER SET</span> utf8mb4
+  <span class="kw">COLLATE</span> utf8mb4_unicode_ci;
+
+<span class="kw">EXIT</span>;
+
+<span class="comment"># Import schema</span>
+<span class="cmd">mysql</span> -u root -p edunova_db &lt; database/schema.sql</div>
+
+        <div class="tip-box success">
+          <span class="tip-icon">🌱</span>
+          <div class="tip-text">The schema automatically seeds: <strong style="color:var(--text-primary)">8 categories</strong>, <strong style="color:var(--text-primary)">9 gamification badges</strong>, and a <strong style="color:var(--text-primary)">default admin account</strong> (admin@edunova.com).</div>
+        </div>
+
+        <div class="tip-box warning">
+          <span class="tip-icon">⚠️</span>
+          <div class="tip-text">Make sure MySQL 8.0+ is running. XAMPP and WAMP include phpMyAdmin + MySQL. On macOS, use <code>brew install mysql</code> or use MAMP.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: Backend -->
+    <div id="backend" data-animate>
+      <div class="step-block" style="--step-color:linear-gradient(180deg,#7c3aed,#5b21b6);--step-bg:rgba(124,58,237,.1);--step-border:rgba(124,58,237,.25);--step-col:#a78bfa">
+        <div class="step-number" style="background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.3);color:#a78bfa">3</div>
+        <div class="step-title">⚙️ Launch the Backend API</div>
+        <div class="step-desc">The NestJS backend powers all data, authentication, and business logic. Requires Node.js 20+.</div>
+
+        <div class="code-block">
+          <button class="copy-code" onclick="copyCode(this)">Copy</button>
+<span class="comment"># 1. Check Node.js version (need 20+)</span>
+<span class="cmd">node</span> --version
+<span class="str"># Should output: v20.x.x or higher</span>
+
+<span class="comment"># 2. Navigate to backend folder</span>
+<span class="cmd">cd</span> backend
+
+<span class="comment"># 3. Install all dependencies</span>
+<span class="cmd">npm</span> install
+
+<span class="comment"># 4. Copy environment file</span>
+<span class="cmd">cp</span> .env.example .env
+<span class="comment"># Then edit .env with your DB credentials (see Step 4)</span>
+
+<span class="comment"># 5. Start in development mode (with hot reload)</span>
+<span class="cmd">npm run</span> start:dev
+
+<span class="comment"># You'll see:</span>
+<span class="str">🚀 EduNova API running on: http://localhost:3000/api/v1</span>
+<span class="str">📚 Swagger docs:            http://localhost:3000/api/docs</span></div>
+
+        <div class="tip-box info">
+          <span class="tip-icon">📦</span>
+          <div class="tip-text"><strong style="color:var(--text-primary)">npm install</strong> downloads all dependencies including NestJS, TypeORM, bcrypt, JWT, Swagger, etc. Takes ~1-2 minutes. Requires internet access.</div>
+        </div>
+
+        <p style="font-weight:700;color:var(--text-primary);font-size:.875rem;margin:16px 0 8px">Verify it's working:</p>
+        <div class="url-card" onclick="window.open('http://localhost:3000/api/v1','_blank')">
+          <span style="font-size:1.25rem">⚡</span>
+          <div style="flex:1"><div style="font-weight:600;font-size:.875rem;color:var(--text-primary)">API base URL</div><div style="font-size:.75rem;color:var(--text-muted)">Returns API info JSON</div></div>
+          <span class="url-badge">http://localhost:3000/api/v1</span>
+        </div>
+        <div class="url-card" onclick="window.open('http://localhost:3000/api/docs','_blank')">
+          <span style="font-size:1.25rem">📚</span>
+          <div style="flex:1"><div style="font-weight:600;font-size:.875rem;color:var(--text-primary)">Swagger UI</div><div style="font-size:.75rem;color:var(--text-muted)">Interactive API documentation</div></div>
+          <span class="url-badge">http://localhost:3000/api/docs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: Environment -->
+    <div id="env" data-animate>
+      <div class="step-block" style="--step-color:linear-gradient(180deg,#f59e0b,#d97706);--step-bg:rgba(245,158,11,.08);--step-border:rgba(245,158,11,.2);--step-col:#fbbf24">
+        <div class="step-number" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:#fbbf24">4</div>
+        <div class="step-title">🔧 Configure Environment Variables</div>
+        <div class="step-desc">Create a <code style="background:var(--bg-elevated);padding:2px 8px;border-radius:4px">.env</code> file in the <code>backend/</code> folder with these settings:</div>
+
+        <div class="code-block">
+          <button class="copy-code" onclick="copyCode(this)">Copy</button>
+<span class="comment"># ── App ───────────────────────────────</span>
+<span class="kw">NODE_ENV</span>=<span class="str">development</span>
+<span class="kw">PORT</span>=<span class="val">3000</span>
+<span class="kw">CORS_ORIGINS</span>=<span class="str">http://localhost:3001,http://127.0.0.1:5500</span>
+
+<span class="comment"># ── Database ───────────────────────────</span>
+<span class="kw">DB_HOST</span>=<span class="str">localhost</span>
+<span class="kw">DB_PORT</span>=<span class="val">3306</span>
+<span class="kw">DB_USERNAME</span>=<span class="str">root</span>
+<span class="kw">DB_PASSWORD</span>=<span class="str">your_mysql_password</span>
+<span class="kw">DB_NAME</span>=<span class="str">edunova_db</span>
+
+<span class="comment"># ── JWT Tokens ─────────────────────────</span>
+<span class="kw">JWT_SECRET</span>=<span class="str">edunova-super-secret-change-me-2026</span>
+<span class="kw">JWT_EXPIRES_IN</span>=<span class="str">15m</span>
+<span class="kw">JWT_REFRESH_SECRET</span>=<span class="str">edunova-refresh-secret-change-me</span>
+<span class="kw">JWT_REFRESH_EXPIRES</span>=<span class="str">7d</span>
+
+<span class="comment"># ── Email (Gmail SMTP) ─────────────────</span>
+<span class="kw">MAIL_HOST</span>=<span class="str">smtp.gmail.com</span>
+<span class="kw">MAIL_PORT</span>=<span class="val">587</span>
+<span class="kw">MAIL_USER</span>=<span class="str">your.email@gmail.com</span>
+<span class="kw">MAIL_PASS</span>=<span class="str">your_gmail_app_password</span>
+<span class="kw">MAIL_FROM</span>=<span class="str">"EduNova &lt;noreply@edunova.com&gt;"</span>
+
+<span class="comment"># ── File Uploads ───────────────────────</span>
+<span class="kw">UPLOAD_PATH</span>=<span class="str">./uploads</span>
+<span class="kw">MAX_FILE_SIZE</span>=<span class="val">104857600</span>
+<span class="kw">CDN_URL</span>=<span class="str">http://localhost:3000/uploads</span></div>
+
+        <div class="tip-box warning">
+          <span class="tip-icon">⚠️</span>
+          <div class="tip-text">For Gmail, enable <strong style="color:var(--text-primary)">2-Step Verification</strong> then create an <strong style="color:var(--text-primary)">App Password</strong> at myaccount.google.com/apppasswords. Use that as <code>MAIL_PASS</code>.</div>
+        </div>
+        <div class="tip-box danger">
+          <span class="tip-icon">🔒</span>
+          <div class="tip-text">Never commit <code>.env</code> to Git. It's already listed in <code>.gitignore</code>. Change all default secrets before production deployment.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5: Roles & Login -->
+    <div id="roles" data-animate>
+      <div class="step-block" style="--step-color:linear-gradient(180deg,#f43f5e,#be123c);--step-bg:rgba(244,63,94,.08);--step-border:rgba(244,63,94,.2);--step-col:#fb7185">
+        <div class="step-number" style="background:rgba(244,63,94,.1);border-color:rgba(244,63,94,.3);color:#fb7185">5</div>
+        <div class="step-title">👤 User Roles & Demo Access</div>
+        <div class="step-desc">EduNova has three separate roles. The frontend demo works without backend — just use any credentials:</div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-bottom:20px">
+          <div style="padding:20px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.15);border-radius:var(--radius-lg)">
+            <div style="font-size:1.5rem;margin-bottom:10px">🧑‍💻</div>
+            <div style="font-weight:700;color:var(--text-primary);margin-bottom:6px">Candidate</div>
+            <div style="font-size:.8125rem;color:var(--text-muted);line-height:1.6;margin-bottom:12px">Learner role. Browse courses, enroll, watch lessons, take quizzes, earn certificates.</div>
+            <div style="font-size:.75rem;font-family:monospace;color:#00e5ff;background:rgba(0,229,255,.06);padding:6px 10px;border-radius:6px">→ pages/candidat/dashboard.html</div>
+          </div>
+          <div style="padding:20px;background:rgba(124,58,237,.04);border:1px solid rgba(124,58,237,.15);border-radius:var(--radius-lg)">
+            <div style="font-size:1.5rem;margin-bottom:10px">👩‍🏫</div>
+            <div style="font-weight:700;color:var(--text-primary);margin-bottom:6px">Trainer</div>
+            <div style="font-size:.8125rem;color:var(--text-muted);line-height:1.6;margin-bottom:12px">Creator role. Build courses, upload videos, manage students, view revenue analytics.</div>
+            <div style="font-size:.75rem;font-family:monospace;color:#a78bfa;background:rgba(124,58,237,.06);padding:6px 10px;border-radius:6px">→ pages/formateur/dashboard.html</div>
+          </div>
+          <div style="padding:20px;background:rgba(244,63,94,.04);border:1px solid rgba(244,63,94,.15);border-radius:var(--radius-lg)">
+            <div style="font-size:1.5rem;margin-bottom:10px">🔒</div>
+            <div style="font-weight:700;color:var(--text-primary);margin-bottom:6px">Admin</div>
+            <div style="font-size:.8125rem;color:var(--text-muted);line-height:1.6;margin-bottom:12px">Platform manager. Validate trainers/courses, view all analytics, manage support.</div>
+            <div style="font-size:.75rem;font-family:monospace;color:#fb7185;background:rgba(244,63,94,.06);padding:6px 10px;border-radius:6px">→ pages/admin/dashboard.html</div>
+          </div>
+        </div>
+
+        <p style="font-weight:700;color:var(--text-primary);font-size:.875rem;margin-bottom:12px">Demo Login Flow (frontend only):</p>
+        <ol style="font-size:.875rem;color:var(--text-secondary);line-height:2.2;margin-left:20px">
+          <li>Open <code style="background:var(--bg-elevated);padding:2px 8px;border-radius:4px">pages/login.html</code></li>
+          <li>Select <strong style="color:var(--text-primary)">Candidate</strong> or <strong style="color:var(--text-primary)">Trainer</strong> role card</li>
+          <li>Enter any email + password (e.g. <code>test@test.com</code> / <code>password123</code>)</li>
+          <li>Click <strong style="color:var(--text-primary)">Sign in</strong> → redirected to the correct dashboard</li>
+          <li>For Admin: click the <strong style="color:var(--text-primary)">Admin portal</strong> link at the bottom of login page</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- STEP 6: Pages Reference -->
+    <div id="pages" data-animate>
+      <div class="step-block" style="--step-color:linear-gradient(180deg,#06b6d4,#0891b2)">
+        <div class="step-number" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:#22d3ee">6</div>
+        <div class="step-title">🗺 Pages Reference</div>
+        <div class="step-desc">All available pages and their direct URLs:</div>
+        <table style="width:100%;border-collapse:collapse;font-size:.8125rem">
+          <thead><tr style="border-bottom:1px solid var(--border-subtle)">
+            <th style="text-align:left;padding:10px 8px;color:var(--text-muted);font-weight:700;text-transform:uppercase;font-size:.7rem;letter-spacing:.06em">Page</th>
+            <th style="text-align:left;padding:10px 8px;color:var(--text-muted);font-weight:700;text-transform:uppercase;font-size:.7rem;letter-spacing:.06em">Path</th>
+            <th style="text-align:left;padding:10px 8px;color:var(--text-muted);font-weight:700;text-transform:uppercase;font-size:.7rem;letter-spacing:.06em">Role</th>
+          </tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:10px 8px;color:var(--text-primary);font-weight:600">🏠 Landing page</td><td style="padding:10px 8px"><code style="color:#fbbf24">index.html</code></td><td style="padding:10px 8px;color:var(--text-muted)">Public</td></tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:10px 8px;color:var(--text-primary);font-weight:600">🔍 Course catalogue</td><td style="padding:10px 8px"><code style="color:#fbbf24">pages/catalogue.html</code></td><td style="padding:10px 8px;color:var(--text-muted)">Public</td></tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:10px 8px;color:var(--text-primary);font-weight:600">📖 Course detail</td><td style="padding:10px 8px"><code style="color:#fbbf24">pages/cours-detail.html</code></td><td style="padding:10px 8px;color:var(--text-muted)">Public</td></tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:10px 8px;color:var(--text-primary);font-weight:600">🔐 Login</td><td style="padding:10px 8px"><code style="color:#fbbf24">pages/login.html</code></td><td style="padding:10px 8px;color:var(--text-muted)">Public</td></tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:10px 8px;color:var(--text-primary);font-weight:600">📝 Register</td><td style="padding:10px 8px"><code style="color:#fbbf24">pages/register.html</code></td><td style="padding:10px 8px;color:var(--text-muted)">Public</td></tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:10px 8px;color:var(--text-primary);font-weight:600">🏠 Candidate Dashboard</td><td style="padding:10px 8px"><code style="color:#00e5ff">pages/candidat/dashboard.html</code></td><td style="padding:10px 8px"><span class="badge badge-cyan" style="font-size:.7rem">Candidate</span></td></tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:10px 8px;color:var(--text-primary);font-weight:600">▶️ Lesson player</td><td style="padding:10px 8px"><code style="color:#00e5ff">pages/candidat/lecon.html</code></td><td style="padding:10px 8px"><span class="badge badge-cyan" style="font-size:.7rem">Candidate</span></td></tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:10px 8px;color:var(--text-primary);font-weight:600">📝 Quiz</td><td style="padding:10px 8px"><code style="color:#00e5ff">pages/candidat/quiz.html</code></td><td style="padding:10px 8px"><span class="badge badge-cyan" style="font-size:.7rem">Candidate</span></td></tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:10px 8px;color:var(--text-primary);font-weight:600">📜 Certificates</td><td style="padding:10px 8px"><code style="color:#00e5ff">pages/candidat/certificats.html</code></td><td style="padding:10px 8px"><span class="badge badge-cyan" style="font-size:.7rem">Candidate</span></td></tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:10px 8px;color:var(--text-primary);font-weight:600">📚 My Courses</td><td style="padding:10px 8px"><code style="color:#00e5ff">pages/candidat/mes-cours.html</code></td><td style="padding:10px 8px"><span class="badge badge-cyan" style="font-size:.7rem">Candidate</span></td></tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:10px 8px;color:var(--text-primary);font-weight:600">🏠 Trainer Dashboard</td><td style="padding:10px 8px"><code style="color:#a78bfa">pages/formateur/dashboard.html</code></td><td style="padding:10px 8px"><span class="badge badge-violet" style="font-size:.7rem">Trainer</span></td></tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:10px 8px;color:var(--text-primary);font-weight:600">✏️ Create Course</td><td style="padding:10px 8px"><code style="color:#a78bfa">pages/formateur/creer-cours.html</code></td><td style="padding:10px 8px"><span class="badge badge-violet" style="font-size:.7rem">Trainer</span></td></tr>
+            <tr><td style="padding:10px 8px;color:var(--text-primary);font-weight:600">🔒 Admin Dashboard</td><td style="padding:10px 8px"><code style="color:#fb7185">pages/admin/dashboard.html</code></td><td style="padding:10px 8px"><span class="badge badge-rose" style="font-size:.7rem">Admin</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- STEP 7: API Reference -->
+    <div id="api" data-animate>
+      <div class="step-block">
+        <div class="step-number">7</div>
+        <div class="step-title">📡 API Quick Reference</div>
+        <div class="step-desc">Key endpoints once the backend is running. All protected endpoints require <code>Authorization: Bearer &lt;token&gt;</code>.</div>
+
+        <div class="code-block">
+          <button class="copy-code" onclick="copyCode(this)">Copy</button>
+<span class="comment"># Test API health</span>
+<span class="cmd">curl</span> http://localhost:3000/api/v1
+
+<span class="comment"># Register a new candidate</span>
+<span class="cmd">curl</span> -X POST http://localhost:3000/api/v1/auth/register \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"prenom":"Sara","nom":"Aissaoui","email":"sara@test.com","motDePasse":"Pass1234!","role":"CANDIDAT"}'</span>
+
+<span class="comment"># Login and get JWT</span>
+<span class="cmd">curl</span> -X POST http://localhost:3000/api/v1/auth/login \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"email":"sara@test.com","motDePasse":"Pass1234!"}'</span>
+
+<span class="comment"># Get published courses</span>
+<span class="cmd">curl</span> http://localhost:3000/api/v1/cours
+
+<span class="comment"># Get courses with filters</span>
+<span class="cmd">curl</span> <span class="str">"http://localhost:3000/api/v1/cours?niveau=DEBUTANT&page=1&limit=12"</span>
+
+<span class="comment"># Verify a certificate (public endpoint)</span>
+<span class="cmd">curl</span> http://localhost:3000/api/v1/certificats/verifier/EDN-2026-XYZ-00001</div>
+
+        <div class="tip-box info">
+          <span class="tip-icon">📚</span>
+          <div class="tip-text">The full interactive API docs are at <strong style="color:var(--text-primary)">http://localhost:3000/api/docs</strong>. You can test every endpoint directly from Swagger — no Postman needed.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 8: Docker -->
+    <div id="docker" data-animate>
+      <div class="step-block">
+        <div class="step-number">8</div>
+        <div class="step-title">🐳 Docker (One-Command Setup)</div>
+        <div class="step-desc">Run the entire stack (MySQL + NestJS API) with a single command using Docker Compose.</div>
+
+        <p style="font-weight:700;color:var(--text-primary);font-size:.875rem;margin-bottom:8px">Create <code>docker-compose.yml</code> in the project root:</p>
+        <div class="code-block">
+          <button class="copy-code" onclick="copyCode(this)">Copy</button>
+<span class="kw">version:</span> <span class="str">'3.8'</span>
+<span class="kw">services:</span>
+  <span class="kw">db:</span>
+    <span class="kw">image:</span> mysql:8.0
+    <span class="kw">environment:</span>
+      <span class="kw">MYSQL_ROOT_PASSWORD:</span> rootpass
+      <span class="kw">MYSQL_DATABASE:</span> edunova_db
+      <span class="kw">MYSQL_CHARACTER_SET_SERVER:</span> utf8mb4
+    <span class="kw">ports:</span>
+      - <span class="str">"3306:3306"</span>
+    <span class="kw">volumes:</span>
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  <span class="kw">api:</span>
+    <span class="kw">build:</span> ./backend
+    <span class="kw">ports:</span>
+      - <span class="str">"3000:3000"</span>
+    <span class="kw">environment:</span>
+      <span class="kw">DB_HOST:</span> db
+      <span class="kw">DB_PORT:</span> <span class="val">3306</span>
+      <span class="kw">DB_USERNAME:</span> root
+      <span class="kw">DB_PASSWORD:</span> rootpass
+      <span class="kw">DB_NAME:</span> edunova_db
+      <span class="kw">JWT_SECRET:</span> edunova-docker-secret
+    <span class="kw">depends_on:</span>
+      - db
+
+<span class="kw">volumes:</span>
+  mysql_data:</div>
+
+        <div class="code-block">
+          <button class="copy-code" onclick="copyCode(this)">Copy</button>
+<span class="comment"># Build and start all services</span>
+<span class="cmd">docker-compose</span> up -d
+
+<span class="comment"># Check running services</span>
+<span class="cmd">docker-compose</span> ps
+
+<span class="comment"># View logs</span>
+<span class="cmd">docker-compose</span> logs -f api
+
+<span class="comment"># Stop everything</span>
+<span class="cmd">docker-compose</span> down</div>
+      </div>
+    </div>
+
+    <!-- STEP 9: Troubleshooting -->
+    <div id="troubleshoot" data-animate>
+      <div class="step-block" style="--step-color:linear-gradient(180deg,#f59e0b,#d97706)">
+        <div class="step-number" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:#fbbf24">9</div>
+        <div class="step-title">🔧 Troubleshooting</div>
+        <div class="step-desc">Common issues and their solutions:</div>
+
+        <div style="display:flex;flex-direction:column;gap:14px">
+
+          <div style="padding:16px 20px;background:var(--bg-elevated);border-radius:var(--radius-md)">
+            <div style="font-weight:700;color:var(--text-primary);margin-bottom:6px">❌ "Cannot connect to MySQL"</div>
+            <div style="font-size:.875rem;color:var(--text-secondary)">Make sure MySQL is running. Check with <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px">mysqladmin -u root -p status</code>. Verify DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD in your .env file match your MySQL installation.</div>
+          </div>
+
+          <div style="padding:16px 20px;background:var(--bg-elevated);border-radius:var(--radius-md)">
+            <div style="font-weight:700;color:var(--text-primary);margin-bottom:6px">❌ "Port 3000 already in use"</div>
+            <div style="font-size:.875rem;color:var(--text-secondary)">Change the port in .env: <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px">PORT=3001</code>. Or kill the process using the port: <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px">lsof -ti:3000 | xargs kill</code> (macOS/Linux).</div>
+          </div>
+
+          <div style="padding:16px 20px;background:var(--bg-elevated);border-radius:var(--radius-md)">
+            <div style="font-weight:700;color:var(--text-primary);margin-bottom:6px">❌ "Node version too old"</div>
+            <div style="font-size:.875rem;color:var(--text-secondary)">Install Node.js 20+ from <a href="https://nodejs.org" target="_blank" style="color:var(--accent-cyan)">nodejs.org</a> or use nvm: <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px">nvm install 20 && nvm use 20</code>.</div>
+          </div>
+
+          <div style="padding:16px 20px;background:var(--bg-elevated);border-radius:var(--radius-md)">
+            <div style="font-weight:700;color:var(--text-primary);margin-bottom:6px">❌ Frontend links not working (404)</div>
+            <div style="font-size:.875rem;color:var(--text-secondary)">Open the files through a server (use <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px">npx serve frontend/</code>) instead of double-clicking. File:// protocol doesn't resolve relative paths for navigation correctly.</div>
+          </div>
+
+          <div style="padding:16px 20px;background:var(--bg-elevated);border-radius:var(--radius-md)">
+            <div style="font-weight:700;color:var(--text-primary);margin-bottom:6px">❌ "Module not found" after npm install</div>
+            <div style="font-size:.875rem;color:var(--text-secondary)">Delete <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px">node_modules</code> and <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px">package-lock.json</code> then run <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px">npm install</code> again. Make sure you are inside the <code>backend/</code> folder.</div>
+          </div>
+
+          <div style="padding:16px 20px;background:var(--bg-elevated);border-radius:var(--radius-md)">
+            <div style="font-weight:700;color:var(--text-primary);margin-bottom:6px">❌ CORS error when calling API</div>
+            <div style="font-size:.875rem;color:var(--text-secondary)">Add your frontend URL to <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px">CORS_ORIGINS</code> in .env. Example: <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px">CORS_ORIGINS=http://localhost:3001,http://127.0.0.1:5500</code>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Final summary -->
+    <div style="background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(0,229,255,.08));border:1px solid rgba(124,58,237,.25);border-radius:var(--radius-xl);padding:40px;text-align:center;margin-top:40px" data-animate>
+      <div style="font-size:3rem;margin-bottom:16px">🎉</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;color:var(--text-primary);margin-bottom:12px">You're all set!</h2>
+      <p style="color:var(--text-secondary);font-size:.9375rem;max-width:500px;margin:0 auto 28px;line-height:1.75">EduNova is a production-ready platform. Explore every role, test all features, and extend it for your needs.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="index.html" class="btn btn-primary btn-lg">🏠 View landing page</a>
+        <a href="pages/login.html" class="btn btn-cyan btn-lg">🚀 Launch platform</a>
+      </div>
+      <div style="display:flex;gap:16px;justify-content:center;margin-top:24px;flex-wrap:wrap">
+        <a href="pages/candidat/dashboard.html" class="btn btn-ghost btn-sm">🧑‍💻 Candidate demo</a>
+        <a href="pages/formateur/dashboard.html" class="btn btn-ghost btn-sm">👩‍🏫 Trainer demo</a>
+        <a href="pages/admin/dashboard.html" class="btn btn-ghost btn-sm">🔒 Admin demo</a>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    function copyCode(btn) {
+      const code = btn.parentElement.textContent.replace(/Copy\n?/, '').trim();
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+      });
+    }
+
+    // Highlight active nav item on scroll
+    const sections = document.querySelectorAll('[id]');
+    const navLinks = document.querySelectorAll('.guide-nav-item');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`.guide-nav-item[href="#${e.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -60% 0px' });
+    sections.forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Students — EduNova</title>
+  <link rel="stylesheet" href="../../styles/main.css"/>
+  <style>
+    .student-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .8rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .progress-mini { height: 5px; background: var(--bg-elevated); border-radius: 99px; overflow: hidden; width: 100px; }
+    .progress-mini-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg,#7c3aed,#00e5ff); transition: width 1s ease; }
+    .filter-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 24px; }
+    .table-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); }
+    .course-filter-select { background: var(--bg-elevated); border: 1px solid var(--border-subtle); color: var(--text-primary); padding: 8px 14px; border-radius: var(--radius-md); font-family: var(--font-body); font-size: .875rem; outline: none; cursor: pointer; }
+    .course-filter-select:focus { border-color: var(--accent-cyan); }
+    @media (max-width: 900px) { .data-table th:nth-child(4), .data-table td:nth-child(4), .data-table th:nth-child(5), .data-table td:nth-child(5) { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="navbar-logo-icon" style="width:28px;height:28px;font-size:.875rem">🎓</div>EduNova</div>
+    <p class="sidebar-section-label">Teaching</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="dashboard.html"><span class="sidebar-nav-icon">🏠</span> Dashboard</a></li>
+      <li class="sidebar-nav-item"><a href="mes-cours.html"><span class="sidebar-nav-icon">📚</span> My courses</a></li>
+      <li class="sidebar-nav-item"><a href="creer-cours.html"><span class="sidebar-nav-icon">➕</span> Create course</a></li>
+      <li class="sidebar-nav-item"><a href="etudiants.html" class="active"><span class="sidebar-nav-icon">👥</span> Students</a></li>
+    </ul>
+    <p class="sidebar-section-label">Analytics</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">📊</span> Analytics</a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">💰</span> Revenue</a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">📝</span> Reviews</a></li>
+    </ul>
+    <p class="sidebar-section-label">Account</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">💬</span> Messages <span class="sidebar-badge">7</span></a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">⚙️</span> Settings</a></li>
+    </ul>
+    <div style="flex:1"></div>
+    <div class="sidebar-user">
+      <div class="avatar avatar-sm" data-user-avatar style="background:linear-gradient(135deg,#0891b2,#00e5ff);color:#fff;width:36px;height:36px;font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0">KM</div>
+      <div class="sidebar-user-info"><div class="sidebar-user-name" data-user-name>Karim Mansouri</div><div class="sidebar-user-role" data-user-role>👩‍🏫 Trainer · Verified ✅</div></div>
+    </div>
+  </aside>
+
+  <div id="sidebar-overlay" class="hidden" style="position:fixed;inset:0;z-index:49;background:rgba(0,0,0,.6)"></div>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <button class="hamburger"><span></span><span></span><span></span></button>
+      <div style="flex:1"></div>
+      <a href="creer-cours.html" class="btn btn-primary btn-sm">+ New course</a>
+      <div class="avatar avatar-sm" data-user-avatar style="background:linear-gradient(135deg,#0891b2,#00e5ff);color:#fff;width:36px;height:36px;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;margin-left:12px">KM</div>
+    </div>
+  </nav>
+
+  <div class="dashboard-layout">
+    <div class="dashboard-content">
+
+      <div class="dashboard-header">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px">
+          <div>
+            <div class="dashboard-title">My Students 👥</div>
+            <div class="dashboard-subtitle">Track engagement, progress, and performance across all your courses</div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-ghost btn-sm" onclick="exportStudents()">📊 Export CSV</button>
+            <button class="btn btn-primary btn-sm" onclick="Toast.info('Message','Opening broadcast message…')">📣 Message all</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid-stats" style="margin-bottom:28px">
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,#00e5ff,#0891b2)" data-animate>
+          <div style="display:flex;justify-content:space-between"><div><div class="stat-value" data-count="2840">0</div><div class="stat-label">Total students</div></div><span style="font-size:1.75rem">👥</span></div>
+          <div class="stat-change up mt-8">↑ +128 this month</div>
+        </div>
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,#10b981,#059669)" data-animate data-delay="100">
+          <div style="display:flex;justify-content:space-between"><div><div class="stat-value" data-count="1920">0</div><div class="stat-label">Active learners</div></div><span style="font-size:1.75rem">🔥</span></div>
+          <div class="stat-change up mt-8">↑ 67.6% engagement rate</div>
+        </div>
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,#f59e0b,#d97706)" data-animate data-delay="200">
+          <div style="display:flex;justify-content:space-between"><div><div class="stat-value" data-count="73" data-suffix="%">0%</div><div class="stat-label">Avg completion</div></div><span style="font-size:1.75rem">📈</span></div>
+          <div class="stat-change up mt-8">↑ +5% vs last month</div>
+        </div>
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,#7c3aed,#5b21b6)" data-animate data-delay="300">
+          <div style="display:flex;justify-content:space-between"><div><div class="stat-value" data-count="4.8">0</div><div class="stat-label">Avg rating</div></div><span style="font-size:1.75rem">⭐</span></div>
+          <div class="stat-change up mt-8">↑ 840 reviews total</div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="glass-card-elevated" style="padding:20px 24px;margin-bottom:20px">
+        <div class="filter-bar">
+          <div class="search-wrap" style="flex:1;min-width:200px">
+            <input class="form-input" id="student-search" type="search" placeholder="Search by name or email…" oninput="filterStudents()" style="padding-left:40px"/>
+          </div>
+          <select class="course-filter-select" id="course-filter" onchange="filterStudents()">
+            <option value="">All courses</option>
+            <option value="ml">Machine Learning A-Z</option>
+            <option value="python">Python for Data Science</option>
+            <option value="nlp">Advanced NLP</option>
+            <option value="ds">Data Structures</option>
+          </select>
+          <select class="course-filter-select" id="status-filter" onchange="filterStudents()">
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+            <option value="inactive">Inactive</option>
+          </select>
+          <div class="flex gap-8 items-center" style="font-size:.8rem;color:var(--text-muted)" id="student-count">Showing 12 students</div>
+        </div>
+      </div>
+
+      <!-- Student Table -->
+      <div class="glass-card-elevated" data-animate>
+        <div class="table-wrap">
+          <table class="data-table" id="students-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Course</th>
+                <th>Progress</th>
+                <th>Last active</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="students-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px;flex-wrap:wrap;gap:12px">
+        <div style="font-size:.8125rem;color:var(--text-muted)">Showing <strong style="color:var(--text-primary)">1–12</strong> of <strong style="color:var(--text-primary)">2,840</strong> students</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" disabled>← Prev</button>
+          <button class="btn btn-primary btn-sm" style="min-width:36px">1</button>
+          <button class="btn btn-ghost btn-sm" style="min-width:36px">2</button>
+          <button class="btn btn-ghost btn-sm" style="min-width:36px">3</button>
+          <span style="padding:7px 10px;color:var(--text-muted);font-size:.875rem">…</span>
+          <button class="btn btn-ghost btn-sm" style="min-width:36px">237</button>
+          <button class="btn btn-ghost btn-sm">Next →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Message Modal -->
+  <div id="modal-message" class="modal-overlay hidden" style="position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(8px)">
+    <div class="glass-card-elevated animate-in" style="width:100%;max-width:480px;padding:32px;margin:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <div style="font-family:'Syne',sans-serif;font-size:1.125rem;font-weight:700;color:var(--text-primary)">💬 Send message</div>
+        <button class="btn btn-ghost btn-sm btn-icon" onclick="closeMessageModal()">✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">To</label>
+        <input class="form-input" id="msg-to" type="text" readonly/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Subject</label>
+        <input class="form-input" id="msg-subject" type="text" placeholder="e.g. Course update notification"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-input" id="msg-body" rows="5" placeholder="Write your message…"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="closeMessageModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="sendMessage()">Send message ✉️</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/main.js"></script>
+  <script>
+    const colors = [
+      'linear-gradient(135deg,#7c3aed,#a855f7)',
+      'linear-gradient(135deg,#0891b2,#00e5ff)',
+      'linear-gradient(135deg,#059669,#10b981)',
+      'linear-gradient(135deg,#d97706,#f59e0b)',
+      'linear-gradient(135deg,#be123c,#f43f5e)',
+      'linear-gradient(135deg,#4338ca,#6366f1)',
+    ];
+
+    const students = [
+      { name: 'Sara Aissaoui',    email: 'sara.a@email.com',   initials: 'SA', color: 0, course: 'Machine Learning A-Z',    progress: 68, lastActive: '2 hours ago',  status: 'active' },
+      { name: 'Mehdi Bouazizi',   email: 'mehdi.b@email.com',  initials: 'MB', color: 1, course: 'Python for Data Science',  progress: 100, lastActive: '1 day ago',   status: 'completed' },
+      { name: 'Amira Chaouch',    email: 'amira.c@email.com',  initials: 'AC', color: 2, course: 'Advanced NLP',             progress: 32, lastActive: '5 days ago',   status: 'inactive' },
+      { name: 'Yassine Dridi',    email: 'yassine.d@email.com',initials: 'YD', color: 3, course: 'Machine Learning A-Z',    progress: 91, lastActive: '1 hour ago',   status: 'active' },
+      { name: 'Fatima El Ouafi',  email: 'fatima.e@email.com', initials: 'FE', color: 4, course: 'Data Structures',          progress: 55, lastActive: '3 hours ago',  status: 'active' },
+      { name: 'Karim Gharbi',     email: 'karim.g@email.com',  initials: 'KG', color: 5, course: 'Python for Data Science',  progress: 78, lastActive: '12 hours ago', status: 'active' },
+      { name: 'Leila Hamrouni',   email: 'leila.h@email.com',  initials: 'LH', color: 0, course: 'Advanced NLP',             progress: 100, lastActive: '2 days ago',  status: 'completed' },
+      { name: 'Omar Jebali',      email: 'omar.j@email.com',   initials: 'OJ', color: 1, course: 'Machine Learning A-Z',    progress: 14, lastActive: '8 days ago',   status: 'inactive' },
+      { name: 'Nour Karoui',      email: 'nour.k@email.com',   initials: 'NK', color: 2, course: 'Data Structures',          progress: 83, lastActive: '30 min ago',   status: 'active' },
+      { name: 'Sami Laabidi',     email: 'sami.l@email.com',   initials: 'SL', color: 3, course: 'Python for Data Science',  progress: 100, lastActive: '3 days ago',  status: 'completed' },
+      { name: 'Rim Mansouri',     email: 'rim.m@email.com',    initials: 'RM', color: 4, course: 'Machine Learning A-Z',    progress: 47, lastActive: '6 hours ago',   status: 'active' },
+      { name: 'Anas Nasr',        email: 'anas.n@email.com',   initials: 'AN', color: 5, course: 'Advanced NLP',             progress: 62, lastActive: '1 hour ago',   status: 'active' },
+    ];
+
+    const statusConfig = {
+      active:    { label: 'Active',    cls: 'badge-emerald' },
+      completed: { label: 'Completed', cls: 'badge-cyan' },
+      inactive:  { label: 'Inactive',  cls: 'badge-rose' },
+    };
+
+    function renderStudents(list) {
+      const tbody = document.getElementById('students-body');
+      document.getElementById('student-count').textContent = `Showing ${list.length} student${list.length !== 1 ? 's' : ''}`;
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-title">No students found</div><div class="empty-state-desc">Try adjusting your search or filters.</div></div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map((s, i) => {
+        const barColor = s.progress === 100 ? '#10b981' : s.progress < 30 ? '#f43f5e' : 'linear-gradient(90deg,#7c3aed,#00e5ff)';
+        const sc = statusConfig[s.status];
+        return `<tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="student-avatar" style="background:${colors[s.color]}">${s.initials}</div>
+              <div>
+                <div style="font-weight:600;color:var(--text-primary);font-size:.875rem">${s.name}</div>
+                <div style="font-size:.75rem;color:var(--text-muted)">${s.email}</div>
+              </div>
+            </div>
+          </td>
+          <td style="font-size:.8125rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.course}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="progress-mini"><div class="progress-mini-fill" style="width:${s.progress}%;background:${barColor}"></div></div>
+              <span style="font-size:.8125rem;font-weight:600;color:${s.progress===100?'#34d399':s.progress<30?'#fb7185':'var(--text-primary)'}">${s.progress}%</span>
+            </div>
+          </td>
+          <td style="font-size:.8125rem;color:var(--text-muted)">${s.lastActive}</td>
+          <td><span class="badge ${sc.cls}">${sc.label}</span></td>
+          <td>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-ghost btn-sm btn-icon" title="Send message" onclick="openMessage('${s.name}','${s.email}')">💬</button>
+              <button class="btn btn-ghost btn-sm btn-icon" title="View profile" onclick="Toast.info('Profile','Viewing ${s.name}&apos;s profile…')">👁</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function filterStudents() {
+      const q = document.getElementById('student-search').value.toLowerCase();
+      const course = document.getElementById('course-filter').value;
+      const status = document.getElementById('status-filter').value;
+      let list = students;
+      if (q) list = list.filter(s => s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q));
+      if (course === 'ml') list = list.filter(s => s.course.includes('Machine Learning'));
+      else if (course === 'python') list = list.filter(s => s.course.includes('Python'));
+      else if (course === 'nlp') list = list.filter(s => s.course.includes('NLP'));
+      else if (course === 'ds') list = list.filter(s => s.course.includes('Data Structures'));
+      if (status) list = list.filter(s => s.status === status);
+      renderStudents(list);
+    }
+
+    function openMessage(name, email) {
+      document.getElementById('msg-to').value = `${name} <${email}>`;
+      document.getElementById('msg-subject').value = '';
+      document.getElementById('msg-body').value = '';
+      document.getElementById('modal-message').classList.remove('hidden');
+    }
+
+    function closeMessageModal() {
+      document.getElementById('modal-message').classList.add('hidden');
+    }
+
+    function sendMessage() {
+      const subject = document.getElementById('msg-subject').value.trim();
+      const body = document.getElementById('msg-body').value.trim();
+      if (!subject || !body) { Toast.warning('Missing fields', 'Please fill in subject and message.'); return; }
+      closeMessageModal();
+      Toast.success('Message sent!', 'Your message has been delivered.');
+    }
+
+    function exportStudents() {
+      const rows = [['Name','Email','Course','Progress','Last Active','Status']];
+      students.forEach(s => rows.push([s.name, s.email, s.course, s.progress+'%', s.lastActive, s.status]));
+      const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'students.csv'; a.click();
+      URL.revokeObjectURL(url);
+      Toast.success('Exported!', 'Student list downloaded as CSV.');
+    }
+
+    // Close modal on overlay click
+    document.getElementById('modal-message').addEventListener('click', function(e) {
+      if (e.target === this) closeMessageModal();
+    });
+
+    renderStudents(students);
+  
+    // Logout helper
+    function logout() {
+      Auth.clear();
+      const depth = window.location.pathname.split('/').length - 1;
+      const prefix = depth >= 4 ? '../../' : '../';
+      window.location.href = prefix + 'login.html';
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Dashboard — EduNova</title>
+  <link rel="stylesheet" href="../../styles/main.css"/>
+  <style>
+    .xp-bar-wrap { height: 8px; background: var(--bg-elevated); border-radius: 99px; margin-top: 8px; }
+    .xp-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #f59e0b, #f97316); transition: width 1s ease; }
+    .streak-fire { font-size: 1.5rem; animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+    .enrolled-course { display: flex; gap: 16px; align-items: center; padding: 16px; border-radius: var(--radius-md); background: var(--bg-glass); border: 1px solid var(--border-subtle); transition: var(--transition-fast); cursor: pointer; }
+    .enrolled-course:hover { border-color: var(--border-accent); background: var(--bg-glass-hover); }
+    .enrolled-thumb { width: 72px; height: 52px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0; }
+    .achievement-badge { padding: 16px; border-radius: var(--radius-md); background: var(--bg-glass); border: 1px solid var(--border-subtle); text-align: center; transition: var(--transition-medium); }
+    .achievement-badge:hover { transform: translateY(-3px); box-shadow: var(--shadow-glow-violet); }
+    .achievement-badge.locked { opacity: .4; filter: grayscale(1); }
+    .achievement-icon { font-size: 2.5rem; margin-bottom: 8px; }
+    .achievement-name { font-size: .75rem; font-weight: 700; color: var(--text-primary); }
+    .notif-panel { position: absolute; top: 100%; right: 0; margin-top: 8px; width: 320px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 16px; box-shadow: 0 8px 32px rgba(0,0,0,.5); z-index: 200; }
+    .notif-item { padding: 12px; border-radius: 8px; cursor: pointer; transition: .2s; display: flex; gap: 12px; }
+    .notif-item:hover { background: var(--bg-glass); }
+    .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-cyan); flex-shrink: 0; margin-top: 5px; }
+    .activity-item { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.04); }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="navbar-logo-icon" style="width:28px;height:28px;font-size:.875rem">🎓</div>
+      EduNova
+    </div>
+    <p class="sidebar-section-label">Learning</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="dashboard.html" class="active"><span class="sidebar-nav-icon">🏠</span> Dashboard</a></li>
+      <li class="sidebar-nav-item"><a href="mes-cours.html"><span class="sidebar-nav-icon">📚</span> My courses</a></li>
+      <li class="sidebar-nav-item"><a href="../catalogue.html"><span class="sidebar-nav-icon">🔍</span> Catalogue</a></li>
+      <li class="sidebar-nav-item"><a href="lecon.html"><span class="sidebar-nav-icon">▶️</span> Continue learning</a></li>
+    </ul>
+    <p class="sidebar-section-label">Progress</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">📈</span> Analytics</a></li>
+      <li class="sidebar-nav-item"><a href="certificats.html"><span class="sidebar-nav-icon">📜</span> Certificates</a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">🏆</span> Achievements</a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">📝</span> Quizzes</a></li>
+    </ul>
+    <p class="sidebar-section-label">Account</p>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">💬</span> Messages <span class="sidebar-badge">3</span></a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">🔔</span> Notifications <span class="sidebar-badge">5</span></a></li>
+      <li class="sidebar-nav-item"><a href="#"><span class="sidebar-nav-icon">⚙️</span> Settings</a></li>
+    </ul>
+    <div style="flex:1"></div>
+    <div class="sidebar-user">
+      <div class="avatar avatar-sm avatar-gradient" data-user-avatar>SA</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" data-user-name>Sara Aissaoui</div>
+        <div class="sidebar-user-role" data-user-role>🌱 Beginner · 840 XP</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Overlay for mobile -->
+  <div id="sidebar-overlay" class="hidden" style="position:fixed;inset:0;z-index:49;background:rgba(0,0,0,.6)"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <button class="hamburger"><span></span><span></span><span></span></button>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="dropdown relative">
+          <button class="notif-btn" id="notif-btn" aria-label="Notifications">
+            🔔
+            <span class="notif-dot"></span>
+          </button>
+          <div class="notif-panel hidden" id="notif-panel">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <span style="font-weight:700;font-size:.875rem">Notifications</span>
+              <button style="background:none;border:none;color:var(--accent-cyan);font-size:.75rem;cursor:pointer">Mark all read</button>
+            </div>
+            <div class="notif-item"><div class="notif-dot"></div><div><div style="font-size:.8125rem;font-weight:600;color:var(--text-primary)">Quiz graded ✅</div><div style="font-size:.75rem;color:var(--text-muted)">Your ML quiz scored 92%</div></div></div>
+            <div class="notif-item"><div class="notif-dot"></div><div><div style="font-size:.8125rem;font-weight:600;color:var(--text-primary)">Badge unlocked 🏆</div><div style="font-size:.75rem;color:var(--text-muted)">You earned "7-Day Streak"</div></div></div>
+            <div class="notif-item"><div style="width:8px;height:8px;flex-shrink:0;margin-top:5px"></div><div><div style="font-size:.8125rem;font-weight:600;color:var(--text-primary)">New course recommendation</div><div style="font-size:.75rem;color:var(--text-muted)">Deep Learning for your profile</div></div></div>
+          </div>
+        </div>
+        <div class="avatar avatar-sm avatar-gradient" data-user-avatar style="cursor:pointer">SA</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="dashboard-layout">
+    <div class="dashboard-content">
+
+      <!-- Header -->
+      <div class="dashboard-header">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px">
+          <div>
+            <div class="dashboard-title">Good morning, Sara 👋</div>
+            <div class="dashboard-subtitle">You have <strong style="color:var(--accent-cyan)">3 lessons</strong> to complete today · <span style="color:var(--accent-amber)">🔥 7-day streak!</span></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="padding:10px 18px;background:var(--bg-glass);border:1px solid var(--border-subtle);border-radius:var(--radius-md);text-align:center">
+              <div style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--text-muted);margin-bottom:4px">⚡ XP Progress</div>
+              <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--text-primary)">840 / 1000</div>
+              <div class="xp-bar-wrap" style="margin-top:6px;width:120px">
+                <div class="xp-bar-fill" style="width:84%"></div>
+              </div>
+            </div>
+            <a href="lecon.html" class="btn btn-cyan">▶ Continue learning</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="grid-stats">
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,var(--accent-cyan),#0891b2)" data-animate>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="stat-value" data-count="6" data-suffix="">0</div>
+              <div class="stat-label">Courses enrolled</div>
+            </div>
+            <span style="font-size:1.75rem">📚</span>
+          </div>
+          <div class="stat-change up">↑ +2 this month</div>
+        </div>
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,var(--accent-emerald),#059669)" data-animate data-delay="100">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="stat-value" data-count="72" data-suffix="%">0%</div>
+              <div class="stat-label">Avg. completion</div>
+            </div>
+            <span style="font-size:1.75rem">📈</span>
+          </div>
+          <div class="stat-change up">↑ +8% this week</div>
+        </div>
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,var(--accent-violet),#5b21b6)" data-animate data-delay="200">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="stat-value" data-count="2">0</div>
+              <div class="stat-label">Certificates earned</div>
+            </div>
+            <span style="font-size:1.75rem">📜</span>
+          </div>
+          <div class="stat-change up">🏆 2 more in progress</div>
+        </div>
+        <div class="stat-card" style="--accent-line:linear-gradient(90deg,var(--accent-amber),#d97706)" data-animate data-delay="300">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="stat-value" data-count="7" data-suffix="">0</div>
+              <div class="stat-label">Day streak 🔥</div>
+            </div>
+            <span class="streak-fire">🔥</span>
+          </div>
+          <div class="stat-change up">↑ Personal best!</div>
+        </div>
+      </div>
+
+      <!-- Main Grid -->
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:24px" id="main-grid">
+
+        <!-- Left Column -->
+        <div style="display:flex;flex-direction:column;gap:24px">
+
+          <!-- Active Courses -->
+          <div class="glass-card-elevated" style="padding:24px" data-animate>
+            <div class="section-header">
+              <div class="section-title">📚 Active courses</div>
+              <a href="mes-cours.html" class="btn btn-ghost btn-sm">View all</a>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div class="enrolled-course" onclick="location.href='lecon.html'">
+                <div class="enrolled-thumb" style="background:linear-gradient(135deg,#1e1b4b,#312e81)">🧠</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:600;font-size:.9rem;color:var(--text-primary);margin-bottom:4px">Machine Learning A-Z</div>
+                  <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:8px">Lesson 14 of 186 · Section 2</div>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="flex:1;height:5px;background:var(--bg-elevated);border-radius:99px;overflow:hidden">
+                      <div style="width:8%;height:100%;background:linear-gradient(90deg,#7c3aed,#00e5ff);border-radius:99px"></div>
+                    </div>
+                    <span style="font-size:.75rem;color:var(--text-muted);white-space:nowrap">8%</span>
+                  </div>
+                </div>
+                <a href="lecon.html" class="btn btn-primary btn-sm" onclick="event.stopPropagation()">Resume</a>
+              </div>
+              <div class="enrolled-course" onclick="location.href='lecon.html'">
+                <div class="enrolled-thumb" style="background:linear-gradient(135deg,#0c4a6e,#0284c7)">⚡</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:600;font-size:.9rem;color:var(--text-primary);margin-bottom:4px">The Complete React Developer</div>
+                  <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:8px">Lesson 48 of 240 · Hooks Deep Dive</div>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="flex:1;height:5px;background:var(--bg-elevated);border-radius:99px;overflow:hidden">
+                      <div style="width:20%;height:100%;background:linear-gradient(90deg,#0891b2,#00e5ff);border-radius:99px"></div>
+                    </div>
+                    <span style="font-size:.75rem;color:var(--text-muted);white-space:nowrap">20%</span>
+                  </div>
+                </div>
+                <a href="lecon.html" class="btn btn-primary btn-sm" onclick="event.stopPropagation()">Resume</a>
+              </div>
+              <div class="enrolled-course" onclick="location.href='lecon.html'">
+                <div class="enrolled-thumb" style="background:linear-gradient(135deg,#14532d,#15803d)">🎨</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:600;font-size:.9rem;color:var(--text-primary);margin-bottom:4px">Figma Masterclass</div>
+                  <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:8px">Lesson 89 of 115 · Auto Layout</div>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="flex:1;height:5px;background:var(--bg-elevated);border-radius:99px;overflow:hidden">
+                      <div style="width:77%;height:100%;background:linear-gradient(90deg,#15803d,#4ade80);border-radius:99px"></div>
+                    </div>
+                    <span style="font-size:.75rem;color:var(--text-muted);white-space:nowrap">77%</span>
+                  </div>
+                </div>
+                <a href="lecon.html" class="btn btn-primary btn-sm" onclick="event.stopPropagation()">Resume</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weekly activity chart -->
+          <div class="glass-card-elevated" style="padding:24px" data-animate>
+            <div class="section-header">
+              <div class="section-title">📅 Weekly learning activity</div>
+              <span class="badge badge-emerald">This week</span>
+            </div>
+            <div style="display:flex;align-items:flex-end;gap:8px;height:80px;margin-top:8px">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="flex:1;width:100%;background:rgba(124,58,237,.6);border-radius:4px 4px 0 0;min-height:20%;position:relative;cursor:pointer;transition:.3s" onmouseover="this.style.background='#7c3aed'" onmouseout="this.style.background='rgba(124,58,237,.6)'" title="Mon: 45 min"></div>
+                <span style="font-size:.65rem;color:var(--text-muted)">Mon</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="flex:1;width:100%;background:rgba(124,58,237,.6);border-radius:4px 4px 0 0;min-height:60%;position:relative;cursor:pointer;transition:.3s" style="height:60%" onmouseover="this.style.background='#7c3aed'" onmouseout="this.style.background='rgba(124,58,237,.6)'" title="Tue: 95 min"></div>
+                <span style="font-size:.65rem;color:var(--text-muted)">Tue</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="flex:1;width:100%;background:rgba(124,58,237,.6);border-radius:4px 4px 0 0;min-height:40%;cursor:pointer;transition:.3s" onmouseover="this.style.background='#7c3aed'" onmouseout="this.style.background='rgba(124,58,237,.6)'" title="Wed: 70 min"></div>
+                <span style="font-size:.65rem;color:var(--text-muted)">Wed</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="flex:1;width:100%;background:rgba(124,58,237,.6);border-radius:4px 4px 0 0;min-height:90%;cursor:pointer;transition:.3s" onmouseover="this.style.background='#7c3aed'" onmouseout="this.style.background='rgba(124,58,237,.6)'" title="Thu: 140 min"></div>
+                <span style="font-size:.65rem;color:var(--text-muted)">Thu</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="flex:1;width:100%;background:rgba(124,58,237,.6);border-radius:4px 4px 0 0;min-height:70%;cursor:pointer;transition:.3s" onmouseover="this.style.background='#7c3aed'" onmouseout="this.style.background='rgba(124,58,237,.6)'" title="Fri: 110 min"></div>
+                <span style="font-size:.65rem;color:var(--text-muted)">Fri</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="flex:1;width:100%;background:rgba(0,229,255,.6);border-radius:4px 4px 0 0;min-height:100%;cursor:pointer;transition:.3s" onmouseover="this.style.background='#00e5ff'" onmouseout="this.style.background='rgba(0,229,255,.6)'" title="Sat: 160 min"></div>
+                <span style="font-size:.65rem;color:var(--accent-cyan)">Sat ★</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="flex:1;width:100%;background:rgba(255,255,255,.06);border-radius:4px 4px 0 0;border:1px dashed rgba(255,255,255,.1);min-height:5%"></div>
+                <span style="font-size:.65rem;color:var(--text-muted)">Sun</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:.75rem;color:var(--text-muted)">
+              <span>Total this week: <strong style="color:var(--text-primary)">8h 40min</strong></span>
+              <span>Daily goal: <strong style="color:var(--accent-emerald)">✓ 6/7 days</strong></span>
+            </div>
+          </div>
+
+          <!-- Achievements -->
+          <div class="glass-card-elevated" style="padding:24px" data-animate>
+            <div class="section-header">
+              <div class="section-title">🏆 Achievements</div>
+              <span style="font-size:.8125rem;color:var(--text-muted)">5 of 24 unlocked</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px">
+              <div class="achievement-badge" title="Enrolled in your first course">
+                <div class="achievement-icon">🌱</div>
+                <div class="achievement-name">First Step</div>
+              </div>
+              <div class="achievement-badge" title="Completed 7 days in a row">
+                <div class="achievement-icon">🔥</div>
+                <div class="achievement-name">7-Day Streak</div>
+              </div>
+              <div class="achievement-badge" title="Scored 90%+ on a quiz">
+                <div class="achievement-icon">🎯</div>
+                <div class="achievement-name">Quiz Master</div>
+              </div>
+              <div class="achievement-badge" title="Earned your first certificate">
+                <div class="achievement-icon">📜</div>
+                <div class="achievement-name">Certified</div>
+              </div>
+              <div class="achievement-badge" title="Reached 500 XP">
+                <div class="achievement-icon">⚡</div>
+                <div class="achievement-name">500 XP</div>
+              </div>
+              <div class="achievement-badge locked" title="Complete 3 courses">
+                <div class="achievement-icon">🚀</div>
+                <div class="achievement-name">Triple Crown</div>
+              </div>
+              <div class="achievement-badge locked" title="Maintain a 30-day streak">
+                <div class="achievement-icon">💎</div>
+                <div class="achievement-name">Diamond Streak</div>
+              </div>
+              <div class="achievement-badge locked" title="Enroll in 10 courses">
+                <div class="achievement-icon">📚</div>
+                <div class="achievement-name">Bookworm</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div style="display:flex;flex-direction:column;gap:20px">
+
+          <!-- Profile card -->
+          <div class="glass-card-elevated" style="padding:24px;text-align:center" data-animate>
+            <div class="avatar avatar-xl avatar-gradient" data-user-avatar style="margin:0 auto 16px">SA</div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.125rem;font-weight:700;color:var(--text-primary)" data-user-name>Sara Aissaoui</div>
+            <div style="font-size:.8125rem;color:var(--text-muted);margin-bottom:16px">🌱 Beginner Learner</div>
+            <div style="display:flex;gap:20px;justify-content:center;margin-bottom:16px">
+              <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--text-primary)">6</div><div style="font-size:.7rem;color:var(--text-muted)">Courses</div></div>
+              <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--text-primary)">2</div><div style="font-size:.7rem;color:var(--text-muted)">Certs</div></div>
+              <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--text-primary)">840</div><div style="font-size:.7rem;color:var(--text-muted)">XP</div></div>
+            </div>
+            <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:6px">Level progress: 840/1000 XP</div>
+            <div class="xp-bar-wrap"><div class="xp-bar-fill" style="width:84%"></div></div>
+            <div style="font-size:.7rem;color:var(--text-muted);margin-top:6px">160 XP to reach Intermediate</div>
+          </div>
+
+          <!-- Quick actions -->
+          <div class="glass-card-elevated" style="padding:20px" data-animate>
+            <div style="font-weight:700;font-size:.875rem;margin-bottom:14px;color:var(--text-primary)">⚡ Quick actions</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <a href="lecon.html" class="btn btn-primary btn-sm">▶ Resume ML course</a>
+              <a href="quiz.html" class="btn btn-ghost btn-sm">📝 Take pending quiz</a>
+              <a href="certificats.html" class="btn btn-ghost btn-sm">📜 View certificates</a>
+              <a href="../catalogue.html" class="btn btn-ghost btn-sm">🔍 Browse new courses</a>
+            </div>
+          </div>
+
+          <!-- Recent activity -->
+          <div class="glass-card-elevated" style="padding:20px" data-animate>
+            <div style="font-weight:700;font-size:.875rem;margin-bottom:14px;color:var(--text-primary)">🕐 Recent activity</div>
+            <div>
+              <div class="activity-item">
+                <div class="activity-dot" style="background:#10b981"></div>
+                <div><div style="font-size:.8125rem;color:var(--text-primary)">Completed lesson 13</div><div style="font-size:.7rem;color:var(--text-muted)">ML A-Z · 2h ago</div></div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot" style="background:#f59e0b"></div>
+                <div><div style="font-size:.8125rem;color:var(--text-primary)">Quiz scored 92%</div><div style="font-size:.7rem;color:var(--text-muted)">Data Preprocessing · 5h ago</div></div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot" style="background:#7c3aed"></div>
+                <div><div style="font-size:.8125rem;color:var(--text-primary)">Badge unlocked 🏆</div><div style="font-size:.7rem;color:var(--text-muted)">7-Day Streak · Yesterday</div></div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot" style="background:#00e5ff"></div>
+                <div><div style="font-size:.8125rem;color:var(--text-primary)">Enrolled in React course</div><div style="font-size:.7rem;color:var(--text-muted)">2 days ago</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recommended -->
+          <div class="glass-card-elevated" style="padding:20px" data-animate>
+            <div style="font-weight:700;font-size:.875rem;margin-bottom:14px;color:var(--text-primary)">🤖 AI Recommended</div>
+            <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:12px">Based on your ML progress</div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:10px;cursor:pointer;margin-bottom:8px" onclick="location.href='../cours-detail.html'">
+              <span style="font-size:1.5rem">🤖</span>
+              <div>
+                <div style="font-size:.8125rem;font-weight:600;color:var(--text-primary)">Deep Learning A-Z</div>
+                <div style="font-size:.7rem;color:var(--text-muted)">Perfect next step after ML</div>
+              </div>
+              <span style="margin-left:auto;color:var(--accent-cyan);font-size:.8rem">→</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.1);border-radius:10px;cursor:pointer" onclick="location.href='../cours-detail.html'">
+              <span style="font-size:1.5rem">🐍</span>
+              <div>
+                <div style="font-size:.8125rem;font-weight:600;color:var(--text-primary)">Python Advanced</div>
+                <div style="font-size:.7rem;color:var(--text-muted)">Strengthen your Python skills</div>
+              </div>
+              <span style="margin-left:auto;color:var(--accent-cyan);font-size:.8rem">→</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/main.js">
+    // Logout helper
+    function logout() {
+      Auth.clear();
+      const depth = window.location.pathname.split('/').length - 1;
+      const prefix = depth >= 4 ? '../../' : '../';
+      window.location.href = prefix + 'login.html';
+    }
+
+  </script>
+</body>
+</html>

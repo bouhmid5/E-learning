@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Course Catalogue — EduNova</title>
+  <link rel="stylesheet" href="../styles/main.css"/>
+  <style>
+    .catalogue-layout { display: grid; grid-template-columns: 280px 1fr; gap: 32px; padding-top: 100px; padding-bottom: 60px; }
+    .filter-panel { position: sticky; top: 90px; align-self: start; }
+    .filter-card { background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 16px; }
+    .filter-card-title { font-family: var(--font-display); font-size: .875rem; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; text-transform: uppercase; letter-spacing: .06em; }
+    .filter-check { display: flex; align-items: center; gap: 10px; padding: 8px 0; cursor: pointer; font-size: .875rem; color: var(--text-secondary); transition: var(--transition-fast); }
+    .filter-check:hover { color: var(--text-primary); }
+    .filter-check input { accent-color: var(--accent-violet); width: 15px; height: 15px; }
+    .results-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .results-count { font-size: .875rem; color: var(--text-secondary); }
+    .results-count strong { color: var(--text-primary); }
+    .sort-select { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px 12px; color: var(--text-secondary); font-family: var(--font-body); font-size: .875rem; outline: none; cursor: pointer; }
+    .sort-select:hover { border-color: rgba(255,255,255,.12); }
+    .view-toggle { display: flex; gap: 4px; }
+    .view-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: 8px; cursor: pointer; color: var(--text-muted); transition: var(--transition-fast); font-size: 1rem; }
+    .view-btn.active { background: var(--bg-elevated); color: var(--text-primary); border-color: rgba(255,255,255,.12); }
+    .courses-list .course-card { display: flex; gap: 0; }
+    .courses-list .course-card-thumb { width: 200px; flex-shrink: 0; aspect-ratio: auto; height: 140px; }
+    .active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .active-filter-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.25); border-radius: 99px; font-size: .75rem; color: #a78bfa; }
+    .active-filter-tag button { background: none; border: none; color: inherit; cursor: pointer; font-size: 1rem; line-height: 1; }
+    .pagination { display: flex; align-items: center; gap: 6px; margin-top: 40px; justify-content: center; }
+    .page-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: 8px; cursor: pointer; font-size: .875rem; color: var(--text-secondary); transition: var(--transition-fast); text-decoration: none; }
+    .page-btn:hover, .page-btn.active { background: var(--accent-violet); border-color: var(--accent-violet); color: white; }
+    .no-results { text-align: center; padding: 80px 24px; }
+    @media (max-width: 768px) { .catalogue-layout { grid-template-columns: 1fr; padding-top: 80px; } .filter-panel { position: relative; top: 0; } }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="../index.html" class="navbar-logo">
+        <div class="navbar-logo-icon">🎓</div>EduNova
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="catalogue.html" class="active">Catalogue</a></li>
+        <li><a href="../index.html#features">Features</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <a href="login.html" class="btn btn-ghost btn-sm">Sign in</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Get started</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="container">
+
+      <!-- Search Hero -->
+      <div style="padding-top:90px;padding-bottom:32px;text-align:center">
+        <h1 class="section-title-lg" data-animate>Browse <span class="text-gradient">840+ Courses</span></h1>
+        <p class="section-desc" style="margin:12px auto 28px" data-animate data-delay="100">Expert-crafted, industry-relevant content across 50+ disciplines</p>
+        <div class="search-bar" style="max-width:600px;margin:0 auto" data-animate data-delay="200">
+          <span style="color:var(--text-muted);font-size:1.1rem">🔍</span>
+          <input type="text" placeholder="Search courses, topics, instructors…" data-search="courses" id="course-search" autocomplete="off"/>
+          <button class="btn btn-primary btn-sm" onclick="document.getElementById('course-search').dispatchEvent(new Event('input'))">Search</button>
+        </div>
+      </div>
+
+      <!-- Active filters -->
+      <div class="active-filters" id="active-filters">
+        <span class="active-filter-tag">Development <button onclick="this.parentElement.remove()">×</button></span>
+        <span class="active-filter-tag">Beginner <button onclick="this.parentElement.remove()">×</button></span>
+      </div>
+
+      <!-- Layout -->
+      <div class="catalogue-layout">
+
+        <!-- ── Filter Panel ── -->
+        <aside class="filter-panel">
+
+          <div class="filter-card">
+            <div class="filter-card-title">📂 Category</div>
+            <label class="filter-check"><input type="checkbox" checked/> Development <span style="margin-left:auto;color:var(--text-muted);font-size:.75rem">248</span></label>
+            <label class="filter-check"><input type="checkbox"/> Design <span style="margin-left:auto;color:var(--text-muted);font-size:.75rem">112</span></label>
+            <label class="filter-check"><input type="checkbox"/> Data Science <span style="margin-left:auto;color:var(--text-muted);font-size:.75rem">98</span></label>
+            <label class="filter-check"><input type="checkbox"/> Business <span style="margin-left:auto;color:var(--text-muted);font-size:.75rem">76</span></label>
+            <label class="filter-check"><input type="checkbox"/> Marketing <span style="margin-left:auto;color:var(--text-muted);font-size:.75rem">65</span></label>
+            <label class="filter-check"><input type="checkbox"/> Cybersecurity <span style="margin-left:auto;color:var(--text-muted);font-size:.75rem">54</span></label>
+            <label class="filter-check"><input type="checkbox"/> AI & ML <span style="margin-left:auto;color:var(--text-muted);font-size:.75rem">88</span></label>
+          </div>
+
+          <div class="filter-card">
+            <div class="filter-card-title">🎯 Level</div>
+            <label class="filter-check"><input type="checkbox" checked/> Beginner</label>
+            <label class="filter-check"><input type="checkbox"/> Intermediate</label>
+            <label class="filter-check"><input type="checkbox"/> Advanced</label>
+          </div>
+
+          <div class="filter-card">
+            <div class="filter-card-title">⏱ Duration</div>
+            <label class="filter-check"><input type="radio" name="duration"/> Under 5 hours</label>
+            <label class="filter-check"><input type="radio" name="duration"/> 5–20 hours</label>
+            <label class="filter-check"><input type="radio" name="duration"/> 20–50 hours</label>
+            <label class="filter-check"><input type="radio" name="duration"/> 50+ hours</label>
+          </div>
+
+          <div class="filter-card">
+            <div class="filter-card-title">⭐ Rating</div>
+            <label class="filter-check"><input type="radio" name="rating"/> 4.5 & up <span style="color:#f59e0b;margin-left:6px">★★★★★</span></label>
+            <label class="filter-check"><input type="radio" name="rating"/> 4.0 & up <span style="color:#f59e0b;margin-left:6px">★★★★☆</span></label>
+            <label class="filter-check"><input type="radio" name="rating"/> 3.5 & up</label>
+          </div>
+
+          <div class="filter-card">
+            <div class="filter-card-title">🌍 Language</div>
+            <label class="filter-check"><input type="checkbox" checked/> English</label>
+            <label class="filter-check"><input type="checkbox"/> French</label>
+            <label class="filter-check"><input type="checkbox"/> Arabic</label>
+          </div>
+
+          <button class="btn btn-ghost w-full" onclick="document.querySelectorAll('.filter-check input').forEach(i=>i.checked=false)">Clear all filters</button>
+        </aside>
+
+        <!-- ── Course Results ── -->
+        <main>
+          <div class="results-meta">
+            <div class="results-count"><strong id="results-count">240</strong> courses found</div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <select class="sort-select">
+                <option>Most popular</option>
+                <option>Highest rated</option>
+                <option>Newest</option>
+                <option>Duration: Shortest</option>
+              </select>
+              <div class="view-toggle">
+                <button class="view-btn active" title="Grid" id="view-grid">⊞</button>
+                <button class="view-btn" title="List" id="view-list">≡</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Quick Tabs -->
+          <div class="tabs" style="margin-bottom:24px" data-tabs>
+            <button class="tab-btn active" data-tab="all">All</button>
+            <button class="tab-btn" data-tab="web">Web Dev</button>
+            <button class="tab-btn" data-tab="data">Data</button>
+            <button class="tab-btn" data-tab="design">Design</button>
+            <button class="tab-btn" data-tab="security">Security</button>
+          </div>
+
+          <!-- Grid of courses -->
+          <div class="grid-courses" id="courses-grid">
+
+            <div class="course-card" data-searchable="courses" onclick="location.href='cours-detail.html'" data-animate data-delay="0">
+              <div class="course-card-thumb">
+                <div class="course-card-thumb-placeholder" style="background:linear-gradient(135deg,#1e1b4b,#312e81)">🧠</div>
+                <div class="course-card-overlay"></div>
+                <span class="badge badge-violet" style="position:absolute;top:12px;left:12px">Bestseller</span>
+              </div>
+              <div class="course-card-body">
+                <div class="course-card-category">AI & Machine Learning</div>
+                <div class="course-card-title">Machine Learning A-Z: Python & R</div>
+                <div class="course-card-desc">Comprehensive ML course with real projects and datasets.</div>
+                <div class="course-card-meta"><span>⏱ 42h</span><span>·</span><span>🎯 Advanced</span></div>
+              </div>
+              <div class="course-card-footer">
+                <div class="course-rating"><span class="stars">★★★★★</span> <strong>4.9</strong> <span style="color:#4b5563">(12.4k)</span></div>
+                <div class="instructor-avatar">DR</div>
+              </div>
+            </div>
+
+            <div class="course-card" data-searchable="courses" onclick="location.href='cours-detail.html'" data-animate data-delay="100">
+              <div class="course-card-thumb">
+                <div class="course-card-thumb-placeholder" style="background:linear-gradient(135deg,#0c4a6e,#0284c7)">⚡</div>
+                <div class="course-card-overlay"></div>
+                <span class="badge badge-cyan" style="position:absolute;top:12px;left:12px">New</span>
+              </div>
+              <div class="course-card-body">
+                <div class="course-card-category">Web Development</div>
+                <div class="course-card-title">The Complete React Developer 2025</div>
+                <div class="course-card-desc">React 19, hooks, TypeScript, testing, and deployment.</div>
+                <div class="course-card-meta"><span>⏱ 58h</span><span>·</span><span>🎯 Intermediate</span></div>
+              </div>
+              <div class="course-card-footer">
+                <div class="course-rating"><span class="stars">★★★★★</span> <strong>4.8</strong> <span style="color:#4b5563">(8.9k)</span></div>
+                <div class="instructor-avatar" style="background:linear-gradient(135deg,#0891b2,#00e5ff)">ZA</div>
+              </div>
+            </div>
+
+            <div class="course-card" data-searchable="courses" onclick="location.href='cours-detail.html'" data-animate data-delay="200">
+              <div class="course-card-thumb">
+                <div class="course-card-thumb-placeholder" style="background:linear-gradient(135deg,#14532d,#15803d)">🎨</div>
+                <div class="course-card-overlay"></div>
+              </div>
+              <div class="course-card-body">
+                <div class="course-card-category">UI/UX Design</div>
+                <div class="course-card-title">Figma Masterclass & Design Systems</div>
+                <div class="course-card-desc">Build scalable design systems and interactive prototypes.</div>
+                <div class="course-card-meta"><span>⏱ 28h</span><span>·</span><span>🎯 Beginner</span></div>
+              </div>
+              <div class="course-card-footer">
+                <div class="course-rating"><span class="stars">★★★★☆</span> <strong>4.7</strong> <span style="color:#4b5563">(5.2k)</span></div>
+                <div class="instructor-avatar" style="background:linear-gradient(135deg,#15803d,#4ade80)">ML</div>
+              </div>
+            </div>
+
+            <div class="course-card" data-searchable="courses" onclick="location.href='cours-detail.html'" data-animate data-delay="300">
+              <div class="course-card-thumb">
+                <div class="course-card-thumb-placeholder" style="background:linear-gradient(135deg,#7c2d12,#c2410c)">🔐</div>
+                <div class="course-card-overlay"></div>
+                <span class="badge badge-rose" style="position:absolute;top:12px;left:12px">Hot</span>
+              </div>
+              <div class="course-card-body">
+                <div class="course-card-category">Cybersecurity</div>
+                <div class="course-card-title">Ethical Hacking & Penetration Testing</div>
+                <div class="course-card-desc">Legal offensive security techniques and tools.</div>
+                <div class="course-card-meta"><span>⏱ 65h</span><span>·</span><span>🎯 Advanced</span></div>
+              </div>
+              <div class="course-card-footer">
+                <div class="course-rating"><span class="stars">★★★★★</span> <strong>4.9</strong> <span style="color:#4b5563">(7.8k)</span></div>
+                <div class="instructor-avatar" style="background:linear-gradient(135deg,#c2410c,#f97316)">KH</div>
+              </div>
+            </div>
+
+            <div class="course-card" data-searchable="courses" onclick="location.href='cours-detail.html'" data-animate data-delay="0">
+              <div class="course-card-thumb">
+                <div class="course-card-thumb-placeholder" style="background:linear-gradient(135deg,#1e3a5f,#2563eb)">📊</div>
+                <div class="course-card-overlay"></div>
+              </div>
+              <div class="course-card-body">
+                <div class="course-card-category">Data Science</div>
+                <div class="course-card-title">Data Analysis with Python & Pandas</div>
+                <div class="course-card-desc">Transform raw data into actionable business insights.</div>
+                <div class="course-card-meta"><span>⏱ 34h</span><span>·</span><span>🎯 Intermediate</span></div>
+              </div>
+              <div class="course-card-footer">
+                <div class="course-rating"><span class="stars">★★★★☆</span> <strong>4.6</strong> <span style="color:#4b5563">(3.4k)</span></div>
+                <div class="instructor-avatar" style="background:linear-gradient(135deg,#1d4ed8,#60a5fa)">NB</div>
+              </div>
+            </div>
+
+            <div class="course-card" data-searchable="courses" onclick="location.href='cours-detail.html'" data-animate data-delay="100">
+              <div class="course-card-thumb">
+                <div class="course-card-thumb-placeholder" style="background:linear-gradient(135deg,#3b0764,#7e22ce)">☁️</div>
+                <div class="course-card-overlay"></div>
+                <span class="badge badge-emerald" style="position:absolute;top:12px;left:12px">Certified</span>
+              </div>
+              <div class="course-card-body">
+                <div class="course-card-category">Cloud & DevOps</div>
+                <div class="course-card-title">AWS Solutions Architect Associate</div>
+                <div class="course-card-desc">Prepare and pass the AWS SAA-C03 certification exam.</div>
+                <div class="course-card-meta"><span>⏱ 48h</span><span>·</span><span>🎯 Intermediate</span></div>
+              </div>
+              <div class="course-card-footer">
+                <div class="course-rating"><span class="stars">★★★★★</span> <strong>4.8</strong> <span style="color:#4b5563">(6.1k)</span></div>
+                <div class="instructor-avatar" style="background:linear-gradient(135deg,#7e22ce,#a855f7)">AW</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination">
+            <a class="page-btn" href="#">‹</a>
+            <a class="page-btn active" href="#">1</a>
+            <a class="page-btn" href="#">2</a>
+            <a class="page-btn" href="#">3</a>
+            <span style="color:var(--text-muted);padding:0 4px">…</span>
+            <a class="page-btn" href="#">24</a>
+            <a class="page-btn" href="#">›</a>
+          </div>
+        </main>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script>
+    // View toggle
+    const grid = document.getElementById('courses-grid');
+    document.getElementById('view-grid').addEventListener('click', function() {
+      grid.className = 'grid-courses';
+      this.classList.add('active');
+      document.getElementById('view-list').classList.remove('active');
+    });
+    document.getElementById('view-list').addEventListener('click', function() {
+      grid.className = 'courses-list';
+      grid.style.display = 'flex';
+      grid.style.flexDirection = 'column';
+      grid.style.gap = '12px';
+      this.classList.add('active');
+      document.getElementById('view-grid').classList.remove('active');
+    });
+  </script>
+</body>
+</html>
