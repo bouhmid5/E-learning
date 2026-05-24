@@ -3,17 +3,17 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ config('app.name', 'E-learning Platform') }}</title>
+        <title>@yield('title', config('app.name', 'E-learning Platform'))</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
         <header class="site-header">
-            <a href="{{ route('home') }}" class="brand">{{ config('app.name', 'E-learning Platform') }}</a>
+            @include('layouts.partials.navigation')
         </header>
 
         <main class="page-shell">
+            @include('layouts.partials.feedback')
             @yield('content')
         </main>
     </body>
 </html>
-

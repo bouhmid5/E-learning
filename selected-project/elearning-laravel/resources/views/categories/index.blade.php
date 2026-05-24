@@ -1,8 +1,12 @@
 @extends('layouts.app')
 
+@section('title', 'Catégories')
+
 @section('content')
     <section class="page-heading">
+        <p class="eyebrow">Catalogue</p>
         <h1>Catégories</h1>
+        <p>Accédez rapidement aux cours publiés par domaine.</p>
     </section>
 
     @if ($categories->isEmpty())
@@ -22,4 +26,3 @@
         </section>
     @endif
 @endsection
-

@@ -1,26 +1,33 @@
 @extends('layouts.app')
 
+@section('title', 'Inscription formateur')
+
 @section('content')
-    <section class="auth-panel">
-        <h1>Inscription formateur</h1>
+    <section class="auth-shell">
+        <div class="auth-copy">
+            <p class="eyebrow">Espace formateur</p>
+            <h1>Demandez votre accès formateur</h1>
+            <p>Le compte formateur est créé en attente de validation avant publication de cours.</p>
+        </div>
 
-        <form method="POST" action="{{ route('register.trainer.store') }}">
-            @csrf
+        <div class="auth-panel">
+            <form method="POST" action="{{ route('register.trainer.store') }}">
+                @csrf
 
-            @include('auth.partials.utilisateur-fields')
+                @include('auth.partials.utilisateur-fields')
 
-            <label>
-                Spécialité
-                <input type="text" name="specialite" value="{{ old('specialite') }}">
-            </label>
+                <label>
+                    Spécialité
+                    <input type="text" name="specialite" value="{{ old('specialite') }}">
+                </label>
 
-            <label>
-                Biographie
-                <textarea name="biographie">{{ old('biographie') }}</textarea>
-            </label>
+                <label>
+                    Biographie
+                    <textarea name="biographie">{{ old('biographie') }}</textarea>
+                </label>
 
-            <button type="submit">Demander l'inscription formateur</button>
-        </form>
+                <button type="submit">Demander l'inscription formateur</button>
+            </form>
+        </div>
     </section>
 @endsection
-
