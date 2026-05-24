@@ -5,9 +5,9 @@
 @section('content')
     <section class="auth-shell">
         <div class="auth-copy">
-            <p class="eyebrow">Accès plateforme</p>
-            <h1>Connectez-vous à votre espace</h1>
-            <p>Utilisez le même formulaire pour les candidats, formateurs et administrateurs.</p>
+            <p class="eyebrow">Acces plateforme</p>
+            <h1>Connectez-vous a votre espace</h1>
+            <p>Un seul formulaire pour les candidats, formateurs et administrateurs, avec des espaces proteges par role.</p>
         </div>
 
         <div class="auth-panel">
@@ -26,9 +26,6 @@
                     Email
                     <input type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="email">
                 </label>
-                @error('email')
-                    <p class="field-error">{{ $message }}</p>
-                @enderror
 
                 <label>
                     Mot de passe
@@ -44,7 +41,7 @@
             </form>
 
             <div class="auth-links">
-                <a href="{{ route('register.candidate') }}">Créer un compte candidat</a>
+                <a href="{{ route('register.candidate') }}">Creer un compte candidat</a>
                 <a href="{{ route('register.trainer') }}">Demander un compte formateur</a>
             </div>
         </div>

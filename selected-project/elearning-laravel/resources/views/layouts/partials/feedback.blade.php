@@ -6,7 +6,7 @@
 
 @if ($errors->any())
     <div class="notice notice-error" role="alert">
-        <strong>Veuillez corriger les informations indiquées.</strong>
+        <strong>Veuillez corriger les informations indiquees.</strong>
         <ul>
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>

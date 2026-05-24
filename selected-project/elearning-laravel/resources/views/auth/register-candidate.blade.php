@@ -6,8 +6,8 @@
     <section class="auth-shell">
         <div class="auth-copy">
             <p class="eyebrow">Espace candidat</p>
-            <h1>Créez votre compte d'apprentissage</h1>
-            <p>Votre espace candidat vous permettra de suivre vos cours, évaluations et certificats.</p>
+            <h1>Creez votre compte d'apprentissage</h1>
+            <p>Suivez vos cours, vos evaluations, votre progression et vos certificats depuis un espace clair.</p>
         </div>
 
         <div class="auth-panel">
@@ -16,17 +16,19 @@
 
                 @include('auth.partials.utilisateur-fields')
 
-                <label>
-                    Niveau
-                    <input type="text" name="niveau" value="{{ old('niveau') }}">
-                </label>
+                <div class="form-grid">
+                    <label>
+                        Niveau
+                        <input type="text" name="niveau" value="{{ old('niveau') }}" placeholder="debutant, intermediaire...">
+                    </label>
 
-                <label>
-                    Objectif d'apprentissage
-                    <textarea name="objectif_apprentissage">{{ old('objectif_apprentissage') }}</textarea>
-                </label>
+                    <label>
+                        Objectif d'apprentissage
+                        <textarea name="objectif_apprentissage" placeholder="Votre objectif principal">{{ old('objectif_apprentissage') }}</textarea>
+                    </label>
+                </div>
 
-                <button type="submit">Créer le compte candidat</button>
+                <button type="submit">Creer le compte candidat</button>
             </form>
         </div>
     </section>

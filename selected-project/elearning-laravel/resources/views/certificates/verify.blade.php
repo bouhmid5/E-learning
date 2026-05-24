@@ -1,8 +1,12 @@
 @extends('layouts.app')
 
+@section('title', 'Verification de certificat')
+
 @section('content')
     <section class="page-heading">
-        <h1>Vérification de certificat</h1>
+        <p class="eyebrow">Verification publique</p>
+        <h1>Verification de certificat</h1>
+        <p>Controlez rapidement la validite d'un certificat avec son code de verification.</p>
     </section>
 
     @if (! $certificat)
@@ -17,8 +21,11 @@
         </section>
     @else
         <section class="course-card">
-            <h2>Certificat valide</h2>
-            <dl>
+            <div class="card-header-line">
+                <h2>Certificat valide</h2>
+                <span class="badge">Actif</span>
+            </div>
+            <dl class="certificate-meta">
                 <div><dt>Code</dt><dd>{{ $certificat->code_verification }}</dd></div>
                 <div><dt>Candidat</dt><dd>{{ $certificat->inscription->candidat->utilisateur->prenom }} {{ $certificat->inscription->candidat->utilisateur->nom }}</dd></div>
                 <div><dt>Cours</dt><dd>{{ $certificat->inscription->cours->titre }}</dd></div>
@@ -27,4 +34,3 @@
         </section>
     @endif
 @endsection
-

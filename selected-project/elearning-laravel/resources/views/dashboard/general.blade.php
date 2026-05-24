@@ -3,16 +3,12 @@
 @section('title', 'Tableau de bord')
 
 @section('content')
-    <section class="page-heading">
-        <p class="eyebrow">Espace personnel</p>
-        <h1>Tableau de bord</h1>
-        <p>Choisissez l'espace adapté à votre rôle.</p>
-    </section>
-
-    <section class="action-grid">
-        <a class="action-card" href="{{ route('courses.index') }}">
-            <span>Catalogue</span>
-            <strong>Parcourir les cours publiés</strong>
-        </a>
+    <section class="page-heading dashboard-hero">
+        <div>
+            <p class="eyebrow">Espace personnel</p>
+            <h1>Bienvenue sur votre tableau de bord</h1>
+            <p>Choisissez l'espace adapte a votre role ou continuez vers le catalogue public.</p>
+        </div>
+        <a class="button-link" href="{{ route('courses.index') }}">Parcourir les cours</a>
     </section>
 @endsection

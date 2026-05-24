@@ -1,27 +1,38 @@
 @extends('layouts.app')
 
+@section('title', $cours->titre)
+
 @section('content')
     <section class="course-detail">
-        <p><a href="{{ route('trainer.courses.index') }}">Retour a mes cours</a></p>
-        <h1>{{ $cours->titre }}</h1>
-        <p>{{ $cours->description }}</p>
-        <p>Statut: {{ $cours->statut->value }}</p>
+        <p><a class="muted-link" href="{{ route('trainer.courses.index') }}">Retour a mes cours</a></p>
+
+        <div class="detail-hero">
+            <div>
+                <p class="eyebrow">Atelier cours</p>
+                <h1>{{ $cours->titre }}</h1>
+                <p>{{ $cours->description }}</p>
+            </div>
+            <span class="badge">{{ $cours->statut->value }}</span>
+        </div>
+
+        <div class="hero-actions">
+            @can('update', $cours)
+                <a class="button-link" href="{{ route('trainer.courses.edit', $cours) }}">Modifier le cours</a>
+                <form method="POST" action="{{ route('trainer.courses.submit', $cours) }}" data-confirm="Soumettre ce cours pour validation ?">
+                    @csrf
+                    <button type="submit">Soumettre</button>
+                </form>
+            @endcan
+            <a href="{{ route('trainer.courses.evaluations.index', $cours) }}">Evaluations</a>
+        </div>
 
         @error('cours')
             <p class="field-error">{{ $message }}</p>
         @enderror
 
         @can('update', $cours)
-            <p><a href="{{ route('trainer.courses.edit', $cours) }}">Modifier le cours</a></p>
-            <form method="POST" action="{{ route('trainer.courses.submit', $cours) }}" data-confirm="Soumettre ce cours pour validation ?">
-                @csrf
-                <button type="submit">Soumettre pour validation</button>
-            </form>
-        @endcan
-
-        <section>
-            <h2>Ajouter une lecon</h2>
-            @can('update', $cours)
+            <section class="form-card">
+                <h2>Ajouter une lecon</h2>
                 <form method="POST" action="{{ route('trainer.courses.lessons.store', $cours) }}" class="filter-bar">
                     @csrf
                     <input type="text" name="titre" placeholder="Titre" required>
@@ -30,14 +41,17 @@
                     <input type="text" name="description" placeholder="Description">
                     <button type="submit">Ajouter</button>
                 </form>
-            @endcan
-        </section>
+            </section>
+        @endcan
 
-        <section>
+        <section class="learning-list">
             <h2>Lecons</h2>
             @forelse ($cours->lecons as $lecon)
                 <article class="course-card">
-                    <h3>{{ $lecon->ordre }}. {{ $lecon->titre }}</h3>
+                    <div class="card-header-line">
+                        <h3>{{ $lecon->ordre }}. {{ $lecon->titre }}</h3>
+                        <span class="badge">{{ $lecon->duree_estimee ?? 0 }} min</span>
+                    </div>
                     <p>{{ $lecon->description }}</p>
 
                     @can('update', $cours)
@@ -54,7 +68,7 @@
                         <form method="POST" action="{{ route('trainer.lessons.destroy', $lecon) }}" data-confirm="Supprimer cette lecon ?">
                             @csrf
                             @method('DELETE')
-                            <button type="submit">Supprimer la lecon</button>
+                            <button class="danger-button" type="submit">Supprimer la lecon</button>
                         </form>
 
                         <form method="POST" action="{{ route('trainer.lessons.resources.store', $lecon) }}" enctype="multipart/form-data" class="filter-bar">
@@ -73,7 +87,10 @@
                     @endcan
                 </article>
             @empty
-                <p>Aucune lecon pour ce cours.</p>
+                <section class="empty-state">
+                    <h2>Aucune lecon</h2>
+                    <p>Ajoutez au moins une lecon avant de soumettre le cours.</p>
+                </section>
             @endforelse
         </section>
     </section>

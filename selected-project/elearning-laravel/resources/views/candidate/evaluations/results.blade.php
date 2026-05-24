@@ -1,14 +1,24 @@
 @extends('layouts.app')
 
+@section('title', 'Resultats')
+
 @section('content')
     <section class="page-heading">
+        <p class="eyebrow">Evaluations</p>
         <h1>Resultats</h1>
+        <p>Consultez vos scores et vos feedbacks de correction.</p>
     </section>
 
     @forelse ($soumissions as $soumission)
         <article class="course-card">
-            <h2><a href="{{ route('candidate.submissions.show', $soumission) }}">{{ $soumission->evaluation->titre }}</a></h2>
-            <p>{{ $soumission->evaluation->cours->titre }} - {{ $soumission->score_obtenu }} - {{ $soumission->reussi ? 'Reussi' : 'Echoue' }}</p>
+            <div class="card-header-line">
+                <h2><a href="{{ route('candidate.submissions.show', $soumission) }}">{{ $soumission->evaluation->titre }}</a></h2>
+                <span class="badge {{ $soumission->reussi ? '' : 'badge-danger' }}">{{ $soumission->reussi ? 'Reussi' : 'Echoue' }}</span>
+            </div>
+            <p>{{ $soumission->evaluation->cours->titre }}</p>
+            <dl class="meta-grid">
+                <div><dt>Score</dt><dd>{{ $soumission->score_obtenu }}</dd></div>
+            </dl>
         </article>
     @empty
         <section class="empty-state">
