@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\Auth\SessionAuthController;
+use App\Http\Controllers\PublicCertificateVerificationController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CourseValidationController;
 use App\Http\Controllers\Admin\TrainerValidationController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Candidate\EnrollmentController;
 use App\Http\Controllers\Candidate\EvaluationSubmissionController;
+use App\Http\Controllers\Candidate\CertificateController;
 use App\Http\Controllers\Candidate\ProgressionController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Public\CategoryController;
@@ -25,6 +27,7 @@ Route::get('/courses', [CourseCatalogueController::class, 'index'])->name('cours
 Route::get('/courses/{cours}', [CourseCatalogueController::class, 'show'])->name('courses.show');
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/{categorie}/courses', [CategoryController::class, 'courses'])->name('categories.courses');
+Route::get('/certificates/verify/{codeVerification}', [PublicCertificateVerificationController::class, 'show'])->name('certificates.verify');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [SessionAuthController::class, 'showLogin'])->name('login');
@@ -93,11 +96,15 @@ Route::middleware(['auth', 'role:candidat'])->prefix('candidate')->name('candida
     Route::post('/enrollments/{inscription}/lessons/{lecon}/complete', [ProgressionController::class, 'complete'])->name('enrollments.lessons.complete');
     Route::get('/enrollments/{inscription}/progress', [ProgressionController::class, 'progress'])->name('enrollments.progress');
     Route::get('/enrollments/{inscription}/resources/{ressource}/download', [EnrollmentController::class, 'download'])->name('enrollments.resources.download');
+    Route::get('/enrollments/{inscription}/certificate/eligibility', [CertificateController::class, 'eligibility'])->name('enrollments.certificate.eligibility');
+    Route::post('/enrollments/{inscription}/certificate', [CertificateController::class, 'generate'])->name('enrollments.certificate.generate');
     Route::get('/evaluations/{evaluation}', [EvaluationSubmissionController::class, 'show'])->name('evaluations.show');
     Route::post('/evaluations/{evaluation}/start', [EvaluationSubmissionController::class, 'start'])->name('evaluations.start');
     Route::post('/evaluations/{evaluation}/submit', [EvaluationSubmissionController::class, 'submit'])->name('evaluations.submit');
     Route::get('/submissions/{soumission}', [EvaluationSubmissionController::class, 'submission'])->name('submissions.show');
     Route::get('/results', [EvaluationSubmissionController::class, 'results'])->name('results');
+    Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');
+    Route::get('/certificates/{certificat}/download', [CertificateController::class, 'download'])->name('certificates.download');
 });
 
 Route::get('/admin/dashboard', [DashboardController::class, 'admin'])

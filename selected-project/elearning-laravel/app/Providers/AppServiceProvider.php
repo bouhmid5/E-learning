@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Models\Administrateur;
+use App\Models\Certificat;
 use App\Models\Cours;
 use App\Models\Evaluation;
 use App\Models\Inscription;
 use App\Models\Utilisateur;
 use App\Policies\CoursePolicy;
+use App\Policies\CertificatPolicy;
 use App\Policies\EvaluationPolicy;
 use App\Policies\InscriptionPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(Cours::class, CoursePolicy::class);
+        Gate::policy(Certificat::class, CertificatPolicy::class);
         Gate::policy(Evaluation::class, EvaluationPolicy::class);
         Gate::policy(Inscription::class, InscriptionPolicy::class);
 
