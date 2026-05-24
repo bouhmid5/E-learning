@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Enums\StatutCompte;
 use App\Models\Administrateur;
 use App\Models\Certificat;
 use App\Models\Cours;
@@ -31,9 +32,14 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::define('access-role', function (Administrateur|Utilisateur $user, string $role): bool {
             return match ($role) {
-                'admin' => $user instanceof Administrateur,
-                'candidat' => $user instanceof Utilisateur && $user->candidat()->exists(),
-                'formateur' => $user instanceof Utilisateur && $user->formateur()->exists(),
+                'admin' => $user instanceof Administrateur
+                    && $user->statut === StatutCompte::ACTIF,
+                'candidat' => $user instanceof Utilisateur
+                    && $user->statut === StatutCompte::ACTIF
+                    && $user->candidat()->exists(),
+                'formateur' => $user instanceof Utilisateur
+                    && $user->statut === StatutCompte::ACTIF
+                    && $user->formateur?->statut_validation === StatutCompte::ACTIF,
                 default => false,
             };
         });

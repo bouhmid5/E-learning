@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\StatutCours;
+use App\Enums\StatutCompte;
 use App\Models\Administrateur;
 use App\Models\Categorie;
 use App\Models\Cours;
@@ -15,14 +16,18 @@ class CoursSeeder extends Seeder
     {
         $administrateur = Administrateur::query()->first();
         $categories = Categorie::query()->get();
-        $formateurs = Formateur::query()->get();
+        $formateurs = Formateur::query()
+            ->where('statut_validation', StatutCompte::ACTIF->value)
+            ->get();
 
         if ($categories->isEmpty()) {
             $categories = Categorie::factory()->count(2)->create();
         }
 
         if ($formateurs->isEmpty()) {
-            $formateurs = Formateur::factory()->count(2)->create();
+            $formateurs = Formateur::factory()->count(2)->create([
+                'statut_validation' => StatutCompte::ACTIF,
+            ]);
         }
 
         foreach ($formateurs as $index => $formateur) {
@@ -36,4 +41,3 @@ class CoursSeeder extends Seeder
         }
     }
 }
-

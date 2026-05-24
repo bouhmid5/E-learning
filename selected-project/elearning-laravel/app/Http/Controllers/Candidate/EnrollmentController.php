@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Candidate;
 
+use App\Enums\TypeRessource;
 use App\Http\Controllers\Controller;
 use App\Models\Cours;
 use App\Models\Inscription;
@@ -11,7 +12,9 @@ use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class EnrollmentController extends Controller
 {
@@ -59,10 +62,24 @@ class EnrollmentController extends Controller
         ]);
     }
 
-    public function download(Inscription $inscription, Ressource $ressource): RedirectResponse
+    public function download(Inscription $inscription, Ressource $ressource): RedirectResponse|StreamedResponse
     {
         Gate::authorize('downloadResource', [$inscription, $ressource]);
 
-        return redirect()->away($ressource->url);
+        if ($ressource->type === TypeRessource::LIEN) {
+            abort_unless($this->isSafeExternalUrl($ressource->url), 404);
+
+            return redirect()->away($ressource->url);
+        }
+
+        abort_unless($ressource->url && Storage::disk('public')->exists($ressource->url), 404);
+
+        return Storage::disk('public')->download($ressource->url);
+    }
+
+    private function isSafeExternalUrl(?string $url): bool
+    {
+        return is_string($url)
+            && (str_starts_with($url, 'http://') || str_starts_with($url, 'https://'));
     }
 }

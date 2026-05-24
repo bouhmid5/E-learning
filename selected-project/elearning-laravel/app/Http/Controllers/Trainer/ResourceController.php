@@ -54,7 +54,7 @@ class ResourceController extends Controller
 
         if ($type !== TypeRessource::LIEN && ! $file && (! $existing || $existing->type === TypeRessource::LIEN)) {
             throw ValidationException::withMessages([
-                'fichier' => 'Un fichier est requis pour les ressources document ou vidéo.',
+                'fichier' => 'Un fichier est requis pour les ressources document ou video.',
             ]);
         }
 

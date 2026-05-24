@@ -5,16 +5,12 @@
         <h1>Utilisateurs</h1>
     </section>
 
-    @if (session('status'))
-        <p>{{ session('status') }}</p>
-    @endif
-
     <section>
-        @foreach ($users as $user)
+        @forelse ($users as $user)
             <article class="course-card">
                 <h2>{{ $user->prenom }} {{ $user->nom }}</h2>
-                <p>{{ $user->email }} · {{ $user->statut->value }}</p>
-                <form method="POST" action="{{ route('admin.users.status', $user) }}">
+                <p>{{ $user->email }} - {{ $user->statut->value }}</p>
+                <form method="POST" action="{{ route('admin.users.status', $user) }}" data-confirm="Modifier le statut de cet utilisateur ?">
                     @csrf
                     @method('PATCH')
                     <label>
@@ -30,7 +26,9 @@
                     <button type="submit">Mettre a jour</button>
                 </form>
             </article>
-        @endforeach
+        @empty
+            <p>Aucun utilisateur.</p>
+        @endforelse
     </section>
 
     {{ $users->links() }}

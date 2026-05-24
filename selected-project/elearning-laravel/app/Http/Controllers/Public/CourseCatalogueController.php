@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Public;
 
+use App\Enums\StatutCompte;
 use App\Enums\StatutCours;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalogue\CourseFilterRequest;
@@ -54,7 +55,11 @@ class CourseCatalogueController extends Controller
         return view('courses.index', [
             'courses' => $courses,
             'categories' => Categorie::query()->orderBy('nom')->get(),
-            'formateurs' => Formateur::query()->with('utilisateur')->get(),
+            'formateurs' => Formateur::query()
+                ->with('utilisateur')
+                ->where('statut_validation', StatutCompte::ACTIF->value)
+                ->whereHas('cours', fn ($query) => $query->where('statut', StatutCours::PUBLIE->value))
+                ->get(),
             'filters' => $filters,
         ]);
     }

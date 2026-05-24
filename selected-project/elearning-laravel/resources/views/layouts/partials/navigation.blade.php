@@ -8,12 +8,12 @@
 
     <div class="nav-links">
         <a href="{{ route('courses.index') }}" @class(['active' => request()->routeIs('courses.*')])>Catalogue</a>
-        <a href="{{ route('categories.index') }}" @class(['active' => request()->routeIs('categories.*')])>Catégories</a>
+        <a href="{{ route('categories.index') }}" @class(['active' => request()->routeIs('categories.*')])>Categories</a>
 
         @if ($webUser?->candidat)
             <a href="{{ route('candidate.dashboard') }}" @class(['active' => request()->routeIs('candidate.dashboard')])>Candidat</a>
             <a href="{{ route('candidate.enrollments.index') }}" @class(['active' => request()->routeIs('candidate.enrollments.*')])>Mes cours</a>
-            <a href="{{ route('candidate.results') }}" @class(['active' => request()->routeIs('candidate.results')])>Résultats</a>
+            <a href="{{ route('candidate.results') }}" @class(['active' => request()->routeIs('candidate.results')])>Resultats</a>
             <a href="{{ route('candidate.certificates.index') }}" @class(['active' => request()->routeIs('candidate.certificates.*')])>Certificats</a>
         @endif
 
@@ -32,9 +32,9 @@
     <div class="nav-actions">
         @if ($webUser || $adminUser)
             <span class="nav-user">{{ $webUser?->prenom ?? $adminUser?->prenom }} {{ $webUser?->nom ?? $adminUser?->nom }}</span>
-            <form method="POST" action="{{ route('logout') }}" data-confirm="Voulez-vous vraiment vous déconnecter ?">
+            <form method="POST" action="{{ route('logout') }}" data-confirm="Voulez-vous vraiment vous deconnecter ?">
                 @csrf
-                <button type="submit" class="link-button">Déconnexion</button>
+                <button type="submit" class="link-button">Deconnexion</button>
             </form>
         @else
             <a href="{{ route('login') }}">Connexion</a>

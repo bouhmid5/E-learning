@@ -6,6 +6,7 @@ use App\Enums\StatutCours;
 use App\Http\Controllers\Controller;
 use App\Models\Cours;
 use App\Services\Admin\AdminValidationService;
+use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,11 @@ class CourseValidationController extends Controller
 
     public function validateCourse(Cours $cours, AdminValidationService $service): RedirectResponse
     {
-        $service->validateCourse($cours, Auth::guard('admin')->user());
+        try {
+            $service->validateCourse($cours, Auth::guard('admin')->user());
+        } catch (DomainException $exception) {
+            return back()->withErrors(['validation' => $exception->getMessage()]);
+        }
 
         return back()->with('status', 'Cours publie.');
     }
@@ -37,7 +42,11 @@ class CourseValidationController extends Controller
             'motif_rejet' => ['required', 'string', 'max:2000'],
         ]);
 
-        $service->rejectCourse($cours, Auth::guard('admin')->user(), $validated['motif_rejet']);
+        try {
+            $service->rejectCourse($cours, Auth::guard('admin')->user(), $validated['motif_rejet']);
+        } catch (DomainException $exception) {
+            return back()->withErrors(['validation' => $exception->getMessage()]);
+        }
 
         return back()->with('status', 'Cours rejete.');
     }

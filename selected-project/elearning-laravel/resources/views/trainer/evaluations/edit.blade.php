@@ -2,7 +2,7 @@
 
 @section('content')
     <section class="auth-panel">
-        <h1>Modifier l'évaluation</h1>
+        <h1>Modifier l'evaluation</h1>
         <form method="POST" action="{{ route('trainer.evaluations.update', $evaluation) }}">
             @csrf
             @method('PUT')
@@ -15,7 +15,7 @@
         <h2>Ajouter une question</h2>
         <form method="POST" action="{{ route('trainer.evaluations.questions.store', $evaluation) }}" class="filter-bar">
             @csrf
-            <input type="text" name="enonce" placeholder="Énoncé" required>
+            <input type="text" name="enonce" placeholder="Enonce" required>
             <select name="type">
                 @foreach (\App\Enums\TypeQuestion::cases() as $type)
                     <option value="{{ $type->value }}">{{ $type->value }}</option>
@@ -23,8 +23,8 @@
             </select>
             <input type="number" name="points" value="1" min="0" step="0.01" required>
             <input type="text" name="valeur_attendue" placeholder="Valeur attendue">
-            <input type="number" name="tolerance" placeholder="Tolérance" min="0" step="0.01">
-            <input type="text" name="critere_description" placeholder="Critère de correction">
+            <input type="number" name="tolerance" placeholder="Tolerance" min="0" step="0.01">
+            <input type="text" name="critere_description" placeholder="Critere de correction">
             <button type="submit">Ajouter</button>
         </form>
     </section>
@@ -34,7 +34,7 @@
         @forelse ($evaluation->questions as $question)
             <article class="course-card">
                 <h3>{{ $question->enonce }}</h3>
-                <p>{{ $question->type->value }} · {{ $question->points }} point(s)</p>
+                <p>{{ $question->type->value }} - {{ $question->points }} point(s)</p>
 
                 <form method="POST" action="{{ route('trainer.questions.update', $question) }}" class="filter-bar">
                     @csrf
@@ -47,12 +47,12 @@
                     </select>
                     <input type="number" name="points" value="{{ $question->points }}" min="0" step="0.01" required>
                     <input type="text" name="valeur_attendue" value="{{ $question->criteresCorrection->first()?->valeur_attendue }}" placeholder="Valeur attendue">
-                    <input type="number" name="tolerance" value="{{ $question->criteresCorrection->first()?->tolerance }}" placeholder="Tolérance" min="0" step="0.01">
-                    <input type="text" name="critere_description" value="{{ $question->criteresCorrection->first()?->description }}" placeholder="Critère">
-                    <button type="submit">Mettre à jour</button>
+                    <input type="number" name="tolerance" value="{{ $question->criteresCorrection->first()?->tolerance }}" placeholder="Tolerance" min="0" step="0.01">
+                    <input type="text" name="critere_description" value="{{ $question->criteresCorrection->first()?->description }}" placeholder="Critere">
+                    <button type="submit">Mettre a jour</button>
                 </form>
 
-                <form method="POST" action="{{ route('trainer.questions.destroy', $question) }}">
+                <form method="POST" action="{{ route('trainer.questions.destroy', $question) }}" data-confirm="Supprimer cette question ?">
                     @csrf
                     @method('DELETE')
                     <button type="submit">Supprimer</button>
@@ -69,6 +69,11 @@
                             Correcte
                         </label>
                         <button type="submit">Modifier option</button>
+                    </form>
+                    <form method="POST" action="{{ route('trainer.options.destroy', $option) }}" data-confirm="Supprimer cette option ?">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit">Supprimer option</button>
                     </form>
                 @endforeach
 
@@ -87,4 +92,3 @@
         @endforelse
     </section>
 @endsection
-

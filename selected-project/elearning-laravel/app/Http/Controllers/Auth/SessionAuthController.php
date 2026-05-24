@@ -112,8 +112,8 @@ class SessionAuthController extends Controller
             'biographie' => ['nullable', 'string'],
         ]);
 
-        $utilisateur = DB::transaction(function () use ($validated): Utilisateur {
-            $utilisateur = Utilisateur::create($this->utilisateurPayload($validated));
+        DB::transaction(function () use ($validated): void {
+            $utilisateur = Utilisateur::create($this->utilisateurPayload($validated, StatutCompte::EN_ATTENTE));
 
             Formateur::create([
                 'utilisateur_id' => $utilisateur->id,
@@ -121,14 +121,11 @@ class SessionAuthController extends Controller
                 'biographie' => $validated['biographie'] ?? null,
                 'statut_validation' => StatutCompte::EN_ATTENTE,
             ]);
-
-            return $utilisateur;
         });
 
-        Auth::guard('web')->login($utilisateur);
-        $request->session()->regenerate();
-
-        return redirect()->route('trainer.dashboard');
+        return redirect()
+            ->route('login')
+            ->with('status', 'Votre demande formateur est en attente de validation.');
     }
 
     private function validateRegistration(Request $request, array $extraRules): array
@@ -142,7 +139,7 @@ class SessionAuthController extends Controller
         ], $extraRules));
     }
 
-    private function utilisateurPayload(array $validated): array
+    private function utilisateurPayload(array $validated, StatutCompte $statut = StatutCompte::ACTIF): array
     {
         return [
             'nom' => $validated['nom'],
@@ -150,7 +147,7 @@ class SessionAuthController extends Controller
             'email' => $validated['email'],
             'mot_de_passe_hash' => Hash::make($validated['password']),
             'telephone' => $validated['telephone'] ?? null,
-            'statut' => StatutCompte::ACTIF,
+            'statut' => $statut,
         ];
     }
 
@@ -167,4 +164,3 @@ class SessionAuthController extends Controller
         return route('dashboard');
     }
 }
-

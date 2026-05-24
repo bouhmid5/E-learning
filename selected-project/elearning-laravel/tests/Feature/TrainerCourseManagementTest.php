@@ -4,12 +4,14 @@ namespace Tests\Feature;
 
 use App\Enums\StatutCours;
 use App\Enums\StatutCompte;
+use App\Enums\TypeRessource;
 use App\Models\Categorie;
 use App\Models\Cours;
 use App\Models\Formateur;
 use App\Models\Lecon;
 use App\Models\Utilisateur;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 class TrainerCourseManagementTest extends TestCase
@@ -117,8 +119,8 @@ class TrainerCourseManagementTest extends TestCase
 
         $this->actingAs($utilisateur, 'web')->put("/trainer/courses/{$cours->id}", [
             'categorie_id' => $categorie->id,
-            'titre' => 'Cours corrigé',
-            'description' => 'Corrigé',
+            'titre' => 'Cours corrige',
+            'description' => 'Corrige',
             'niveau' => 'intermediaire',
             'langue' => 'fr',
             'prix' => 80,
@@ -127,7 +129,7 @@ class TrainerCourseManagementTest extends TestCase
 
         $this->assertDatabaseHas('cours', [
             'id' => $cours->id,
-            'titre' => 'Cours corrigé',
+            'titre' => 'Cours corrige',
             'statut' => StatutCours::REJETE->value,
         ]);
     }
@@ -151,6 +153,48 @@ class TrainerCourseManagementTest extends TestCase
         ])->assertForbidden();
     }
 
+    public function test_resource_upload_rejects_unsupported_file_type(): void
+    {
+        [$utilisateur, $formateur] = $this->trainer();
+        $cours = Cours::factory()->create([
+            'formateur_id' => $formateur->id,
+            'statut' => StatutCours::BROUILLON,
+        ]);
+        $lecon = Lecon::factory()->create(['cours_id' => $cours->id]);
+
+        $this->actingAs($utilisateur, 'web')
+            ->from("/trainer/courses/{$cours->id}")
+            ->post("/trainer/lessons/{$lecon->id}/resources", [
+                'titre' => 'Script dangereux',
+                'type' => TypeRessource::DOCUMENT->value,
+                'fichier' => UploadedFile::fake()->create('script.exe', 1, 'application/x-msdownload'),
+                'ordre' => 1,
+            ])
+            ->assertRedirect("/trainer/courses/{$cours->id}")
+            ->assertSessionHasErrors('fichier');
+    }
+
+    public function test_resource_link_requires_http_or_https_url(): void
+    {
+        [$utilisateur, $formateur] = $this->trainer();
+        $cours = Cours::factory()->create([
+            'formateur_id' => $formateur->id,
+            'statut' => StatutCours::BROUILLON,
+        ]);
+        $lecon = Lecon::factory()->create(['cours_id' => $cours->id]);
+
+        $this->actingAs($utilisateur, 'web')
+            ->from("/trainer/courses/{$cours->id}")
+            ->post("/trainer/lessons/{$lecon->id}/resources", [
+                'titre' => 'Lien non sur',
+                'type' => TypeRessource::LIEN->value,
+                'url' => 'javascript:alert(1)',
+                'ordre' => 1,
+            ])
+            ->assertRedirect("/trainer/courses/{$cours->id}")
+            ->assertSessionHasErrors('url');
+    }
+
     private function trainer(): array
     {
         $utilisateur = Utilisateur::factory()->create(['statut' => StatutCompte::ACTIF]);
@@ -162,4 +206,3 @@ class TrainerCourseManagementTest extends TestCase
         return [$utilisateur, $formateur];
     }
 }
-

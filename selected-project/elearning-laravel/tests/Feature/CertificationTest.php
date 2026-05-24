@@ -37,7 +37,7 @@ class CertificationTest extends TestCase
         $this->actingAs($user, 'web')
             ->get("/candidate/enrollments/{$inscription->id}/certificate/eligibility")
             ->assertOk()
-            ->assertSee('Progression complète')
+            ->assertSee('Progression complete')
             ->assertSee('Non');
 
         $this->actingAs($user, 'web')
@@ -59,7 +59,7 @@ class CertificationTest extends TestCase
         $this->actingAs($user, 'web')
             ->get("/candidate/enrollments/{$inscription->id}/certificate/eligibility")
             ->assertOk()
-            ->assertSee('Évaluations réussies')
+            ->assertSee('Evaluations reussies')
             ->assertSee('Non');
 
         $this->actingAs($user, 'web')
@@ -183,4 +183,3 @@ class CertificationTest extends TestCase
         return [$user, $inscription];
     }
 }
-

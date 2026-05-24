@@ -57,7 +57,7 @@ class FormateurSeeder extends Seeder
                     'email' => 'omar.mejri@elearning.test',
                     'mot_de_passe_hash' => Hash::make('password'),
                     'telephone' => '+216 25 500 600',
-                    'statut' => StatutCompte::ACTIF,
+                    'statut' => StatutCompte::EN_ATTENTE,
                     'derniere_connexion' => null,
                 ],
                 'formateur' => [
@@ -69,6 +69,10 @@ class FormateurSeeder extends Seeder
         ];
 
         foreach ($formateurs as $data) {
+            $validatorId = $data['formateur']['statut_validation'] === StatutCompte::ACTIF
+                ? $administrateur?->id
+                : null;
+
             $utilisateur = Utilisateur::query()->updateOrCreate(
                 ['email' => $data['utilisateur']['email']],
                 [
@@ -81,10 +85,9 @@ class FormateurSeeder extends Seeder
                 ['utilisateur_id' => $utilisateur->id],
                 [
                     ...$data['formateur'],
-                    'administrateur_validateur_id' => $administrateur?->id,
+                    'administrateur_validateur_id' => $validatorId,
                 ]
             );
         }
     }
 }
-

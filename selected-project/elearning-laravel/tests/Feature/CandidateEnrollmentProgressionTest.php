@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Enums\StatutCompte;
 use App\Enums\StatutCours;
 use App\Enums\StatutInscription;
+use App\Enums\TypeRessource;
 use App\Models\Candidat;
 use App\Models\Cours;
 use App\Models\Inscription;
@@ -173,6 +174,7 @@ class CandidateEnrollmentProgressionTest extends TestCase
         $lesson = Lecon::factory()->create(['cours_id' => $cours->id]);
         $ressource = Ressource::factory()->create([
             'lecon_id' => $lesson->id,
+            'type' => TypeRessource::LIEN,
             'url' => 'https://example.test/support.pdf',
             'telechargeable' => true,
         ]);

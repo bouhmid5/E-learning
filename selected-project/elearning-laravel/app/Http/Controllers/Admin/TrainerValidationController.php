@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Formateur;
 use App\Models\JustificatifFormateur;
 use App\Services\Admin\AdminValidationService;
+use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +34,11 @@ class TrainerValidationController extends Controller
 
     public function validateTrainer(Formateur $formateur, AdminValidationService $service): RedirectResponse
     {
-        $service->validateTrainer($formateur, Auth::guard('admin')->user());
+        try {
+            $service->validateTrainer($formateur, Auth::guard('admin')->user());
+        } catch (DomainException $exception) {
+            return back()->withErrors(['validation' => $exception->getMessage()]);
+        }
 
         return back()->with('status', 'Formateur valide.');
     }
@@ -44,14 +49,22 @@ class TrainerValidationController extends Controller
             'reason' => ['required', 'string', 'max:2000'],
         ]);
 
-        $service->rejectTrainer($formateur, Auth::guard('admin')->user(), $validated['reason']);
+        try {
+            $service->rejectTrainer($formateur, Auth::guard('admin')->user(), $validated['reason']);
+        } catch (DomainException $exception) {
+            return back()->withErrors(['validation' => $exception->getMessage()]);
+        }
 
         return back()->with('status', 'Formateur rejete.');
     }
 
     public function validateJustificatif(JustificatifFormateur $justificatif, AdminValidationService $service): RedirectResponse
     {
-        $service->validateJustificatif($justificatif, Auth::guard('admin')->user());
+        try {
+            $service->validateJustificatif($justificatif, Auth::guard('admin')->user());
+        } catch (DomainException $exception) {
+            return back()->withErrors(['validation' => $exception->getMessage()]);
+        }
 
         return back()->with('status', 'Justificatif valide.');
     }
@@ -62,7 +75,11 @@ class TrainerValidationController extends Controller
             'reason' => ['required', 'string', 'max:2000'],
         ]);
 
-        $service->rejectJustificatif($justificatif, Auth::guard('admin')->user(), $validated['reason']);
+        try {
+            $service->rejectJustificatif($justificatif, Auth::guard('admin')->user(), $validated['reason']);
+        } catch (DomainException $exception) {
+            return back()->withErrors(['validation' => $exception->getMessage()]);
+        }
 
         return back()->with('status', 'Justificatif rejete.');
     }

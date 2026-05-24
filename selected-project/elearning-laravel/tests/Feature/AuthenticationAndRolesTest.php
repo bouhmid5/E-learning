@@ -47,7 +47,7 @@ class AuthenticationAndRolesTest extends TestCase
         ]);
     }
 
-    public function test_trainer_registration_creates_pending_trainer_profile_and_logs_in(): void
+    public function test_trainer_registration_creates_pending_trainer_profile_without_login(): void
     {
         $response = $this->post('/register/trainer', [
             'nom' => 'Durand',
@@ -59,8 +59,12 @@ class AuthenticationAndRolesTest extends TestCase
             'biographie' => 'Formatrice backend.',
         ]);
 
-        $response->assertRedirect('/trainer/dashboard');
-        $this->assertAuthenticated('web');
+        $response->assertRedirect('/login');
+        $this->assertGuest('web');
+        $this->assertDatabaseHas('utilisateurs', [
+            'email' => 'nadia.durand@example.com',
+            'statut' => StatutCompte::EN_ATTENTE->value,
+        ]);
         $this->assertDatabaseHas('formateurs', [
             'specialite' => 'Laravel',
             'statut_validation' => StatutCompte::EN_ATTENTE->value,
@@ -176,7 +180,10 @@ class AuthenticationAndRolesTest extends TestCase
             ->assertForbidden();
 
         $trainerUser = Utilisateur::factory()->create(['statut' => StatutCompte::ACTIF]);
-        Formateur::factory()->create(['utilisateur_id' => $trainerUser->id]);
+        Formateur::factory()->create([
+            'utilisateur_id' => $trainerUser->id,
+            'statut_validation' => StatutCompte::ACTIF,
+        ]);
 
         $this->actingAs($trainerUser, 'web')
             ->get('/trainer/dashboard')
@@ -191,5 +198,18 @@ class AuthenticationAndRolesTest extends TestCase
         $this->actingAs($administrateur, 'admin')
             ->get('/admin/dashboard')
             ->assertOk();
+    }
+
+    public function test_pending_trainer_profile_cannot_access_trainer_area(): void
+    {
+        $trainerUser = Utilisateur::factory()->create(['statut' => StatutCompte::EN_ATTENTE]);
+        Formateur::factory()->create([
+            'utilisateur_id' => $trainerUser->id,
+            'statut_validation' => StatutCompte::EN_ATTENTE,
+        ]);
+
+        $this->actingAs($trainerUser, 'web')
+            ->get('/trainer/dashboard')
+            ->assertForbidden();
     }
 }

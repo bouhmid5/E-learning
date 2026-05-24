@@ -133,6 +133,61 @@ class AdminValidationWorkflowTest extends TestCase
         $this->assertNotNull($cours->fresh()->date_publication);
     }
 
+    public function test_admin_cannot_validate_course_that_is_not_pending_validation(): void
+    {
+        $admin = $this->admin();
+        $cours = Cours::factory()->create(['statut' => StatutCours::BROUILLON]);
+
+        $this->actingAs($admin, 'admin')
+            ->post("/admin/courses/{$cours->id}/validate")
+            ->assertRedirect()
+            ->assertSessionHasErrors('validation');
+
+        $this->assertDatabaseHas('cours', [
+            'id' => $cours->id,
+            'statut' => StatutCours::BROUILLON->value,
+            'administrateur_validateur_id' => null,
+        ]);
+    }
+
+    public function test_admin_cannot_validate_trainer_that_is_not_pending(): void
+    {
+        $admin = $this->admin();
+        $utilisateur = Utilisateur::factory()->create(['statut' => StatutCompte::ACTIF]);
+        $formateur = Formateur::factory()->create([
+            'utilisateur_id' => $utilisateur->id,
+            'statut_validation' => StatutCompte::ACTIF,
+        ]);
+
+        $this->actingAs($admin, 'admin')
+            ->post("/admin/trainers/{$formateur->id}/validate")
+            ->assertRedirect()
+            ->assertSessionHasErrors('validation');
+
+        $this->assertDatabaseHas('formateurs', [
+            'id' => $formateur->id,
+            'statut_validation' => StatutCompte::ACTIF->value,
+            'administrateur_validateur_id' => null,
+        ]);
+    }
+
+    public function test_admin_cannot_reject_course_that_is_not_pending_validation(): void
+    {
+        $admin = $this->admin();
+        $cours = Cours::factory()->create(['statut' => StatutCours::PUBLIE]);
+
+        $this->actingAs($admin, 'admin')
+            ->post("/admin/courses/{$cours->id}/reject", ['motif_rejet' => 'Hors workflow'])
+            ->assertRedirect()
+            ->assertSessionHasErrors('validation');
+
+        $this->assertDatabaseHas('cours', [
+            'id' => $cours->id,
+            'statut' => StatutCours::PUBLIE->value,
+            'motif_rejet' => null,
+        ]);
+    }
+
     public function test_course_rejection_requires_motif_rejet(): void
     {
         $admin = $this->admin();
@@ -206,7 +261,7 @@ class AdminValidationWorkflowTest extends TestCase
 
     private function pendingTrainer(): array
     {
-        $utilisateur = Utilisateur::factory()->create(['statut' => StatutCompte::ACTIF]);
+        $utilisateur = Utilisateur::factory()->create(['statut' => StatutCompte::EN_ATTENTE]);
         $formateur = Formateur::factory()->create([
             'utilisateur_id' => $utilisateur->id,
             'statut_validation' => StatutCompte::EN_ATTENTE,

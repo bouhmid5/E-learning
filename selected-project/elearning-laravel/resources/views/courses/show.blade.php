@@ -8,7 +8,7 @@
 
         <section class="detail-hero">
             <div>
-                <p class="eyebrow">{{ $cours->categorie?->nom ?? 'Cours publié' }}</p>
+                <p class="eyebrow">{{ $cours->categorie?->nom ?? 'Cours publie' }}</p>
                 <h1>{{ $cours->titre }}</h1>
                 <p>{{ $cours->description }}</p>
             </div>
@@ -26,23 +26,23 @@
         </section>
 
         <dl class="detail-meta">
-            <div><dt>Catégorie</dt><dd>{{ $cours->categorie?->nom }}</dd></div>
+            <div><dt>Categorie</dt><dd>{{ $cours->categorie?->nom }}</dd></div>
             <div><dt>Formateur</dt><dd>{{ $cours->formateur?->utilisateur?->prenom }} {{ $cours->formateur?->utilisateur?->nom }}</dd></div>
             <div><dt>Niveau</dt><dd>{{ $cours->niveau }}</dd></div>
             <div><dt>Langue</dt><dd>{{ $cours->langue }}</dd></div>
-            <div><dt>Prix</dt><dd>{{ number_format((float) $cours->prix, 2) }} €</dd></div>
-            <div><dt>Durée estimée</dt><dd>{{ $cours->duree_estimee }} min</dd></div>
+            <div><dt>Prix</dt><dd>{{ number_format((float) $cours->prix, 2) }} EUR</dd></div>
+            <div><dt>Duree estimee</dt><dd>{{ $cours->duree_estimee }} min</dd></div>
         </dl>
 
         <section>
-            <h2>Leçons</h2>
+            <h2>Lecons</h2>
             @forelse ($cours->lecons as $lecon)
                 <article class="lesson-row">
                     <h3>{{ $lecon->ordre }}. {{ $lecon->titre }}</h3>
                     <p>{{ $lecon->description }}</p>
                 </article>
             @empty
-                <p>Aucune leçon n'est visible pour ce cours.</p>
+                <p>Aucune lecon n'est visible pour ce cours.</p>
             @endforelse
         </section>
     </article>
