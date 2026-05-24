@@ -1,0 +1,9 @@
+@props(['title', 'message' => null])
+
+<section {{ $attributes->class(['empty-state']) }}>
+    <h2>{{ $title }}</h2>
+    @if ($message)
+        <p>{{ $message }}</p>
+    @endif
+    {{ $slot }}
+</section>

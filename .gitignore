@@ -1,0 +1,30 @@
+# Laravel dependencies
+selected-project/elearning-laravel/vendor/
+selected-project/elearning-laravel/node_modules/
+
+# Environment files
+selected-project/elearning-laravel/.env
+selected-project/elearning-laravel/.env.*
+!selected-project/elearning-laravel/.env.example
+
+# Laravel generated/cache files
+selected-project/elearning-laravel/bootstrap/cache/*.php
+selected-project/elearning-laravel/storage/framework/cache/*
+selected-project/elearning-laravel/storage/framework/sessions/*
+selected-project/elearning-laravel/storage/framework/testing/*
+selected-project/elearning-laravel/storage/framework/views/*
+selected-project/elearning-laravel/storage/logs/*
+
+# Keep placeholder files if they exist
+!selected-project/elearning-laravel/bootstrap/cache/.gitkeep
+!selected-project/elearning-laravel/storage/**/.gitkeep
+
+# Frontend build output
+selected-project/elearning-laravel/public/build/
+selected-project/elearning-laravel/.phpunit.result.cache
+
+# Local editor/system files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

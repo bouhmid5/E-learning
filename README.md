@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🎓 EduNova — E-Learning Platform
 
 > **Futuristic · Premium · Production-Ready**  
@@ -469,3 +470,27 @@ Designed with ❤️ using glassmorphism, Syne + DM Sans, and a futuristic dark 
 ---
 
 *EduNova Platform v1.0 — © 2026*
+=======
+# E-learning
+E-learning Project
+\# E-Learning Platform
+
+
+
+Projet IHM - plateforme e-learning
+
+
+
+Structure :
+
+\- candidates/
+
+\- assets/
+
+\- docs/
+
+\- templates/
+
+
+
+>>>>>>> 495c299832f192e707caaec23eac70f6a4e01c1f
